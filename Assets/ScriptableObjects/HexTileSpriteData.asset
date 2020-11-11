@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 268d2d594ed1d3d41852ec57ad2fa5e6, type: 3}
+  m_Name: HexTileSpriteData
+  m_EditorClassIdentifier: 
+  spritesPerTerrainType:
+  - terrainType: 1
+    sprites:
+    - {fileID: 21300000, guid: 1f1843dbf24d74c4a82e9b4f50abb2f7, type: 3}
+    - {fileID: 21300000, guid: b19281621ffd2074f996a1f7df566702, type: 3}
+    - {fileID: 21300000, guid: 41c0625b96aa987469df12beac8f624e, type: 3}
+    - {fileID: 21300000, guid: e7cc295e82b8d5b468150ae59166bf8d, type: 3}
+  - terrainType: 2
+    sprites:
+    - {fileID: 21300000, guid: bf995427f4875be4c86b4a5fac5984c2, type: 3}
+    - {fileID: 21300000, guid: bcefc0ebd1d7de6439990ae4c6092a9e, type: 3}
+    - {fileID: 21300000, guid: d2c1244b02169d3469c6384d213c2eef, type: 3}
+    - {fileID: 21300000, guid: d9fbe940644abaf4c819b2bf566a554b, type: 3}
+  - terrainType: 3
+    sprites:
+    - {fileID: 21300000, guid: 9bb119939b3e8334dbbb1e41d184dd0a, type: 3}
+    - {fileID: 21300000, guid: aabdf680cf4ac054aae8e75e1c2ac12f, type: 3}
+    - {fileID: 21300000, guid: aa73747d2e23a7544a5f086ca78a755d, type: 3}
+    - {fileID: 21300000, guid: c90821061f8407e47a00c1cb27eacd46, type: 3}
+  - terrainType: 4
+    sprites:
+    - {fileID: 21300000, guid: 2fbdc5090755c0848b94efc9a338c359, type: 3}
+    - {fileID: 21300000, guid: 5e2913638f54d6b499c7efaafb85b9cd, type: 3}
+    - {fileID: 21300000, guid: 6cf919afb94914f46b808b2632af93bd, type: 3}
+    - {fileID: 21300000, guid: fcec29323ab87354184d7ec6de034179, type: 3}
+  - terrainType: 5
+    sprites:
+    - {fileID: 21300000, guid: 071606f6a1be8194f856da2d26a62549, type: 3}
+    - {fileID: 21300000, guid: 0e00cd786c3c6ed448ad133a5a654859, type: 3}
+    - {fileID: 21300000, guid: f70ecf11424d69041b78c91d9b42a45a, type: 3}
+    - {fileID: 21300000, guid: 55fb287b72c78db458f1688ef555487f, type: 3}
+  - terrainType: 6
+    sprites:
+    - {fileID: 21300000, guid: 8510155828280044c8ef55d464928689, type: 3}
+    - {fileID: 21300000, guid: b14a715c65b66664ea2fc78d2b664884, type: 3}
+    - {fileID: 21300000, guid: 3879659536fb32a4984611905b5ff9cb, type: 3}
+    - {fileID: 21300000, guid: df2a9a157979b304783bc79a3d867706, type: 3}
+  - terrainType: 7
+    sprites:
+    - {fileID: 21300000, guid: 86cbd7d47bad83147aaafda6458c57b9, type: 3}
+    - {fileID: 21300000, guid: 7e3905a1ac5de7e4b822db97baeb9e0f, type: 3}
+    - {fileID: 21300000, guid: 39d24059cc6b18c44a495bae21d8c8f6, type: 3}
+    - {fileID: 21300000, guid: 930029f3886ea2e43ad5ab15aeaf78eb, type: 3}
+  - terrainType: 8
+    sprites:
+    - {fileID: 21300000, guid: 36d24fb49ae2c6c4cb26f685d163c53f, type: 3}
+    - {fileID: 21300000, guid: 4be7dbf6a60ff5544b65c83247d0946f, type: 3}
+    - {fileID: 21300000, guid: 531eefb4e539da149bd96e81dca9d5bd, type: 3}
+    - {fileID: 21300000, guid: ac7ae202e87c8c643832e498a8eb00e2, type: 3}
+  - terrainType: 9
+    sprites:
+    - {fileID: 21300000, guid: 2c23e10598cdc9a47955ce780e8a28fa, type: 3}
+    - {fileID: 21300000, guid: eaba4ae5e7632554e948db178494c6fe, type: 3}
+    - {fileID: 21300000, guid: c016e7cf37649f941a1cd7358fe25555, type: 3}
+    - {fileID: 21300000, guid: 0f340f23884d2954b9629ea3b6eac459, type: 3}
+  undergroundSprite: {fileID: 21300000, guid: c1f2edc3899f79a41889401ffdc10fd4, type: 3}
