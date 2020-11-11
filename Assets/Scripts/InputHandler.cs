@@ -129,7 +129,16 @@ public class InputHandler : MonoBehaviour
 
                     if (friendlyMech != null)
                     {
-                        actionHighlight.gameObject.SetActive(false);
+                        if (friendlyMech != selectedMech)
+                        {
+                            actionHighlight.DisplayAsSelectIndicator(isSelected: false);
+                            actionHighlight.gameObject.SetActive(true);
+                            actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(friendlyMech.GetCurrentHexTile());
+                        }
+                        else
+                        {
+                            actionHighlight.gameObject.SetActive(false);
+                        }
                     }
                     else if (enemyMech != null)
                     {
@@ -229,6 +238,8 @@ public class InputHandler : MonoBehaviour
         selectionHighlight.gameObject.SetActive(true);
         selectionHighlight.DisplayAsSelectIndicator(isSelected: true);
         selectionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(mechToSelect.GetCurrentHexTile());
+
+        actionHighlight.gameObject.SetActive(false);
     }
 
     private void DeselectMech()
