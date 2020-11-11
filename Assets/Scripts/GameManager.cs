@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 
         MechController mechEnemy = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         mechEnemies.Add(mechEnemy);
-        mechEnemy.Initialize(new Cube(4, 2));
+        mechEnemy.Initialize(new Cube(4, 3));
     }
 
     public MechController GetFriendlyMechAt(Cube hexTile)

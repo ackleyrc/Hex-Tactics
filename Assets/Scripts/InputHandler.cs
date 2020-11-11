@@ -7,6 +7,7 @@ public class InputHandler : MonoBehaviour
     public HighlightIndicator selectionHighlight;
     public HighlightIndicator actionHighlight;
     public HighlightIndicator warningHighlight;
+    public float collateralDistanceThreshold = 0.80f;
 
     private Cube currentHexTileUnderMouse = new Cube (-1, -1);
     private MechController selectedMech = null;
@@ -162,13 +163,14 @@ public class InputHandler : MonoBehaviour
         }
     }
 
-    /// TODO: Update this function to obtain a list of mechs. Collateral damage may be inflicted at diminishing rates per mech, 
+    /// TODO? Update this function to obtain a list of mechs. Collateral damage may be inflicted at diminishing rates per mech, 
     /// with the collateral chance based on distance between the center of that mech's hex from the line connecting the start and end hexes.
-    /// (If a is a point on the line, p is the query point, and n is a normalized vector for the line, 
-    /// the distance to the line is given by the length of (a - p) - ((a - p) dot n) * n)
     private MechController CheckForBlockingMech(MechController attackingMech, MechController targetMech)
     {
         List<Cube> cubesLine = Cube.Line(attackingMech.GetCurrentHexTile(), targetMech.GetCurrentHexTile());
+
+        Vector3 attackerPos = HexGridManager.Instance.GetHexCubeWorldPostion(attackingMech.GetCurrentHexTile());
+        Vector3 targetPos = HexGridManager.Instance.GetHexCubeWorldPostion(targetMech.GetCurrentHexTile());
 
         for (int i = 0; i < cubesLine.Count; i++)
         {
@@ -181,18 +183,44 @@ public class InputHandler : MonoBehaviour
 
             if (blockingFriendlyMech != null)
             {
-                return blockingFriendlyMech;
+                Vector3 blockerPos = HexGridManager.Instance.GetHexCubeWorldPostion(blockingFriendlyMech.GetCurrentHexTile());
+                if (DistanceToLine(blockerPos, attackerPos, targetPos) <= collateralDistanceThreshold)
+                {
+                    //Debug.Log($"InputHandler :: Distance To Line: {DistanceToLine(blockerPos, attackerPos, targetPos)}");
+                    return blockingFriendlyMech;
+                }
             }
 
             MechController blockingEnemyMech = GameManager.Instance.GetEnemyMechAt(cubesLine[i]);
 
             if (blockingEnemyMech != null)
             {
-                return blockingEnemyMech;
+                Vector3 blockerPos = HexGridManager.Instance.GetHexCubeWorldPostion(blockingEnemyMech.GetCurrentHexTile());
+                if (DistanceToLine(blockerPos, attackerPos, targetPos) <= collateralDistanceThreshold)
+                {
+                    //Debug.Log($"InputHandler :: Distance To Line: {DistanceToLine(blockerPos, attackerPos, targetPos)}");
+                    return blockingEnemyMech;
+                }
             }
         }
 
         return null;
+    }
+
+
+    /// <summary>
+    /// (If a is a point on the line, p is the query point, and n is a normalized vector for the line, 
+    /// the distance to the line is given by the length of (a - p) - ((a - p) dot n) * n)
+    /// </summary>
+    private float DistanceToLine(Vector3 queryPoint, Vector3 lineStart, Vector3 lineEnd)
+    {
+        Vector3 a = queryPoint;
+        Vector3 p = lineStart;
+        Vector3 n = (lineEnd - lineStart).normalized;
+        float distanceToLine = ((a - p) - (Vector3.Dot(a - p, n) * n)).magnitude;
+        float distanceToStart = Vector3.Distance(queryPoint, lineStart);
+        float distanceToEnd = Vector3.Distance(queryPoint, lineEnd);
+        return Mathf.Min(distanceToLine, distanceToStart, distanceToEnd);
     }
 
     private void SelectMech(MechController mechToSelect)
