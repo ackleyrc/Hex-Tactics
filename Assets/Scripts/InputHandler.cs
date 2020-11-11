@@ -6,6 +6,7 @@ public class InputHandler : MonoBehaviour
 {
     public HighlightIndicator selectionHighlight;
     public HighlightIndicator actionHighlight;
+    public HighlightIndicator warningHighlight;
 
     private Cube currentHexTileUnderMouse = new Cube (-1, -1);
     private MechController selectedMech = null;
@@ -14,12 +15,15 @@ public class InputHandler : MonoBehaviour
     {
         selectionHighlight = GameObject.Instantiate(selectionHighlight) as HighlightIndicator;
         actionHighlight = GameObject.Instantiate(actionHighlight) as HighlightIndicator;
+        warningHighlight = GameObject.Instantiate(warningHighlight) as HighlightIndicator;
 
         selectionHighlight.DisplayAsGenericHighlight();
         actionHighlight.DisplayAsMoveIndicator();
+        warningHighlight.DisplayAsCollateralIndicator();
 
         selectionHighlight.gameObject.SetActive(false);
         actionHighlight.gameObject.SetActive(false);
+        warningHighlight.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -90,6 +94,8 @@ public class InputHandler : MonoBehaviour
         {
             currentHexTileUnderMouse = hexCubeUnderMouse;
 
+            warningHighlight.gameObject.SetActive(false);
+
             if (selectedMech == null)
             {
                 if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse))
@@ -126,7 +132,18 @@ public class InputHandler : MonoBehaviour
                     }
                     else if (enemyMech != null)
                     {
-                        actionHighlight.DisplayAsAttackIndicator();
+                        MechController blockingMech = CheckForBlockingMech(selectedMech, enemyMech);
+
+                        Debug.Log($"InputHandler :: Blocking Mech? {blockingMech}");
+
+                        if (blockingMech != null)
+                        {
+                            warningHighlight.DisplayAsCollateralIndicator();
+                            warningHighlight.gameObject.SetActive(true);
+                            warningHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(blockingMech.GetCurrentHexTile());
+                        }
+
+                        actionHighlight.DisplayAsAttackIndicator(isValid: blockingMech == null);
                         actionHighlight.gameObject.SetActive(true);
                         actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
                     }
@@ -143,6 +160,39 @@ public class InputHandler : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// TODO: Update this function to obtain a list of mechs. Collateral damage may be inflicted at diminishing rates per mech, 
+    /// with the collateral chance based on distance between the center of that mech's hex from the line connecting the start and end hexes.
+    /// (If a is a point on the line, p is the query point, and n is a normalized vector for the line, 
+    /// the distance to the line is given by the length of (a - p) - ((a - p) dot n) * n)
+    private MechController CheckForBlockingMech(MechController attackingMech, MechController targetMech)
+    {
+        List<Cube> cubesLine = Cube.Line(attackingMech.GetCurrentHexTile(), targetMech.GetCurrentHexTile());
+
+        for (int i = 0; i < cubesLine.Count; i++)
+        {
+            if (i == 0 || i == cubesLine.Count - 1)
+            {
+                continue; // Ignore attacking mech at starting hex and target mech at ending hex
+            }
+
+            MechController blockingFriendlyMech = GameManager.Instance.GetFriendlyMechAt(cubesLine[i]);
+
+            if (blockingFriendlyMech != null)
+            {
+                return blockingFriendlyMech;
+            }
+
+            MechController blockingEnemyMech = GameManager.Instance.GetEnemyMechAt(cubesLine[i]);
+
+            if (blockingEnemyMech != null)
+            {
+                return blockingEnemyMech;
+            }
+        }
+
+        return null;
     }
 
     private void SelectMech(MechController mechToSelect)

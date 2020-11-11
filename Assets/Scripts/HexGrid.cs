@@ -193,6 +193,11 @@ public class HexGrid
         return path;
     }
 
+    public int CubeDistance(Cube cubeA, Cube cubeB)
+    {
+        return Mathf.Max(Mathf.Abs(cubeA.q - cubeB.q), Mathf.Abs(cubeA.r - cubeB.r), Mathf.Abs(cubeA.s - cubeB.s));
+    }
+
     /// <summary>
     /// Returns a list of the Cube coordinates of the hexes forming 
     /// a ring around the provided center at radius distance away.

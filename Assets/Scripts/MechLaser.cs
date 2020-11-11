@@ -3,7 +3,7 @@
 public class MechLaser : MonoBehaviour
 {
     public Transform laserEffectOrigin;
-    public float mlaserEffectMaxLength;
+    public float laserEffectMaxLength;
     public GameObject laserEffectPrefab;
 
     private GameObject laserEffectInstance;

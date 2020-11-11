@@ -40,6 +40,18 @@ public class HexTileHighlightData : ScriptableObject
     public Sprite AttackSprite { get { return attackSprite; } }
 
     [SerializeField]
-    private Color attackColor;
-    public Color AttackColor { get { return attackColor; } }
+    private Color attackValidColor;
+    public Color AttackValidColor { get { return attackValidColor; } }
+
+    [SerializeField]
+    private Color attackInvalidColor;
+    public Color AttackInvalidColor { get { return attackInvalidColor; } }
+
+    [SerializeField]
+    private Sprite collateralSprite;
+    public Sprite CollateralSprite { get { return collateralSprite; } }
+
+    [SerializeField]
+    private Color collateralColor;
+    public Color CollateralColor { get { return collateralColor; } }
 }
