@@ -61,8 +61,13 @@ public class InputHandler : MonoBehaviour
 
                     if (enemyMechClicked != null)
                     {
-                        Debug.Log($"InputHandler :: Click to Attack enemy mech at {hexCubeUnderMouse}");
-                        selectedMech.AttackTarget(enemyMechClicked);
+                        MechController blockingMech = CheckForBlockingMech(selectedMech, enemyMechClicked);
+
+                        if (blockingMech == null)
+                        {
+                            Debug.Log($"InputHandler :: Click to Attack enemy mech at {hexCubeUnderMouse}");
+                            selectedMech.AttackTarget(enemyMechClicked);
+                        }
                     }
                     else // if (enemyMechClicked == null)
                     {
@@ -124,25 +129,25 @@ public class InputHandler : MonoBehaviour
             {
                 if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse))
                 {
-                    MechController friendlyMech = GameManager.Instance.GetFriendlyMechAt(currentHexTileUnderMouse);
-                    MechController enemyMech = GameManager.Instance.GetEnemyMechAt(currentHexTileUnderMouse);
+                    MechController friendlyMechUnderMouse = GameManager.Instance.GetFriendlyMechAt(currentHexTileUnderMouse);
+                    MechController enemyMechUnderMouse = GameManager.Instance.GetEnemyMechAt(currentHexTileUnderMouse);
 
-                    if (friendlyMech != null)
+                    if (friendlyMechUnderMouse != null)
                     {
-                        if (friendlyMech != selectedMech)
+                        if (friendlyMechUnderMouse != selectedMech)
                         {
                             actionHighlight.DisplayAsSelectIndicator(isSelected: false);
                             actionHighlight.gameObject.SetActive(true);
-                            actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(friendlyMech.GetCurrentHexTile());
+                            actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(friendlyMechUnderMouse.GetCurrentHexTile());
                         }
                         else
                         {
                             actionHighlight.gameObject.SetActive(false);
                         }
                     }
-                    else if (enemyMech != null)
+                    else if (enemyMechUnderMouse != null)
                     {
-                        MechController blockingMech = CheckForBlockingMech(selectedMech, enemyMech);
+                        MechController blockingMech = CheckForBlockingMech(selectedMech, enemyMechUnderMouse);
 
                         Debug.Log($"InputHandler :: Blocking Mech? {blockingMech}");
 
