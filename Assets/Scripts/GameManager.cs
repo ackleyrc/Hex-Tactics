@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -28,6 +29,12 @@ public class GameManager : MonoBehaviour
     private List<MechController> mechFriendlies = new List<MechController>();
     private List<MechController> mechEnemies = new List<MechController>();
 
+    public CurrentTurnGUI currentTurnGUI;
+    public Button endTurnButton;
+
+    public enum PlayerTurn { NONE, HUMAN_PLAYER, COMPUTER_PLAYER }
+    public PlayerTurn CurrentPlayerTurn { get; private set; }
+
     private void Start()
     {
         MechController mechFriendly_01 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
@@ -40,6 +47,10 @@ public class GameManager : MonoBehaviour
         MechController mechEnemy = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         mechEnemies.Add(mechEnemy);
         mechEnemy.Initialize(new Cube(4, 3));
+
+        CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
+
+        endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
     }
 
     public MechController GetFriendlyMechAt(Cube hexTile)
@@ -66,5 +77,21 @@ public class GameManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    private void HandleEndTurnButtonClicked()
+    {
+        Debug.Log($"GameManager::HandleEndTurnButtonClicked()");
+
+        if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
+        {
+            CurrentPlayerTurn = PlayerTurn.COMPUTER_PLAYER;
+        }
+        else if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER)
+        {
+            CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
+        }
+
+        currentTurnGUI.DisplayTurn(CurrentPlayerTurn);
     }
 }
