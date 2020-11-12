@@ -161,6 +161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialHealth: 5
   healthBar: {fileID: 121038983512617770}
+  modelAnimator: {fileID: 6211643570949766142}
 --- !u!1001 &2426646745314031634
 PrefabInstance:
   m_ObjectHideFlags: 0

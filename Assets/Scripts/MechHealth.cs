@@ -6,6 +6,7 @@ public class MechHealth : MonoBehaviour
 {
     public int initialHealth = 5;
     public HealthBar healthBar;
+    public Animator modelAnimator;
 
     public int CurrentHealth { get; private set; }
 
@@ -20,5 +21,10 @@ public class MechHealth : MonoBehaviour
 
         CurrentHealth -= damagePoints;
         healthBar.UpdateHealthBar(Mathf.Clamp01((float)CurrentHealth / (float)initialHealth));
+
+        if (CurrentHealth <= 0.0f)
+        {
+            modelAnimator.SetBool("isDead", true);
+        }
     }
 }

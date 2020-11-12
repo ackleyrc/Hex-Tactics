@@ -114,6 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialHealth: 5
   healthBar: {fileID: 1408123296967073236}
+  modelAnimator: {fileID: 3055113366417209522}
 --- !u!1 &6624846997196327591
 GameObject:
   m_ObjectHideFlags: 0
