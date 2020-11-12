@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MechController : MonoBehaviour
 {
+    public MechHealth health;
     public MechLaser laserWeapon;
     public MechModelOrientation modelOrientation;
     public Animator modelAnimator;
@@ -111,6 +112,7 @@ public class MechController : MonoBehaviour
             {
                 Debug.Log($"MechController :: DONE Firing Laser");
                 modelAnimator.SetBool("isFiringLaser", false);
+                currentAttackTarget.health.InflictDamage(1);
                 currentState = MechState.NONE;
                 // OnAttackComplete?.Invoke();
             }
