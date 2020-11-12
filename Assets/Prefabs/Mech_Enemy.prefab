@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laserEffectOrigin: {fileID: 0}
-  laserEffectMaxLength: 0
+  laserEffectMaxLength: 100
   laserEffectPrefab: {fileID: 0}
 --- !u!114 &7172042287540920825
 MonoBehaviour:
@@ -115,6 +115,10 @@ MonoBehaviour:
   initialHealth: 5
   healthBar: {fileID: 1408123296967073236}
   modelAnimator: {fileID: 3055113366417209522}
+  deathSmokePrefab: {fileID: 1127717411326556, guid: e9d8b34513e547047a81782c5c08e5b2,
+    type: 3}
+  deathSmokeMaxScale: {x: 0.5, y: 0.5, z: 0.5}
+  deathSmokeScalingDuration: 5
 --- !u!1 &6624846997196327591
 GameObject:
   m_ObjectHideFlags: 0
