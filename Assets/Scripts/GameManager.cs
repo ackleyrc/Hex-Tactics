@@ -35,10 +35,15 @@ public class GameManager : MonoBehaviour
 
     public UnitTurnGUI unitTurnGUI;
     public CurrentTurnGUI currentTurnGUI;
+    public ActionPanelGUI actionPanelGUI;
+
     public Button endTurnButton;
 
     public enum PlayerTurn { NONE, HUMAN_PLAYER, COMPUTER_PLAYER }
     public PlayerTurn CurrentPlayerTurn { get; private set; }
+
+    public enum ActionPhase { NONE, PRIMARY, SECONDARY }
+    public ActionPhase CurrentActionPhase { get; private set; }
 
     public int CurrentUnitIndex { get; private set; }
 
@@ -57,6 +62,10 @@ public class GameManager : MonoBehaviour
 
         CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
         CurrentUnitIndex = 0;
+        CurrentActionPhase = ActionPhase.PRIMARY;
+
+        actionPanelGUI.DisplayMoveEnabled();
+        actionPanelGUI.DisplayAttackEnabled();
 
         unitTurnGUI.Initialize(new string[] { mechNames.FriendlyMechNames[0], mechNames.FriendlyMechNames[1] },
                                new string[] { mechNames.EnemyMechNames[0] },
@@ -109,6 +118,7 @@ public class GameManager : MonoBehaviour
     private void ConcludeCurrentTurn()
     {
         CurrentUnitIndex++;
+        CurrentActionPhase = ActionPhase.PRIMARY;
 
         if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER &&
             CurrentUnitIndex >= mechFriendlies.Count)

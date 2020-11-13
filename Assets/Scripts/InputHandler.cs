@@ -131,10 +131,21 @@ public class InputHandler : MonoBehaviour
                 {
                     selectionHighlight.gameObject.SetActive(false);
                 }
+
+                if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+                {
+                    GameManager.Instance.actionPanelGUI.DisplayMoveEnabled();
+                    GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                }
+                else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+                {
+                    GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
+                    GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                }
             }
             else // if (selectedMech != null)
             {
-                if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse))
+                if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse) == true)
                 {
                     MechController friendlyMechUnderMouse = GameManager.Instance.GetFriendlyMechAt(currentHexTileUnderMouse);
                     MechController enemyMechUnderMouse = GameManager.Instance.GetEnemyMechAt(currentHexTileUnderMouse);
@@ -151,6 +162,17 @@ public class InputHandler : MonoBehaviour
                         {
                             actionHighlight.gameObject.SetActive(false);
                         }
+
+                        if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+                        {
+                            GameManager.Instance.actionPanelGUI.DisplayMoveEnabled();
+                            GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                        }
+                        else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+                        {
+                            GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
+                            GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                        }
                     }
                     else if (enemyMechUnderMouse != null)
                     {
@@ -163,22 +185,76 @@ public class InputHandler : MonoBehaviour
                             warningHighlight.DisplayAsCollateralIndicator();
                             warningHighlight.gameObject.SetActive(true);
                             warningHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(blockingMech.GetCurrentHexTile());
-                        }
 
-                        actionHighlight.DisplayAsAttackIndicator(isValid: blockingMech == null);
-                        actionHighlight.gameObject.SetActive(true);
-                        actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
+                            actionHighlight.DisplayAsAttackIndicator(isValid: false);
+                            actionHighlight.gameObject.SetActive(true);
+                            actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
+
+                            if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+                            {
+                                GameManager.Instance.actionPanelGUI.DisplayMoveEnabled();
+                                GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                            }
+                            else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+                            {
+                                GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
+                                GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                            }
+                        }
+                        else // if (blockingMech == null)
+                        {
+                            actionHighlight.DisplayAsAttackIndicator(isValid: true);
+                            actionHighlight.gameObject.SetActive(true);
+                            actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
+
+                            if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+                            {
+                                GameManager.Instance.actionPanelGUI.DisplayMovePending();
+                                GameManager.Instance.actionPanelGUI.DisplayAttackPending();
+                            }
+                            else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+                            {
+                                GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
+                                GameManager.Instance.actionPanelGUI.DisplayAttackPending();
+                            }
+                        }
                     }
-                    else
+                    else // if (friendlyMechUnderMouse == null && enemyMechUnderMouse == null)
                     {
-                        actionHighlight.DisplayAsMoveIndicator();
-                        actionHighlight.gameObject.SetActive(true);
-                        actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
+                        if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+                        {
+                            actionHighlight.DisplayAsMoveIndicator();
+                            actionHighlight.gameObject.SetActive(true);
+                            actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
+
+                            GameManager.Instance.actionPanelGUI.DisplayMovePending();
+                            GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                        }
+                        else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+                        {
+                            actionHighlight.DisplayAsGenericHighlight();
+                            actionHighlight.gameObject.SetActive(true);
+                            actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
+
+                            GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
+                            GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                        }
                     }
                 }
-                else
+                else // if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse) == false)
                 {
                     actionHighlight.gameObject.SetActive(false);
+
+                    if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+                    {
+                        GameManager.Instance.actionPanelGUI.DisplayMoveEnabled();
+                        GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                    }
+                    else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+                    {
+                        GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
+                        GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                    }
                 }
             }
         }
@@ -281,5 +357,16 @@ public class InputHandler : MonoBehaviour
         }
 
         actionHighlight.gameObject.SetActive(false);
+
+        if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+        {
+            GameManager.Instance.actionPanelGUI.DisplayMoveEnabled();
+            GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+        }
+        else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+        {
+            GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
+            GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+        }
     }
 }

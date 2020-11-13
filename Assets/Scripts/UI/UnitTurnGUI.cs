@@ -50,7 +50,6 @@ public class UnitTurnGUI : MonoBehaviour
         {
             for (int i = unitTurnCount; i < unitTurns.Length; i++)
             {
-                Debug.Log($"UnitTurnGUI :: unitTurns[{i}] [{unitTurns[i].gameObject}]");
                 unitTurns[i].gameObject.SetActive(false);
             }
         }
@@ -63,7 +62,7 @@ public class UnitTurnGUI : MonoBehaviour
         int unitOtherCount = allegiance == Allegiance.FRIENDLY ? enemyUnitCount : friendlyUnitCount;
         int unitTurnIndex = allegiance == firstTurn ? unitIndex : unitOtherCount + unitIndex;
 
-        Debug.Log($"UnitTurnGUI :: Unit Other Count: {unitOtherCount} // Unit Turn Index: {unitTurnIndex}");
+        //Debug.Log($"UnitTurnGUI :: Unit Other Count: {unitOtherCount} // Unit Turn Index: {unitTurnIndex}");
 
         for (int i = 0; i < unitTurns.Length; i++)
         {
