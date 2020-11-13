@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MechController : MonoBehaviour
 {
+    public MechNameGUI nameGUI;
     public MechHealth health;
     public MechLaser laserWeapon;
     public MechModelOrientation modelOrientation;
@@ -24,10 +25,23 @@ public class MechController : MonoBehaviour
     private enum MechState { NONE, TRAVELLING, ATTACKING }
     private MechState currentState = MechState.NONE;
 
-    public void Initialize(Cube startHex)
+    public int UnitIndex { get; private set; }
+    public string MechName { get; private set; }
+
+    public void Initialize(Cube startHex, int unitIndex, Allegiance allegiance, string mechName)
     {
         latestHexTile = startHex;
         this.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(startHex);
+
+        this.UnitIndex = unitIndex;
+        this.MechName = mechName;
+
+        nameGUI.SetName(this.MechName, allegiance);
+    }
+
+    public int GetUnitIndex()
+    {
+        return this.UnitIndex;
     }
 
     public Cube GetCurrentHexTile()

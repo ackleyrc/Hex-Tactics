@@ -29,6 +29,11 @@ public class InputHandler : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.CurrentPlayerTurn != GameManager.PlayerTurn.HUMAN_PLAYER)
+        {
+            return;
+        }
+
         Cube hexCubeUnderMouse = HexGridManager.Instance.GetHexCubeUnderMouse();
 
         if (Input.GetMouseButtonUp(1) == true)
@@ -44,7 +49,8 @@ public class InputHandler : MonoBehaviour
 
             if (friendlyMechClicked != null)
             {
-                if (friendlyMechClicked != selectedMech)
+                if (selectedMech == null &&
+                    GameManager.Instance.CurrentUnitIndex == friendlyMechClicked.UnitIndex)
                 {
                     SelectMech(friendlyMechClicked);
                 }
@@ -109,9 +115,10 @@ public class InputHandler : MonoBehaviour
                     selectionHighlight.gameObject.SetActive(true);
                     selectionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
 
-                    MechController friendlyMech = GameManager.Instance.GetFriendlyMechAt(currentHexTileUnderMouse);
+                    MechController friendlyMechUnderMouse = GameManager.Instance.GetFriendlyMechAt(currentHexTileUnderMouse);
 
-                    if (friendlyMech != null)
+                    if (friendlyMechUnderMouse != null &&
+                        GameManager.Instance.CurrentUnitIndex == friendlyMechUnderMouse.UnitIndex)
                     {
                         selectionHighlight.DisplayAsSelectIndicator(isSelected: false);
                     }
@@ -136,7 +143,7 @@ public class InputHandler : MonoBehaviour
                     {
                         if (friendlyMechUnderMouse != selectedMech)
                         {
-                            actionHighlight.DisplayAsSelectIndicator(isSelected: false);
+                            actionHighlight.DisplayAsGenericHighlight();
                             actionHighlight.gameObject.SetActive(true);
                             actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(friendlyMechUnderMouse.GetCurrentHexTile());
                         }
@@ -258,7 +265,8 @@ public class InputHandler : MonoBehaviour
 
             MechController friendlyMech = GameManager.Instance.GetFriendlyMechAt(currentHexTileUnderMouse);
 
-            if (friendlyMech != null)
+            if (friendlyMech != null &&
+                GameManager.Instance.CurrentUnitIndex == friendlyMech.UnitIndex)
             {
                 selectionHighlight.DisplayAsSelectIndicator(isSelected: false);
             }

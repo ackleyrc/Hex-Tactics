@@ -3,23 +3,22 @@ using UnityEngine.UI;
 
 public class CurrentTurnGUI : MonoBehaviour
 {
+    public HUDColorPalette colorPalette;
+
     public Image background;
     public Text turnText;
-
-    public Color playerColor;
-    public Color enemyColor;
 
     public void DisplayTurn(GameManager.PlayerTurn playerTurn)
     {
         if (playerTurn == GameManager.PlayerTurn.HUMAN_PLAYER)
         {
-            background.color = playerColor;
+            background.color = colorPalette.FriendlyUnitColor;
             turnText.text = "YOUR TURN";
             this.gameObject.SetActive(true);
         }
         else if (playerTurn == GameManager.PlayerTurn.COMPUTER_PLAYER)
         {
-            background.color = enemyColor;
+            background.color = colorPalette.EnemyUnitColor;
             turnText.text = "ENEMY TURN";
             this.gameObject.SetActive(true);
         }
