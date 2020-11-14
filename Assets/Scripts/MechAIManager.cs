@@ -37,6 +37,11 @@ public class MechAIManager : MonoBehaviour
         {
             //Debug.Log($"MechAIManager :: Potential Target: {opposingMech}");
 
+            if (GameManager.Instance.CheckForBlockingMech(controlledMech, opposingMech) != null)
+            {
+                continue;
+            }
+
             int distance = HexGridManager.Instance.HexGrid.CubeDistance(controlledMech.GetCurrentHexTile(), opposingMech.GetCurrentHexTile());
 
             //Debug.Log($"MechAIManager :: Potential Target Distance: {distance} Current Nearest Distance: {nearestDistance}");
@@ -59,6 +64,13 @@ public class MechAIManager : MonoBehaviour
             }
         }
 
-        controlledMech.AttackTarget(targetMech);
+        if (targetMech != null)
+        {
+            controlledMech.AttackTarget(targetMech);
+        }
+        else
+        {
+            GameManager.Instance.ConcludeCurrentTurn();
+        }
     }
 }

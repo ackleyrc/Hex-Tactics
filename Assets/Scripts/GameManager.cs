@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // TODO: Refactor initialization for better extensibility (e.g. of different counts of mechs on each side)
+
         MechController mechFriendly_01 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
         MechController mechFriendly_02 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
         MechFriendlies.Add(mechFriendly_01);
@@ -58,9 +60,12 @@ public class GameManager : MonoBehaviour
         mechFriendly_01.Initialize(new Cube(2, 1), 0, Allegiance.FRIENDLY, mechNames.FriendlyMechNames[0]);
         mechFriendly_02.Initialize(new Cube(1, 2), 1, Allegiance.FRIENDLY, mechNames.FriendlyMechNames[1]);
 
-        MechController mechEnemy = GameObject.Instantiate(mechEnemyPrefab) as MechController;
-        MechEnemies.Add(mechEnemy);
-        mechEnemy.Initialize(new Cube(4, 3), 0, Allegiance.ENEMY, mechNames.EnemyMechNames[0]);
+        MechController mechEnemy_01 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
+        MechController mechEnemy_02 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
+        MechEnemies.Add(mechEnemy_01);
+        MechEnemies.Add(mechEnemy_02);
+        mechEnemy_01.Initialize(new Cube(4, 3), 0, Allegiance.ENEMY, mechNames.EnemyMechNames[0]);
+        mechEnemy_02.Initialize(new Cube(3, 2), 1, Allegiance.ENEMY, mechNames.EnemyMechNames[1]);
 
         foreach (MechController friendlyMech in MechFriendlies)
         {
@@ -86,7 +91,7 @@ public class GameManager : MonoBehaviour
         actionPanelGUI.DisplayAttackEnabled();
 
         unitTurnGUI.Initialize(new string[] { mechNames.FriendlyMechNames[0], mechNames.FriendlyMechNames[1] },
-                               new string[] { mechNames.EnemyMechNames[0] },
+                               new string[] { mechNames.EnemyMechNames[0], mechNames.EnemyMechNames[1] },
                                Allegiance.FRIENDLY);
         unitTurnGUI.SetCurrentTurn(Allegiance.FRIENDLY, CurrentUnitIndex);
 
@@ -183,6 +188,43 @@ public class GameManager : MonoBehaviour
         ConcludeCurrentTurn();
     }
 
+    public void ConcludeCurrentTurn()
+    {
+        Debug.Log($"GameManager::ConcludeCurrentTurn()");
+
+        //Debug.Log($"GameManager :: Current Unit Index: {CurrentUnitIndex}");
+        //Debug.Log($"GameManager :: Current Player Turn: {CurrentPlayerTurn}");
+
+        CurrentUnitIndex++;
+        CurrentActionPhase = ActionPhase.PRIMARY;
+
+        if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER &&
+            CurrentUnitIndex >= MechFriendlies.Count)
+        {
+            CurrentUnitIndex = 0;
+            CurrentPlayerTurn = PlayerTurn.COMPUTER_PLAYER;
+            endTurnButton.gameObject.SetActive(false);
+        }
+        else if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER &&
+                 CurrentUnitIndex >= MechEnemies.Count)
+        {
+            CurrentUnitIndex = 0;
+            CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
+            endTurnButton.gameObject.SetActive(true);
+        }
+
+        //Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
+        //Debug.Log($"GameManager :: New Player Turn: {CurrentPlayerTurn}");
+
+        currentTurnGUI.DisplayTurn(CurrentPlayerTurn);
+        unitTurnGUI.SetCurrentTurn(CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER ? Allegiance.FRIENDLY : Allegiance.ENEMY, CurrentUnitIndex);
+
+        if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER)
+        {
+            StartCoroutine(ConductEnemyTurn());
+        }
+    }
+
     private IEnumerator ConductEnemyTurn()
     {
         Debug.Log($"GameManager::ConductEnemyTurn()");
@@ -203,40 +245,6 @@ public class GameManager : MonoBehaviour
         {
             ConcludeCurrentTurn();
         }
-    }
-
-    private void ConcludeCurrentTurn()
-    {
-        Debug.Log($"GameManager::ConcludeCurrentTurn()");
-
-        //Debug.Log($"GameManager :: Current Unit Index: {CurrentUnitIndex}");
-        //Debug.Log($"GameManager :: Current Player Turn: {CurrentPlayerTurn}");
-
-        CurrentUnitIndex++;
-        CurrentActionPhase = ActionPhase.PRIMARY;
-
-        if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER &&
-            CurrentUnitIndex >= MechFriendlies.Count)
-        {
-            CurrentUnitIndex = 0;
-            CurrentPlayerTurn = PlayerTurn.COMPUTER_PLAYER;
-            endTurnButton.gameObject.SetActive(false);
-
-            StartCoroutine(ConductEnemyTurn());
-        }
-        else if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER &&
-                 CurrentUnitIndex >= MechEnemies.Count)
-        {
-            CurrentUnitIndex = 0;
-            CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
-            endTurnButton.gameObject.SetActive(true);
-        }
-
-        //Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
-        //Debug.Log($"GameManager :: New Player Turn: {CurrentPlayerTurn}");
-
-        currentTurnGUI.DisplayTurn(CurrentPlayerTurn);
-        unitTurnGUI.SetCurrentTurn(CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER ? Allegiance.FRIENDLY : Allegiance.ENEMY, CurrentUnitIndex);
     }
 
     private void HandleMoveStarted(MechController mechStartingMove)
