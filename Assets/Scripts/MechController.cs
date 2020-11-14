@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,6 +28,12 @@ public class MechController : MonoBehaviour
 
     public int UnitIndex { get; private set; }
     public string MechName { get; private set; }
+    public Allegiance MechAllegiance { get; private set; }
+
+    public event Action<MechController> OnMoveStarted = delegate { };
+    public event Action<MechController> OnMoveStopped = delegate { };
+    public event Action<MechController> OnAttackStarted = delegate { };
+    public event Action<MechController> OnAttackStopped = delegate { };
 
     public void Initialize(Cube startHex, int unitIndex, Allegiance allegiance, string mechName)
     {
@@ -35,6 +42,7 @@ public class MechController : MonoBehaviour
 
         this.UnitIndex = unitIndex;
         this.MechName = mechName;
+        this.MechAllegiance = allegiance;
 
         nameGUI.SetName(this.MechName, allegiance);
     }
@@ -73,6 +81,8 @@ public class MechController : MonoBehaviour
         modelOrientation.SetLookTarget(directionToNextTile);
 
         currentState = MechState.TRAVELLING;
+
+        OnMoveStarted?.Invoke(this);
     }
 
     public void AttackTarget(MechController mechTarget)
@@ -88,6 +98,8 @@ public class MechController : MonoBehaviour
         isFiringWeapon = false;
         weaponFireElapsed = 0.0f;
         currentState = MechState.ATTACKING;
+
+        OnAttackStarted?.Invoke(this);
     }
 
     private void Update()
@@ -128,7 +140,8 @@ public class MechController : MonoBehaviour
                 modelAnimator.SetBool("isFiringLaser", false);
                 currentAttackTarget.health.InflictDamage(1);
                 currentState = MechState.NONE;
-                // OnAttackComplete?.Invoke();
+
+                OnAttackStopped?.Invoke(this);
             }
             else
             {
@@ -182,7 +195,7 @@ public class MechController : MonoBehaviour
                         Debug.Log($"MechController :: Final Path Destination Reached!");
                         currentState = MechState.NONE;
 
-                        // OnPathComplete?.Invoke();
+                        OnMoveStopped?.Invoke(this);
                     }
                     // Otherwise, there's more path left...
                     else

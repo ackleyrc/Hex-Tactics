@@ -60,6 +60,22 @@ public class GameManager : MonoBehaviour
         mechEnemies.Add(mechEnemy);
         mechEnemy.Initialize(new Cube(4, 3), 0, Allegiance.ENEMY, mechNames.EnemyMechNames[0]);
 
+        foreach (MechController friendlyMech in mechFriendlies)
+        {
+            friendlyMech.OnMoveStarted += HandleMoveStarted;
+            friendlyMech.OnMoveStopped += HandleMoveStopped;
+            friendlyMech.OnAttackStarted += HandleAttackStarted;
+            friendlyMech.OnAttackStopped += HandleAttackStopped;
+        }
+
+        foreach (MechController enemyMech in mechEnemies)
+        {
+            enemyMech.OnMoveStarted += HandleMoveStarted;
+            enemyMech.OnMoveStopped += HandleMoveStopped;
+            enemyMech.OnAttackStarted += HandleAttackStarted;
+            enemyMech.OnAttackStopped += HandleAttackStopped;
+        }
+
         CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
         CurrentUnitIndex = 0;
         CurrentActionPhase = ActionPhase.PRIMARY;
@@ -117,6 +133,11 @@ public class GameManager : MonoBehaviour
 
     private void ConcludeCurrentTurn()
     {
+        Debug.Log($"GameManager::ConcludeCurrentTurn()");
+
+        Debug.Log($"GameManager :: Current Unit Index: {CurrentUnitIndex}");
+        Debug.Log($"GameManager :: Current Player Turn: {CurrentPlayerTurn}");
+
         CurrentUnitIndex++;
         CurrentActionPhase = ActionPhase.PRIMARY;
 
@@ -137,7 +158,40 @@ public class GameManager : MonoBehaviour
             endTurnButton.gameObject.SetActive(true);
         }
 
+        Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
+        Debug.Log($"GameManager :: New Player Turn: {CurrentPlayerTurn}");
+
         currentTurnGUI.DisplayTurn(CurrentPlayerTurn);
         unitTurnGUI.SetCurrentTurn(CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER ? Allegiance.FRIENDLY : Allegiance.ENEMY, CurrentUnitIndex);
+    }
+
+    private void HandleMoveStarted(MechController mechStartingMove)
+    {
+        Debug.Log($"GameManager::HandleMoveStarted()");
+
+        CurrentPlayerTurn = PlayerTurn.NONE;
+    }
+
+    private void HandleMoveStopped(MechController mechStoppingMove)
+    {
+        Debug.Log($"GameManager::HandleMoveStopped()");
+
+        CurrentPlayerTurn = mechStoppingMove.MechAllegiance == Allegiance.FRIENDLY ? PlayerTurn.HUMAN_PLAYER : PlayerTurn.COMPUTER_PLAYER;
+        CurrentActionPhase = ActionPhase.SECONDARY;
+    }
+
+    private void HandleAttackStarted(MechController mechStartingAttack)
+    {
+        Debug.Log($"GameManager::HandleAttackStarted()");
+
+        CurrentPlayerTurn = PlayerTurn.NONE;
+    }
+
+    private void HandleAttackStopped(MechController mechStoppingAttack)
+    {
+        Debug.Log($"GameManager::HandleAttackStopped()");
+
+        CurrentPlayerTurn = mechStoppingAttack.MechAllegiance == Allegiance.FRIENDLY ? PlayerTurn.HUMAN_PLAYER : PlayerTurn.COMPUTER_PLAYER;
+        ConcludeCurrentTurn();
     }
 }

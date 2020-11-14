@@ -29,13 +29,24 @@ public class InputHandler : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.CurrentPlayerTurn != GameManager.PlayerTurn.HUMAN_PLAYER)
+        if (GameManager.Instance.CurrentPlayerTurn != GameManager.PlayerTurn.HUMAN_PLAYER ||
+            GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.NONE)
         {
+            selectionHighlight.gameObject.SetActive(false);
+            actionHighlight.gameObject.SetActive(false);
+            warningHighlight.gameObject.SetActive(false);
+
             return;
         }
 
         Cube hexCubeUnderMouse = HexGridManager.Instance.GetHexCubeUnderMouse();
+        
+        HandleMouseClick(hexCubeUnderMouse);
+        HandleInteractionUI(hexCubeUnderMouse);
+    }
 
+    private void HandleMouseClick(Cube hexCubeUnderMouse)
+    {
         if (Input.GetMouseButtonUp(1) == true)
         {
             if (selectedMech != null)
@@ -77,10 +88,9 @@ public class InputHandler : MonoBehaviour
                     }
                     else // if (enemyMechClicked == null)
                     {
-                        if (HexGridManager.Instance.IsHexCubeOnMap(hexCubeUnderMouse))
+                        if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY &&
+                            HexGridManager.Instance.IsHexCubeOnMap(hexCubeUnderMouse) == true)
                         {
-                            // TODO: Obtain path from selected mech to hex under mouse
-
                             Debug.Log($"InputHandler :: Click to Move from {selectedMech.GetCurrentHexTile()} to {hexCubeUnderMouse}");
 
                             List<Cube> path = HexGridManager.Instance.GetPath(selectedMech.GetCurrentHexTile(), hexCubeUnderMouse);
@@ -101,7 +111,10 @@ public class InputHandler : MonoBehaviour
                 }
             }
         }
+    }
 
+    private void HandleInteractionUI(Cube hexCubeUnderMouse)
+    {
         if (currentHexTileUnderMouse != hexCubeUnderMouse)
         {
             currentHexTileUnderMouse = hexCubeUnderMouse;
@@ -367,6 +380,12 @@ public class InputHandler : MonoBehaviour
         {
             GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
             GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+        }
+        else
+        {
+            selectionHighlight.gameObject.SetActive(false);
+            warningHighlight.gameObject.SetActive(false);
+            actionHighlight.gameObject.SetActive(false);
         }
     }
 }
