@@ -252,6 +252,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"GameManager::HandleMoveStarted()");
 
         CurrentPlayerTurn = PlayerTurn.NONE;
+        CurrentActionPhase = ActionPhase.NONE;
     }
 
     private void HandleMoveStopped(MechController mechStoppingMove)
@@ -260,6 +261,9 @@ public class GameManager : MonoBehaviour
 
         CurrentPlayerTurn = mechStoppingMove.MechAllegiance == Allegiance.FRIENDLY ? PlayerTurn.HUMAN_PLAYER : PlayerTurn.COMPUTER_PLAYER;
         CurrentActionPhase = ActionPhase.SECONDARY;
+
+        actionPanelGUI.DisplayMoveDisabled();
+        actionPanelGUI.DisplayAttackEnabled();
     }
 
     private void HandleAttackStarted(MechController mechStartingAttack)
@@ -267,6 +271,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"GameManager::HandleAttackStarted()");
 
         CurrentPlayerTurn = PlayerTurn.NONE;
+        CurrentActionPhase = ActionPhase.NONE;
     }
 
     private void HandleAttackStopped(MechController mechStoppingAttack)
@@ -275,5 +280,8 @@ public class GameManager : MonoBehaviour
 
         CurrentPlayerTurn = mechStoppingAttack.MechAllegiance == Allegiance.FRIENDLY ? PlayerTurn.HUMAN_PLAYER : PlayerTurn.COMPUTER_PLAYER;
         ConcludeCurrentTurn();
+
+        actionPanelGUI.DisplayMoveEnabled();
+        actionPanelGUI.DisplayAttackEnabled();
     }
 }
