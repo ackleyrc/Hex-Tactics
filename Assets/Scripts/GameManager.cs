@@ -93,7 +93,8 @@ public class GameManager : MonoBehaviour
         unitTurnGUI.Initialize(new string[] { mechNames.FriendlyMechNames[0], mechNames.FriendlyMechNames[1] },
                                new string[] { mechNames.EnemyMechNames[0], mechNames.EnemyMechNames[1] },
                                Allegiance.FRIENDLY);
-        unitTurnGUI.SetCurrentTurn(Allegiance.FRIENDLY, CurrentUnitIndex);
+
+        DisplayCurrentTurn();
 
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
     }
@@ -181,6 +182,40 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+    private void DisplayCurrentTurn()
+    {
+        Debug.Log($"GameManager::DisplayCurrentTurn()");
+
+        currentTurnGUI.DisplayTurn(CurrentPlayerTurn);
+        unitTurnGUI.SetCurrentTurn(CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER ? Allegiance.FRIENDLY : Allegiance.ENEMY, CurrentUnitIndex);
+
+        foreach (MechController friendlyMech in MechFriendlies)
+        {
+            if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER &&
+                CurrentUnitIndex == friendlyMech.UnitIndex)
+            {
+                friendlyMech.nameGUI.DisplayAsCurrentUnit(true);
+            }
+            else
+            {
+                friendlyMech.nameGUI.DisplayAsCurrentUnit(false);
+            }
+        }
+
+        foreach (MechController enemyMech in MechEnemies)
+        {
+            if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER &&
+                CurrentUnitIndex == enemyMech.UnitIndex)
+            {
+                enemyMech.nameGUI.DisplayAsCurrentUnit(true);
+            }
+            else
+            {
+                enemyMech.nameGUI.DisplayAsCurrentUnit(false);
+            }
+        }
+    }
+
     private void HandleEndTurnButtonClicked()
     {
         Debug.Log($"GameManager::HandleEndTurnButtonClicked()");
@@ -213,16 +248,15 @@ public class GameManager : MonoBehaviour
             endTurnButton.gameObject.SetActive(true);
         }
 
-        //Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
-        //Debug.Log($"GameManager :: New Player Turn: {CurrentPlayerTurn}");
-
-        currentTurnGUI.DisplayTurn(CurrentPlayerTurn);
-        unitTurnGUI.SetCurrentTurn(CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER ? Allegiance.FRIENDLY : Allegiance.ENEMY, CurrentUnitIndex);
+        Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
+        Debug.Log($"GameManager :: New Player Turn: {CurrentPlayerTurn}");
 
         if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER)
         {
             StartCoroutine(ConductEnemyTurn());
         }
+
+        DisplayCurrentTurn();
     }
 
     private IEnumerator ConductEnemyTurn()

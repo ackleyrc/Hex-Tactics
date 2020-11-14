@@ -47,11 +47,6 @@ public class MechController : MonoBehaviour
         nameGUI.SetName(this.MechName, allegiance);
     }
 
-    public int GetUnitIndex()
-    {
-        return this.UnitIndex;
-    }
-
     public Cube GetCurrentHexTile()
     {
         return latestHexTile;

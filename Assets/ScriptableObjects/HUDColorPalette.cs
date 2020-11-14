@@ -34,4 +34,20 @@ public class HUDColorPalette : ScriptableObject
     [SerializeField]
     private Color actionDisabledIcon;
     public Color ActionDisabledIcon { get { return actionDisabledIcon; } }
+
+    [SerializeField]
+    private Color namePlateBackground;
+    public Color NamePlateBackground { get { return namePlateBackground; } }
+
+    [SerializeField]
+    private Color namePlateText;
+    public Color NamePlateText { get { return namePlateText; } }
+
+    [SerializeField]
+    private Color namePlateBackgroundInverted;
+    public Color NamePlateBackgroundInverted { get { return namePlateBackgroundInverted; } }
+
+    [SerializeField]
+    private Color namePlateTextInverted;
+    public Color NamePlateTextInverted { get { return namePlateTextInverted; } }
 }

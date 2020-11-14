@@ -20,3 +20,7 @@ MonoBehaviour:
   actionDisabledBorder: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
   actionDisabledBackground: {r: 0, g: 0, b: 0, a: 1}
   actionDisabledIcon: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
+  namePlateBackground: {r: 0, g: 0, b: 0, a: 0.36078432}
+  namePlateText: {r: 1, g: 1, b: 1, a: 1}
+  namePlateBackgroundInverted: {r: 1, g: 1, b: 1, a: 0.5019608}
+  namePlateTextInverted: {r: 0, g: 0, b: 0, a: 1}
