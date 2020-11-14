@@ -23,15 +23,15 @@ public class GameManager : MonoBehaviour
             _Instance = null;
         }
     }
-    #endregion SINGLETON_MGMT
+#endregion SINGLETON_MGMT
 
     public MechNamesData mechNames;
 
     public MechController mechFriendlyPrefab;
     public MechController mechEnemyPrefab;
 
-    private List<MechController> mechFriendlies = new List<MechController>();
-    private List<MechController> mechEnemies = new List<MechController>();
+    public List<MechController> MechFriendlies { get; private set; } = new List<MechController>();
+    public List<MechController> MechEnemies { get; private set; } = new List<MechController>();
 
     public UnitTurnGUI unitTurnGUI;
     public CurrentTurnGUI currentTurnGUI;
@@ -47,20 +47,22 @@ public class GameManager : MonoBehaviour
 
     public int CurrentUnitIndex { get; private set; }
 
+    private const float COLLATERAL_DISTANCE_THRESHOLD = 0.80f;
+
     private void Start()
     {
         MechController mechFriendly_01 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
         MechController mechFriendly_02 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
-        mechFriendlies.Add(mechFriendly_01);
-        mechFriendlies.Add(mechFriendly_02);
+        MechFriendlies.Add(mechFriendly_01);
+        MechFriendlies.Add(mechFriendly_02);
         mechFriendly_01.Initialize(new Cube(2, 1), 0, Allegiance.FRIENDLY, mechNames.FriendlyMechNames[0]);
         mechFriendly_02.Initialize(new Cube(1, 2), 1, Allegiance.FRIENDLY, mechNames.FriendlyMechNames[1]);
 
         MechController mechEnemy = GameObject.Instantiate(mechEnemyPrefab) as MechController;
-        mechEnemies.Add(mechEnemy);
+        MechEnemies.Add(mechEnemy);
         mechEnemy.Initialize(new Cube(4, 3), 0, Allegiance.ENEMY, mechNames.EnemyMechNames[0]);
 
-        foreach (MechController friendlyMech in mechFriendlies)
+        foreach (MechController friendlyMech in MechFriendlies)
         {
             friendlyMech.OnMoveStarted += HandleMoveStarted;
             friendlyMech.OnMoveStopped += HandleMoveStopped;
@@ -68,7 +70,7 @@ public class GameManager : MonoBehaviour
             friendlyMech.OnAttackStopped += HandleAttackStopped;
         }
 
-        foreach (MechController enemyMech in mechEnemies)
+        foreach (MechController enemyMech in MechEnemies)
         {
             enemyMech.OnMoveStarted += HandleMoveStarted;
             enemyMech.OnMoveStopped += HandleMoveStopped;
@@ -91,9 +93,66 @@ public class GameManager : MonoBehaviour
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
     }
 
+    public MechController CheckForBlockingMech(MechController attackingMech, MechController targetMech)
+    {
+        List<Cube> cubesLine = Cube.Line(attackingMech.GetCurrentHexTile(), targetMech.GetCurrentHexTile());
+
+        Vector3 attackerPos = HexGridManager.Instance.GetHexCubeWorldPostion(attackingMech.GetCurrentHexTile());
+        Vector3 targetPos = HexGridManager.Instance.GetHexCubeWorldPostion(targetMech.GetCurrentHexTile());
+
+        for (int i = 0; i < cubesLine.Count; i++)
+        {
+            if (i == 0 || i == cubesLine.Count - 1)
+            {
+                continue; // Ignore attacking mech at starting hex and target mech at ending hex
+            }
+
+            MechController blockingFriendlyMech = GetFriendlyMechAt(cubesLine[i]);
+
+            if (blockingFriendlyMech != null)
+            {
+                Vector3 blockerPos = HexGridManager.Instance.GetHexCubeWorldPostion(blockingFriendlyMech.GetCurrentHexTile());
+                if (DistanceToLine(blockerPos, attackerPos, targetPos) <= COLLATERAL_DISTANCE_THRESHOLD)
+                {
+                    //Debug.Log($"GameManager :: Distance To Line: {DistanceToLine(blockerPos, attackerPos, targetPos)}");
+                    return blockingFriendlyMech;
+                }
+            }
+
+            MechController blockingEnemyMech = GetEnemyMechAt(cubesLine[i]);
+
+            if (blockingEnemyMech != null)
+            {
+                Vector3 blockerPos = HexGridManager.Instance.GetHexCubeWorldPostion(blockingEnemyMech.GetCurrentHexTile());
+                if (DistanceToLine(blockerPos, attackerPos, targetPos) <= COLLATERAL_DISTANCE_THRESHOLD)
+                {
+                    //Debug.Log($"GameManager :: Distance To Line: {DistanceToLine(blockerPos, attackerPos, targetPos)}");
+                    return blockingEnemyMech;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// (If a is a point on the line, p is the query point, and n is a normalized vector for the line, 
+    /// the distance to the line is given by the length of (a - p) - ((a - p) dot n) * n)
+    /// </summary>
+    private float DistanceToLine(Vector3 queryPoint, Vector3 lineStart, Vector3 lineEnd)
+    {
+        Vector3 a = queryPoint;
+        Vector3 p = lineStart;
+        Vector3 n = (lineEnd - lineStart).normalized;
+        float distanceToLine = ((a - p) - (Vector3.Dot(a - p, n) * n)).magnitude;
+        float distanceToStart = Vector3.Distance(queryPoint, lineStart);
+        float distanceToEnd = Vector3.Distance(queryPoint, lineEnd);
+        return Mathf.Min(distanceToLine, distanceToStart, distanceToEnd);
+    }
+
     public MechController GetFriendlyMechAt(Cube hexTile)
     {
-        foreach (MechController mech in mechFriendlies)
+        foreach (MechController mech in MechFriendlies)
         {
             if (mech.GetCurrentHexTile() == hexTile)
             {
@@ -106,7 +165,7 @@ public class GameManager : MonoBehaviour
 
     public MechController GetEnemyMechAt(Cube hexTile)
     {
-        foreach (MechController mech in mechEnemies)
+        foreach (MechController mech in MechEnemies)
         {
             if (mech.GetCurrentHexTile() == hexTile)
             {
@@ -124,42 +183,57 @@ public class GameManager : MonoBehaviour
         ConcludeCurrentTurn();
     }
 
-    private IEnumerator FinishEnemyTurn()
+    private IEnumerator ConductEnemyTurn()
     {
-        yield return new WaitForSeconds(5.0f);
+        Debug.Log($"GameManager::ConductEnemyTurn()");
 
-        ConcludeCurrentTurn();
+        yield return new WaitForSeconds(1.5f);
+
+        //Debug.Log($"GameManager :: Current Unit Index: {CurrentUnitIndex}");
+        //Debug.Log($"GameManager :: Current Player Turn: {CurrentPlayerTurn}");
+        //Debug.Log($"GameManager :: Enemy Mechs: {MechEnemies?.Count}");
+
+        MechController currentEnemyMech = MechEnemies[CurrentUnitIndex];
+
+        if (currentEnemyMech.health.CurrentHealth > 0)
+        {
+            MechAIManager.Instance.ConductUnitTurn(currentEnemyMech);
+        }
+        else
+        {
+            ConcludeCurrentTurn();
+        }
     }
 
     private void ConcludeCurrentTurn()
     {
         Debug.Log($"GameManager::ConcludeCurrentTurn()");
 
-        Debug.Log($"GameManager :: Current Unit Index: {CurrentUnitIndex}");
-        Debug.Log($"GameManager :: Current Player Turn: {CurrentPlayerTurn}");
+        //Debug.Log($"GameManager :: Current Unit Index: {CurrentUnitIndex}");
+        //Debug.Log($"GameManager :: Current Player Turn: {CurrentPlayerTurn}");
 
         CurrentUnitIndex++;
         CurrentActionPhase = ActionPhase.PRIMARY;
 
         if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER &&
-            CurrentUnitIndex >= mechFriendlies.Count)
+            CurrentUnitIndex >= MechFriendlies.Count)
         {
             CurrentUnitIndex = 0;
             CurrentPlayerTurn = PlayerTurn.COMPUTER_PLAYER;
             endTurnButton.gameObject.SetActive(false);
 
-            StartCoroutine(FinishEnemyTurn());
+            StartCoroutine(ConductEnemyTurn());
         }
         else if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER &&
-                 CurrentUnitIndex >= mechEnemies.Count)
+                 CurrentUnitIndex >= MechEnemies.Count)
         {
             CurrentUnitIndex = 0;
             CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
             endTurnButton.gameObject.SetActive(true);
         }
 
-        Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
-        Debug.Log($"GameManager :: New Player Turn: {CurrentPlayerTurn}");
+        //Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
+        //Debug.Log($"GameManager :: New Player Turn: {CurrentPlayerTurn}");
 
         currentTurnGUI.DisplayTurn(CurrentPlayerTurn);
         unitTurnGUI.SetCurrentTurn(CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER ? Allegiance.FRIENDLY : Allegiance.ENEMY, CurrentUnitIndex);

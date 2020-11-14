@@ -11,7 +11,7 @@ public class HexGridManager : MonoBehaviour
     public HexTileMapData mapData;
     public HexTile hexPrefab;
 
-    private HexGrid hexGrid;
+    public HexGrid HexGrid { get; private set; }
 
     private const float TILE_WIDTH = 2.56f;
     private const float TILE_HEIGHT = 2.56f; // sprite is 3.84f total
@@ -34,7 +34,7 @@ public class HexGridManager : MonoBehaviour
 
     public List<Cube> GetPath(Cube start, Cube finish)
     {
-        return hexGrid.GetShortestPath(start, finish, (Cube c) => CanTravelOverHex(c));
+        return HexGrid.GetShortestPath(start, finish, (Cube c) => CanTravelOverHex(c));
     }
 
     private bool CanTravelOverHex(Cube cube)
@@ -60,7 +60,7 @@ public class HexGridManager : MonoBehaviour
     public Cube GetHexCubeUnderMouse()
     {
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        return hexGrid.PixelToCube(worldPos.x, worldPos.y, TILE_WIDTH);
+        return HexGrid.PixelToCube(worldPos.x, worldPos.y, TILE_WIDTH);
     }
 
     public bool IsHexCubeOnMap(Cube hexCube)
@@ -72,15 +72,15 @@ public class HexGridManager : MonoBehaviour
 
     public Vector3 GetHexCubeWorldPostion(Cube hexCube)
     {
-        return hexGrid.CubeToPixel(hexCube, TILE_WIDTH);
+        return HexGrid.CubeToPixel(hexCube, TILE_WIDTH);
     }
 
     private void Generate()
     {
-        hexGrid = new HexGrid();
-        hexGrid.GenerateRectangularGrid(HexGrid.Alignment.Horizontal, mapData.HexTileArrays[0].TerrainTypes.Length, mapData.HexTileArrays.Length);
+        HexGrid = new HexGrid();
+        HexGrid.GenerateRectangularGrid(HexGrid.Alignment.Horizontal, mapData.HexTileArrays[0].TerrainTypes.Length, mapData.HexTileArrays.Length);
 
-        foreach (Cube cube in hexGrid.GetHexes())
+        foreach (Cube cube in HexGrid.GetHexes())
         {
             //Debug.Log($"Cube Coord ({cube.q} {cube.r}) [{cube.ToOffsetCoord().ToString()}]"); // Pos: ({hexGrid.CubeToPixel(cube, TILE_WIDTH)})");
 
@@ -97,7 +97,7 @@ public class HexGridManager : MonoBehaviour
                     bool createUnderground = (row == 0) || (row == mapData.HexTileArrays.Length - 1) || (col == 0) || (col == mapData.HexTileArrays[row].TerrainTypes.Length - 1);
                     HexTile hexTile = CreateHex(terrainType, -row, createUnderground);
 
-                    Vector3 position = hexGrid.CubeToPixel(cube, TILE_WIDTH);
+                    Vector3 position = HexGrid.CubeToPixel(cube, TILE_WIDTH);
                     hexTile.transform.position = position;
                 }
             }
