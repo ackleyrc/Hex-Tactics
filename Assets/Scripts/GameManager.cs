@@ -253,10 +253,14 @@ public class GameManager : MonoBehaviour
 
         if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER)
         {
+            actionPanelGUI.gameObject.SetActive(false);
+
             StartCoroutine(ConductEnemyTurn());
         }
         else if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
         {
+            actionPanelGUI.gameObject.SetActive(true);
+
             if (MechFriendlies[CurrentUnitIndex].health.CurrentHealth <= 0)
             {
                 StartCoroutine(SkipTurn());
@@ -310,8 +314,11 @@ public class GameManager : MonoBehaviour
         CurrentPlayerTurn = mechStoppingMove.MechAllegiance == Allegiance.FRIENDLY ? PlayerTurn.HUMAN_PLAYER : PlayerTurn.COMPUTER_PLAYER;
         CurrentActionPhase = ActionPhase.SECONDARY;
 
-        actionPanelGUI.DisplayMoveDisabled();
-        actionPanelGUI.DisplayAttackEnabled();
+        if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
+        {
+            actionPanelGUI.DisplayMoveDisabled();
+            actionPanelGUI.DisplayAttackEnabled();
+        }
     }
 
     private void HandleAttackStarted(MechController mechStartingAttack)
@@ -329,7 +336,10 @@ public class GameManager : MonoBehaviour
         CurrentPlayerTurn = mechStoppingAttack.MechAllegiance == Allegiance.FRIENDLY ? PlayerTurn.HUMAN_PLAYER : PlayerTurn.COMPUTER_PLAYER;
         ConcludeCurrentTurn();
 
-        actionPanelGUI.DisplayMoveEnabled();
-        actionPanelGUI.DisplayAttackEnabled();
+        if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
+        {
+            actionPanelGUI.DisplayMoveEnabled();
+            actionPanelGUI.DisplayAttackEnabled();
+        }
     }
 }
