@@ -42,6 +42,11 @@ public class MechAIManager : MonoBehaviour
                 continue;
             }
 
+            if (opposingMech.health.CurrentHealth <= 0)
+            {
+                continue;
+            }
+
             int distance = HexGridManager.Instance.HexGrid.CubeDistance(controlledMech.GetCurrentHexTile(), opposingMech.GetCurrentHexTile());
 
             //Debug.Log($"MechAIManager :: Potential Target Distance: {distance} Current Nearest Distance: {nearestDistance}");

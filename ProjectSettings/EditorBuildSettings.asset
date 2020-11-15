@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_Scenes/Hex-Scene.unity
+    guid: 60260447e3a04c04ca2a31bafc7e5cec
   m_configObjects: {}

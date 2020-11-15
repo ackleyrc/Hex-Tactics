@@ -255,8 +255,22 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(ConductEnemyTurn());
         }
+        else if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
+        {
+            if (MechFriendlies[CurrentUnitIndex].health.CurrentHealth <= 0)
+            {
+                StartCoroutine(SkipTurn());
+            }
+        }
 
         DisplayCurrentTurn();
+    }
+
+    private IEnumerator SkipTurn()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        ConcludeCurrentTurn();
     }
 
     private IEnumerator ConductEnemyTurn()
