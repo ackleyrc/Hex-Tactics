@@ -158,6 +158,8 @@ public class InputHandler : MonoBehaviour
                     GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
                     GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
                 }
+
+                LineOfSightGUI.Instance.HideLinesOfSight();
             }
             else // if (selectedMech != null)
             {
@@ -189,6 +191,8 @@ public class InputHandler : MonoBehaviour
                             GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
                             GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
                         }
+
+                        LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
                     }
                     else if (enemyMechUnderMouse != null)
                     {
@@ -256,6 +260,8 @@ public class InputHandler : MonoBehaviour
                                 }
                             }
                         }
+
+                        LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
                     }
                     else // if (friendlyMechUnderMouse == null && enemyMechUnderMouse == null)
                     {
@@ -267,6 +273,8 @@ public class InputHandler : MonoBehaviour
 
                             GameManager.Instance.actionPanelGUI.DisplayMovePending();
                             GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+
+                            LineOfSightGUI.Instance.DisplayLinesOfSight(currentHexTileUnderMouse, selectedMech);
                         }
                         else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
                         {
@@ -276,6 +284,8 @@ public class InputHandler : MonoBehaviour
 
                             GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
                             GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+
+                            LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
                         }
                     }
                 }
@@ -293,6 +303,8 @@ public class InputHandler : MonoBehaviour
                         GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
                         GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
                     }
+
+                    LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
                 }
             }
         }
@@ -306,6 +318,8 @@ public class InputHandler : MonoBehaviour
         selectionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(mechToSelect.GetCurrentHexTile());
 
         actionHighlight.gameObject.SetActive(false);
+
+        LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
     }
 
     private void DeselectMech()
@@ -353,5 +367,7 @@ public class InputHandler : MonoBehaviour
             warningHighlight.gameObject.SetActive(false);
             actionHighlight.gameObject.SetActive(false);
         }
+
+        LineOfSightGUI.Instance.HideLinesOfSight();
     }
 }

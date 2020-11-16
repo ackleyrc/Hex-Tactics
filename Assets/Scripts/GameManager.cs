@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
     }
 
-    public MechController CheckForBlockingMech(Cube fromHexTile, Cube toHexTile)
+    public MechController CheckForBlockingMech(Cube fromHexTile, Cube toHexTile, MechController ignoreMech = null)
     {
         List<Cube> cubesLine = Cube.Line(fromHexTile, toHexTile);
 
@@ -115,7 +115,8 @@ public class GameManager : MonoBehaviour
 
             MechController blockingFriendlyMech = GetFriendlyMechAt(cubesLine[i]);
 
-            if (blockingFriendlyMech != null)
+            if (blockingFriendlyMech != null &&
+                blockingFriendlyMech != ignoreMech)
             {
                 Vector3 blockerPos = HexGridManager.Instance.GetHexCubeWorldPostion(blockingFriendlyMech.GetCurrentHexTile());
                 if (DistanceToLine(blockerPos, attackerPos, targetPos) <= COLLATERAL_DISTANCE_THRESHOLD)
@@ -127,7 +128,8 @@ public class GameManager : MonoBehaviour
 
             MechController blockingEnemyMech = GetEnemyMechAt(cubesLine[i]);
 
-            if (blockingEnemyMech != null)
+            if (blockingEnemyMech != null &&
+                blockingEnemyMech != ignoreMech)
             {
                 Vector3 blockerPos = HexGridManager.Instance.GetHexCubeWorldPostion(blockingEnemyMech.GetCurrentHexTile());
                 if (DistanceToLine(blockerPos, attackerPos, targetPos) <= COLLATERAL_DISTANCE_THRESHOLD)
