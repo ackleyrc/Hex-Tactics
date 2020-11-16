@@ -99,12 +99,12 @@ public class GameManager : MonoBehaviour
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
     }
 
-    public MechController CheckForBlockingMech(MechController attackingMech, MechController targetMech)
+    public MechController CheckForBlockingMech(Cube fromHexTile, Cube toHexTile)
     {
-        List<Cube> cubesLine = Cube.Line(attackingMech.GetCurrentHexTile(), targetMech.GetCurrentHexTile());
+        List<Cube> cubesLine = Cube.Line(fromHexTile, toHexTile);
 
-        Vector3 attackerPos = HexGridManager.Instance.GetHexCubeWorldPostion(attackingMech.GetCurrentHexTile());
-        Vector3 targetPos = HexGridManager.Instance.GetHexCubeWorldPostion(targetMech.GetCurrentHexTile());
+        Vector3 attackerPos = HexGridManager.Instance.GetHexCubeWorldPostion(fromHexTile);
+        Vector3 targetPos = HexGridManager.Instance.GetHexCubeWorldPostion(toHexTile);
 
         for (int i = 0; i < cubesLine.Count; i++)
         {

@@ -78,7 +78,7 @@ public class InputHandler : MonoBehaviour
 
                     if (enemyMechClicked != null)
                     {
-                        MechController blockingMech = GameManager.Instance.CheckForBlockingMech(selectedMech, enemyMechClicked);
+                        MechController blockingMech = GameManager.Instance.CheckForBlockingMech(selectedMech.GetCurrentHexTile(), enemyMechClicked.GetCurrentHexTile());
 
                         if (blockingMech == null)
                         {
@@ -189,9 +189,9 @@ public class InputHandler : MonoBehaviour
                     }
                     else if (enemyMechUnderMouse != null)
                     {
-                        MechController blockingMech = GameManager.Instance.CheckForBlockingMech(selectedMech, enemyMechUnderMouse);
+                        MechController blockingMech = GameManager.Instance.CheckForBlockingMech(selectedMech.GetCurrentHexTile(), enemyMechUnderMouse.GetCurrentHexTile());
 
-                        Debug.Log($"InputHandler :: Blocking Mech? {blockingMech}");
+                        Debug.Log($"InputHandler :: Blocking Mech? {blockingMech?.MechName}");
 
                         if (blockingMech != null)
                         {

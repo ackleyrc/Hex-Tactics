@@ -54,7 +54,7 @@ public class MechController : MonoBehaviour
 
     public void TravelPath(List<Cube> path)
     {
-        Debug.Log($"MechController::SetPath()");
+        Debug.Log($"MechController::SetPath( {path.Count} )");
 
         currentPath = new Queue<Cube>();
         foreach (Cube cube in path)
