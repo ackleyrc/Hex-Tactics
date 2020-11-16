@@ -199,6 +199,17 @@ public class InputHandler : MonoBehaviour
                             warningHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(enemyMechUnderMouse.GetCurrentHexTile());
 
                             actionHighlight.gameObject.SetActive(false);
+
+                            if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+                            {
+                                GameManager.Instance.actionPanelGUI.DisplayMoveEnabled();
+                                GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                            }
+                            else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+                            {
+                                GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
+                                GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                            }
                         }
                         else
                         {
