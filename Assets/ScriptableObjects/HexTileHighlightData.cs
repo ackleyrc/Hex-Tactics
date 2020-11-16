@@ -54,4 +54,12 @@ public class HexTileHighlightData : ScriptableObject
     [SerializeField]
     private Color collateralColor;
     public Color CollateralColor { get { return collateralColor; } }
+
+    [SerializeField]
+    private Sprite deadSprite;
+    public Sprite DeadSprite { get { return deadSprite; } }
+
+    [SerializeField]
+    private Color deadColor;
+    public Color DeadColor { get { return deadColor; } }
 }

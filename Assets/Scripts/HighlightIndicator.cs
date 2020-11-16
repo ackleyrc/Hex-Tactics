@@ -45,4 +45,11 @@ public class HighlightIndicator : MonoBehaviour
         spriteRendererFG.sprite = spriteData.CollateralSprite;
         spriteRendererFG.color = spriteData.CollateralColor;
     }
+
+    public void DisplayAsDeadIndicator()
+    {
+        spriteRendererBG.color = spriteData.BackgroundDarkColor;
+        spriteRendererFG.sprite = spriteData.DeadSprite;
+        spriteRendererFG.color = spriteData.DeadColor;
+    }
 }

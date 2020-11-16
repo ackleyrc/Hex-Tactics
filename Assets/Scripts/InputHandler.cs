@@ -78,12 +78,15 @@ public class InputHandler : MonoBehaviour
 
                     if (enemyMechClicked != null)
                     {
-                        MechController blockingMech = GameManager.Instance.CheckForBlockingMech(selectedMech.GetCurrentHexTile(), enemyMechClicked.GetCurrentHexTile());
-
-                        if (blockingMech == null)
+                        if (enemyMechClicked.health.CurrentHealth > 0)
                         {
-                            Debug.Log($"InputHandler :: Click to Attack enemy mech at {hexCubeUnderMouse}");
-                            selectedMech.AttackTarget(enemyMechClicked);
+                            MechController blockingMech = GameManager.Instance.CheckForBlockingMech(selectedMech.GetCurrentHexTile(), enemyMechClicked.GetCurrentHexTile());
+
+                            if (blockingMech == null)
+                            {
+                                Debug.Log($"InputHandler :: Click to Attack enemy mech at {hexCubeUnderMouse}");
+                                selectedMech.AttackTarget(enemyMechClicked);
+                            }
                         }
                     }
                     else // if (enemyMechClicked == null)
@@ -189,46 +192,57 @@ public class InputHandler : MonoBehaviour
                     }
                     else if (enemyMechUnderMouse != null)
                     {
-                        MechController blockingMech = GameManager.Instance.CheckForBlockingMech(selectedMech.GetCurrentHexTile(), enemyMechUnderMouse.GetCurrentHexTile());
-
-                        Debug.Log($"InputHandler :: Blocking Mech? {blockingMech?.MechName}");
-
-                        if (blockingMech != null)
+                        if (enemyMechUnderMouse.health.CurrentHealth <= 0)
                         {
-                            warningHighlight.DisplayAsCollateralIndicator();
+                            warningHighlight.DisplayAsDeadIndicator();
                             warningHighlight.gameObject.SetActive(true);
-                            warningHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(blockingMech.GetCurrentHexTile());
+                            warningHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(enemyMechUnderMouse.GetCurrentHexTile());
 
-                            actionHighlight.DisplayAsAttackIndicator(isValid: false);
-                            actionHighlight.gameObject.SetActive(true);
-                            actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
-
-                            if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
-                            {
-                                GameManager.Instance.actionPanelGUI.DisplayMoveEnabled();
-                                GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
-                            }
-                            else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
-                            {
-                                GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
-                                GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
-                            }
+                            actionHighlight.gameObject.SetActive(false);
                         }
-                        else // if (blockingMech == null)
+                        else
                         {
-                            actionHighlight.DisplayAsAttackIndicator(isValid: true);
-                            actionHighlight.gameObject.SetActive(true);
-                            actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
+                            MechController blockingMech = GameManager.Instance.CheckForBlockingMech(selectedMech.GetCurrentHexTile(), enemyMechUnderMouse.GetCurrentHexTile());
 
-                            if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+                            Debug.Log($"InputHandler :: Blocking Mech? {blockingMech?.MechName}");
+
+                            if (blockingMech != null)
                             {
-                                GameManager.Instance.actionPanelGUI.DisplayMovePending();
-                                GameManager.Instance.actionPanelGUI.DisplayAttackPending();
+                                warningHighlight.DisplayAsCollateralIndicator();
+                                warningHighlight.gameObject.SetActive(true);
+                                warningHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(blockingMech.GetCurrentHexTile());
+
+                                actionHighlight.DisplayAsAttackIndicator(isValid: false);
+                                actionHighlight.gameObject.SetActive(true);
+                                actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
+
+                                if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+                                {
+                                    GameManager.Instance.actionPanelGUI.DisplayMoveEnabled();
+                                    GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                                }
+                                else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+                                {
+                                    GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
+                                    GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                                }
                             }
-                            else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+                            else // if (blockingMech == null)
                             {
-                                GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
-                                GameManager.Instance.actionPanelGUI.DisplayAttackPending();
+                                actionHighlight.DisplayAsAttackIndicator(isValid: true);
+                                actionHighlight.gameObject.SetActive(true);
+                                actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
+
+                                if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+                                {
+                                    GameManager.Instance.actionPanelGUI.DisplayMovePending();
+                                    GameManager.Instance.actionPanelGUI.DisplayAttackPending();
+                                }
+                                else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
+                                {
+                                    GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
+                                    GameManager.Instance.actionPanelGUI.DisplayAttackPending();
+                                }
                             }
                         }
                     }
@@ -310,6 +324,7 @@ public class InputHandler : MonoBehaviour
         }
 
         actionHighlight.gameObject.SetActive(false);
+        warningHighlight.gameObject.SetActive(false);
 
         if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
         {
