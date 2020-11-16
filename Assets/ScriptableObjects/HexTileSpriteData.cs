@@ -1,19 +1,5 @@
 ﻿using UnityEngine;
 
-public enum HexTerrainType
-{
-    NONE = 0,
-    BOG = 1,
-    GRASSY_SAND = 2,
-    GRASSY_SAND_PALMS = 3,
-    JUNGLE = 4,
-    SAND = 5,
-    SAND_PALMS = 6,
-    SWAMP = 7,
-    TROPICAL_PLAINS = 8,
-    WETLANDS = 9,
-}
-
 [CreateAssetMenu(fileName = "HexTileSpriteData", menuName = "ScriptableObjects/HexTileSpriteData", order = 1)]
 public class HexTileSpriteData : ScriptableObject
 {

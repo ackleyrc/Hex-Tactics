@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class HexGrid
@@ -191,6 +192,98 @@ public class HexGrid
             path.Reverse();
         }
         return path;
+    }
+
+    /// <summary> This function must return a weight of 1 or greater to guarantee that the quickest path is always returned </summary>
+    public delegate float CubeWeight(Cube cube);
+
+    public List<Cube> GetQuickestPath(Cube start, Cube target, CubeFilterCriteria criteria, CubeWeight weight)
+    {
+        List<Cube> quickestPath = new List<Cube>();
+
+        HashSet<Cube> openCubes = new HashSet<Cube>(); // set of cubes to be evaluated
+        HashSet<Cube> closedCubes = new HashSet<Cube>(); // set of cubes already evaluated
+
+        Dictionary<Cube, Cube> cameFrom = new Dictionary<Cube, Cube>(); // associates a key cube with the cube it came from
+        Dictionary<Cube, float> gScore = new Dictionary<Cube, float>(); // cost of getting to cube from the start (inf if not included)
+        Dictionary<Cube, float> fScore = new Dictionary<Cube, float>(); // total cost of getting from start to end via a given cube (partly known, partly heuristic)
+
+        openCubes.Add(start);
+        gScore.Add(start, 0.0f); // cost from start to start is zero
+        fScore.Add(start, CubeDistance(start, target)); // for start node, total cost is all heuristic (i.e unweighted cube distance to end)
+
+        while (openCubes.Count > 0)
+        {
+            // TODO: This can be optimized witch some sort of ordered priority queue, such as a binary heap
+            // Get the cube in the open set that has the current lowest fScore
+            Cube currentCube = openCubes.First();
+            foreach (Cube cube in openCubes)
+            {
+                if (fScore.ContainsKey(cube) && fScore[cube] < fScore[currentCube])
+                {
+                    currentCube = cube;
+                }
+            }
+
+            //Debug.Log($"HexGrid :: CURRENT Cube: {currentCube}");
+
+            // if the current node is the target/goal endNode, then we've reached the end and can return the shortest path
+            if (currentCube == target)
+            {
+                //Debug.Log($"HexGrid :: Current Cube is the TARGET!");
+                quickestPath.Add(currentCube);
+                while (cameFrom.ContainsKey(currentCube))
+                {
+                    currentCube = cameFrom[currentCube];
+                    quickestPath.Add(currentCube); // adds cubes from finish to start
+                }
+                return quickestPath.AsEnumerable().Reverse().ToList(); // reverse cubes to order from start to finish
+            }
+
+            openCubes.Remove(currentCube);
+            closedCubes.Add(currentCube);
+
+            foreach (Cube neighbor in GetNeighbors(currentCube))
+            {
+                //Debug.Log($"HexGrid :: Neighbor Cube: {neighbor}");
+
+                if (criteria(neighbor) == false)
+                {
+                    //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} NOT Traversible");
+                    continue;
+                }
+
+                if (closedCubes.Contains(neighbor))
+                {
+                    //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} already Evaluted");
+                    continue; // ignore if already evaluated
+                }
+
+                float tentativeGScore = gScore[currentCube] + weight(neighbor);
+                //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} Tentative G Score: ({gScore[currentCube]} + {weight(neighbor)})");
+
+                if (openCubes.Contains(neighbor) == false) // newly discovered node
+                {
+                    //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} added to Open Cubes");
+                    openCubes.Add(neighbor);
+                }
+                else if (tentativeGScore >= gScore[neighbor])
+                {
+                    continue; // This is not a better path
+                }
+
+                // Otherwise, this is the best path up til now
+                cameFrom[neighbor] = currentCube;
+                gScore[neighbor] = tentativeGScore;
+                fScore[neighbor] = gScore[neighbor] + CubeDistance(neighbor, target);
+
+                //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} best so far!");
+                //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} F Score: ({gScore[neighbor]} + {CubeDistance(neighbor, target)})");
+            }
+        }
+
+        // If endNode not reached, return empty list
+        return quickestPath;
     }
 
     public int CubeDistance(Cube cubeA, Cube cubeB)

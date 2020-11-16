@@ -1506,6 +1506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec68c4d855970a94399794e760e7d2a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainData: {fileID: 11400000, guid: c8e253918f876e844ae26c207dc29ac4, type: 2}
   spriteData: {fileID: 11400000, guid: 7b6a0dfcd2581be4a9e1e458a71e653c, type: 2}
   mapData: {fileID: 11400000, guid: 3c0560d715a4ea34f8f3720d0e034c3c, type: 2}
   hexPrefab: {fileID: 4741566476513320669, guid: 42d54940d267791498b277bdcb4dbda1,
@@ -3801,6 +3802,7 @@ MonoBehaviour:
   - {fileID: 101922767}
   offset: {x: 0, y: 0.5, z: -0.865}
   lineWidth: 0.03
+  defaultSortingOrder: 2
 --- !u!4 &1699950084
 Transform:
   m_ObjectHideFlags: 0

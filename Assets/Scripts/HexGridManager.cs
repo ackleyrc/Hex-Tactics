@@ -7,11 +7,14 @@ public class HexGridManager : MonoBehaviour
     private static HexGridManager _Instance;
     public static HexGridManager Instance { get { return _Instance; } }
 
+    public TerrainTypeData terrainData;
     public HexTileSpriteData spriteData;
     public HexTileMapData mapData;
     public HexTile hexPrefab;
 
     public HexGrid HexGrid { get; private set; }
+
+    private Dictionary<Cube, HexTerrainType> cubeToTerrainType = new Dictionary<Cube, HexTerrainType>();
 
     private const float TILE_WIDTH = 2.56f;
     private const float TILE_HEIGHT = 2.56f; // sprite is 3.84f total
@@ -34,27 +37,56 @@ public class HexGridManager : MonoBehaviour
 
     public List<Cube> GetPath(Cube start, Cube finish)
     {
-        return HexGrid.GetShortestPath(start, finish, (Cube c) => CanTravelOverHex(c));
+        //return HexGrid.GetShortestPath(start, finish, (Cube c) => CanTravelOverHex(c));
+        return HexGrid.GetQuickestPath(start, finish, (Cube c) => CanTravelOverHex(c), (Cube c) => GetTerrainMovementCost(c));
     }
 
-    private bool CanTravelOverHex(Cube cube)
+    public bool CanTravelOverHex(Cube cube)
     {
+        //Debug.Log($"HexGridManager::CanTravelOverHex( {cube} )");
+
         if (IsHexCubeOnMap(cube) == false)
         {
+            //Debug.Log($"HexGridManager :: Not on Map");
             return false;
         }
 
         if (GameManager.Instance.GetFriendlyMechAt(cube) != null)
         {
+            //Debug.Log($"HexGridManager :: Occupied by Friendly");
             return false;
         }
 
         if (GameManager.Instance.GetEnemyMechAt(cube) != null)
         {
+            //Debug.Log($"HexGridManager :: Occupied by Enemy");
             return false;
         }
 
+        if (cubeToTerrainType.ContainsKey(cube) == false)
+        {
+            //Debug.Log($"HexGridManager :: Not in terrain dictionary");
+            return false; 
+        }
+
+        if (terrainData.IsTraversible(cubeToTerrainType[cube]) == false)
+        {
+            //Debug.Log($"HexGridManager :: Terrain Type {cubeToTerrainType[cube]} NOT traversible");
+            return false;
+        }
+
+        //Debug.Log($"HexGridManager :: Terrain Type {cubeToTerrainType[cube]} IS traversible");
         return true;
+    }
+
+    private float GetTerrainMovementCost(Cube cube)
+    {
+        if (cubeToTerrainType.ContainsKey(cube) == true)
+        {
+            return terrainData.GetMovementCost(cubeToTerrainType[cube]);
+        }
+
+        return float.MaxValue;
     }
 
     public Cube GetHexCubeUnderMouse()
@@ -65,9 +97,10 @@ public class HexGridManager : MonoBehaviour
 
     public bool IsHexCubeOnMap(Cube hexCube)
     {
-        OffsetCoord hexOffsetCoord = hexCube.ToOffsetCoord();
-        return hexOffsetCoord.row >= 0 && hexOffsetCoord.row < mapData.HexTileArrays.Length &&
-               hexOffsetCoord.col >= 0 && hexOffsetCoord.col < mapData.HexTileArrays[hexOffsetCoord.row].TerrainTypes.Length;
+        //OffsetCoord hexOffsetCoord = hexCube.ToOffsetCoord();
+        //return hexOffsetCoord.row >= 0 && hexOffsetCoord.row < mapData.HexTileArrays.Length &&
+        //       hexOffsetCoord.col >= 0 && hexOffsetCoord.col < mapData.HexTileArrays[hexOffsetCoord.row].TerrainTypes.Length;
+        return cubeToTerrainType.ContainsKey(hexCube);
     }
 
     public Vector3 GetHexCubeWorldPostion(Cube hexCube)
@@ -99,6 +132,8 @@ public class HexGridManager : MonoBehaviour
 
                     Vector3 position = HexGrid.CubeToPixel(cube, TILE_WIDTH);
                     hexTile.transform.position = position;
+
+                    cubeToTerrainType.Add(cube, terrainType);
                 }
             }
         }

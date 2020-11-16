@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f6dbe8bbf9a7c44ca3ee7d79730fd84, type: 3}
+  m_Name: TerrainTypeData
+  m_EditorClassIdentifier: 
+  terrainData:
+  - terrainType: 1
+    displayName: Bog
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 1
+  - terrainType: 2
+    displayName: Grassy Sand
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+  - terrainType: 3
+    displayName: Grassy Sand with Palms
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+  - terrainType: 4
+    displayName: Tropical Jungle
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+  - terrainType: 5
+    displayName: Sand
+    traversible: 1
+    movementCost: 3
+    allowsLOS: 1
+  - terrainType: 6
+    displayName: Sand with Palms
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+  - terrainType: 7
+    displayName: Forested Wetlands
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+  - terrainType: 8
+    displayName: Tropical Plains
+    traversible: 1
+    movementCost: 1
+    allowsLOS: 1
+  - terrainType: 9
+    displayName: Wetlands
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1

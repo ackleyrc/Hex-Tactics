@@ -25,11 +25,11 @@ public class HighlightIndicator : MonoBehaviour
         spriteRendererFG.color = isSelected ? spriteData.SelectedColor : spriteData.UnselectedColor;
     }
 
-    public void DisplayAsMoveIndicator()
+    public void DisplayAsMoveIndicator(bool isValid)
     {
-        spriteRendererBG.color = spriteData.BackgroundDarkColor;
-        spriteRendererFG.sprite = spriteData.MoveSprite;
-        spriteRendererFG.color = spriteData.MoveColor;
+        spriteRendererBG.color = isValid ? spriteData.BackgroundDarkColor : spriteData.BackgroundRedColor;
+        spriteRendererFG.sprite = isValid ? spriteData.MoveValidSprite : spriteData.MoveInvalidSprite;
+        spriteRendererFG.color = isValid ? spriteData.MoveValidColor : spriteData.MoveInvalidColor;
     }
 
     public void DisplayAsAttackIndicator(bool isValid)

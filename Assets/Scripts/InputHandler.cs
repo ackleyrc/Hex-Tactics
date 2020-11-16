@@ -19,7 +19,7 @@ public class InputHandler : MonoBehaviour
         warningHighlight = GameObject.Instantiate(warningHighlight) as HighlightIndicator;
 
         selectionHighlight.DisplayAsGenericHighlight();
-        actionHighlight.DisplayAsMoveIndicator();
+        actionHighlight.DisplayAsMoveIndicator(true);
         warningHighlight.DisplayAsCollateralIndicator();
 
         selectionHighlight.gameObject.SetActive(false);
@@ -92,7 +92,8 @@ public class InputHandler : MonoBehaviour
                     else // if (enemyMechClicked == null)
                     {
                         if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY &&
-                            HexGridManager.Instance.IsHexCubeOnMap(hexCubeUnderMouse) == true)
+                            HexGridManager.Instance.IsHexCubeOnMap(hexCubeUnderMouse) == true &&
+                            HexGridManager.Instance.CanTravelOverHex(hexCubeUnderMouse) == true)
                         {
                             Debug.Log($"InputHandler :: Click to Move from {selectedMech.GetCurrentHexTile()} to {hexCubeUnderMouse}");
 
@@ -267,7 +268,7 @@ public class InputHandler : MonoBehaviour
                     {
                         if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
                         {
-                            actionHighlight.DisplayAsMoveIndicator();
+                            actionHighlight.DisplayAsMoveIndicator(isValid: HexGridManager.Instance.CanTravelOverHex(currentHexTileUnderMouse));
                             actionHighlight.gameObject.SetActive(true);
                             actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
 

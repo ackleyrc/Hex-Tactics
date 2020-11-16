@@ -15,11 +15,14 @@ MonoBehaviour:
   backgroundSprite: {fileID: 21300000, guid: f363d7a20d6d26f4dbcef09366923f31, type: 3}
   backgroundDarkColor: {r: 0, g: 0, b: 0, a: 0.50980395}
   backgroundLightColor: {r: 1, g: 1, b: 1, a: 0.50980395}
+  backgroundRedColor: {r: 1, g: 0.25, b: 0.25, a: 0.50980395}
   selectSprite: {fileID: 21300000, guid: 50cda209263ba4e4b960cec531369d11, type: 3}
   selectedColor: {r: 1, g: 0.938471, b: 0.495283, a: 0.6666667}
   unselectedColor: {r: 1, g: 1, b: 1, a: 0.6666667}
-  moveSprite: {fileID: 21300000, guid: c415f6ea4b1ce4043b9daf76884f5135, type: 3}
-  moveColor: {r: 1, g: 1, b: 1, a: 0.6666667}
+  moveValidSprite: {fileID: 21300000, guid: c415f6ea4b1ce4043b9daf76884f5135, type: 3}
+  moveValidColor: {r: 1, g: 1, b: 1, a: 0.6666667}
+  moveInvalidSprite: {fileID: 21300000, guid: c415f6ea4b1ce4043b9daf76884f5135, type: 3}
+  moveInvalidColor: {r: 0, g: 0, b: 0, a: 0.50980395}
   attackSprite: {fileID: 21300000, guid: 2f6691546704dc4469cbdb96a8472fe4, type: 3}
   attackValidColor: {r: 1, g: 0.25, b: 0.25, a: 0.6666667}
   attackInvalidColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.6666667}
