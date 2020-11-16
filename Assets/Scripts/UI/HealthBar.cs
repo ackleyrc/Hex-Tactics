@@ -34,9 +34,9 @@ public class HealthBar : MonoBehaviour
 
         for (int i = 0; i < healthPoints.Length; i++)
         {
-            healthPoints[i].color = i >= (int)(healthNormalized * healthPoints.Length) ? Color.black : healthColor;
+            healthPoints[i].color = i >= Mathf.RoundToInt(healthNormalized * healthPoints.Length) ? Color.black : healthColor;
         }
 
-        healthText.text = $"{((int)(healthNormalized * healthPoints.Length))} HP ";
+        healthText.text = $"{Mathf.RoundToInt(healthNormalized * healthPoints.Length)} HP ";
     }
 }
