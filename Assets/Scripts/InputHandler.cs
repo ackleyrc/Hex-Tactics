@@ -161,6 +161,7 @@ public class InputHandler : MonoBehaviour
                 }
 
                 LineOfSightGUI.Instance.HideLinesOfSight();
+                MovePathGUI.Instance.HidePath();
             }
             else // if (selectedMech != null)
             {
@@ -194,6 +195,7 @@ public class InputHandler : MonoBehaviour
                         }
 
                         LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
+                        MovePathGUI.Instance.HidePath();
                     }
                     else if (enemyMechUnderMouse != null)
                     {
@@ -263,12 +265,16 @@ public class InputHandler : MonoBehaviour
                         }
 
                         LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
+                        MovePathGUI.Instance.HidePath();
                     }
                     else // if (friendlyMechUnderMouse == null && enemyMechUnderMouse == null)
                     {
                         if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
                         {
-                            actionHighlight.DisplayAsMoveIndicator(isValid: HexGridManager.Instance.CanTravelOverHex(currentHexTileUnderMouse));
+                            List<Cube> pathToHexUnderMouse = HexGridManager.Instance.GetPath(selectedMech.GetCurrentHexTile(), currentHexTileUnderMouse);
+                            bool isCompletePath = pathToHexUnderMouse != null && pathToHexUnderMouse.Count > 1;
+
+                            actionHighlight.DisplayAsMoveIndicator(isValid: isCompletePath);
                             actionHighlight.gameObject.SetActive(true);
                             actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
 
@@ -276,6 +282,15 @@ public class InputHandler : MonoBehaviour
                             GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
 
                             LineOfSightGUI.Instance.DisplayLinesOfSight(currentHexTileUnderMouse, selectedMech);
+
+                            if (isCompletePath == true)
+                            {
+                                MovePathGUI.Instance.DisplayPath(pathToHexUnderMouse, true);
+                            }
+                            else
+                            {
+                                MovePathGUI.Instance.HidePath();
+                            }
                         }
                         else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
                         {
@@ -287,6 +302,7 @@ public class InputHandler : MonoBehaviour
                             GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
 
                             LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
+                            MovePathGUI.Instance.HidePath();
                         }
                     }
                 }
@@ -306,6 +322,7 @@ public class InputHandler : MonoBehaviour
                     }
 
                     LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
+                    MovePathGUI.Instance.HidePath();
                 }
             }
         }
@@ -321,6 +338,7 @@ public class InputHandler : MonoBehaviour
         actionHighlight.gameObject.SetActive(false);
 
         LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
+        MovePathGUI.Instance.HidePath();
     }
 
     private void DeselectMech()
@@ -370,5 +388,6 @@ public class InputHandler : MonoBehaviour
         }
 
         LineOfSightGUI.Instance.HideLinesOfSight();
+        MovePathGUI.Instance.HidePath();
     }
 }

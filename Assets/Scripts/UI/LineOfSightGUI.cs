@@ -25,7 +25,7 @@ public class LineOfSightGUI : MonoBehaviour
     public LineRenderer[] lineRenderers;
     public Vector3 offset;
     public float lineWidth = 0.03f;
-    public int defaultSortingOrder = 2;
+    public int defaultSortingOrder = 3;
 
     public void DisplayLinesOfSight(Cube fromHexTile, MechController ignoreMech = null)
     {
