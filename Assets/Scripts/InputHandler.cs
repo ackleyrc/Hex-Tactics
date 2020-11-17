@@ -218,7 +218,7 @@ public class InputHandler : MonoBehaviour
                                 GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
                             }
                         }
-                        else
+                        else // if (enemyMechUnderMouse.health.CurrentHealth > 0)
                         {
                             MechController blockingMech = GameManager.Instance.CheckForBlockingMech(selectedMech.GetCurrentHexTile(), enemyMechUnderMouse.GetCurrentHexTile());
 
@@ -253,7 +253,7 @@ public class InputHandler : MonoBehaviour
 
                                 if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
                                 {
-                                    GameManager.Instance.actionPanelGUI.DisplayMovePending();
+                                    GameManager.Instance.actionPanelGUI.DisplayMovePending(displaySkipNotice: true);
                                     GameManager.Instance.actionPanelGUI.DisplayAttackPending();
                                 }
                                 else if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.SECONDARY)
