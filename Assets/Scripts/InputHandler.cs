@@ -36,6 +36,8 @@ public class InputHandler : MonoBehaviour
             actionHighlight.gameObject.SetActive(false);
             warningHighlight.gameObject.SetActive(false);
 
+            HexInfoGUI.Instance.Hide();
+
             return;
         }
 
@@ -124,6 +126,8 @@ public class InputHandler : MonoBehaviour
             currentHexTileUnderMouse = hexCubeUnderMouse;
 
             warningHighlight.gameObject.SetActive(false);
+
+            HexInfoGUI.Instance.UpdateInfoPanel(currentHexTileUnderMouse);
 
             if (selectedMech == null)
             {

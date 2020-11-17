@@ -23,6 +23,19 @@ public class TerrainTypeData : ScriptableObject
     private TerrainMetaData[] terrainData;
     public TerrainMetaData[] TerrainData {  get { return terrainData; } }
 
+    public string GetTerrainDisplayName(HexTerrainType terrainType)
+    {
+        foreach (TerrainMetaData terrainTypeData in terrainData)
+        {
+            if (terrainTypeData.TerrainType == terrainType)
+            {
+                return terrainTypeData.DisplayName;
+            }
+        }
+
+        return "";
+    }
+
     public float GetMovementCost(HexTerrainType terrainType)
     {
         foreach (TerrainMetaData terrainTypeData in terrainData)
@@ -43,6 +56,19 @@ public class TerrainTypeData : ScriptableObject
             if (terrainTypeData.TerrainType == terrainType)
             {
                 return terrainTypeData.Traversible;
+            }
+        }
+
+        return false;
+    }
+
+    public bool AllowsLineOfSight(HexTerrainType terrainType)
+    {
+        foreach (TerrainMetaData terrainTypeData in terrainData)
+        {
+            if (terrainTypeData.TerrainType == terrainType)
+            {
+                return terrainTypeData.AllowsLOS;
             }
         }
 

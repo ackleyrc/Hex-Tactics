@@ -79,7 +79,17 @@ public class HexGridManager : MonoBehaviour
         return true;
     }
 
-    private float GetTerrainMovementCost(Cube cube)
+    public HexTerrainType GetHexTerrainType(Cube cube)
+    {
+        if (cubeToTerrainType.ContainsKey(cube) == true)
+        {
+            return cubeToTerrainType[cube];
+        }
+
+        return HexTerrainType.NONE;
+    }
+
+    public float GetTerrainMovementCost(Cube cube)
     {
         if (cubeToTerrainType.ContainsKey(cube) == true)
         {

@@ -36,7 +36,7 @@ MonoBehaviour:
   - terrainType: 5
     displayName: Sand
     traversible: 1
-    movementCost: 3
+    movementCost: 2
     allowsLOS: 1
   - terrainType: 6
     displayName: Sand with Palms
