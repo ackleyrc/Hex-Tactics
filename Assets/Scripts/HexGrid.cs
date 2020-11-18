@@ -259,7 +259,7 @@ public class HexGrid
                     continue; // ignore if already evaluated
                 }
 
-                float tentativeGScore = gScore[currentCube] + weight(neighbor);
+                float tentativeGScore = gScore[currentCube] + (0.5f * weight(currentCube) + 0.5f * weight(neighbor));
                 //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} Tentative G Score: ({gScore[currentCube]} + {weight(neighbor)})");
 
                 if (openCubes.Contains(neighbor) == false) // newly discovered node
