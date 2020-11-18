@@ -12,12 +12,14 @@ public class MechController : MonoBehaviour
     public Animator modelAnimator;
     public Transform firingTarget;
     public float walkingSpeed = 1.0f;
+    public float runningSpeed = 2.0f;
     public float weaponFireDuration = 2.0f;
 
     private Queue<Cube> currentPath = new Queue<Cube>();
     private Cube latestHexTile;
     private float distanceTravelled = 0.0f;
     private bool isWalking = false;
+    private bool isRunning = false;
 
     private MechController currentAttackTarget;
     private float weaponFireElapsed = 0.0f;
@@ -157,14 +159,29 @@ public class MechController : MonoBehaviour
             // If mech is already facing toward the next destination (otherwise wait)...
             if (modelOrientation.IsFacingDirection(directionToNextTile) == true)
             {
-                if (isWalking == false)
+                Cube hexCubeUnderMech = HexGridManager.Instance.GetHexCubeForWorldPosition(transform.position);
+                float movementCost = HexGridManager.Instance.GetTerrainMovementCost(hexCubeUnderMech);
+
+                if (movementCost > 1.0f && isWalking == false)
                 {
                     Debug.Log($"MechController :: Has Begun Walking...");
+
                     isWalking = true;
                     modelAnimator.SetBool("isWalking", true);
+
+                    isRunning = false;
+                    modelAnimator.SetBool("isRunning", false);
+                }
+                else if (movementCost == 1.0f && isRunning == false)
+                {
+                    isWalking = false;
+                    modelAnimator.SetBool("isWalking", false);
+
+                    isRunning = true;
+                    modelAnimator.SetBool("isRunning", true);
                 }
 
-                distanceTravelled += walkingSpeed * Time.deltaTime;
+                distanceTravelled += (movementCost > 1.0f ? walkingSpeed : runningSpeed) * Time.deltaTime;
                 Vector3 currentPathSegment = nextHexTilePos - prevHexTilePos;
                 float currentPathSegmentLength = currentPathSegment.magnitude;
 
@@ -186,6 +203,8 @@ public class MechController : MonoBehaviour
                         this.transform.position = nextHexTilePos; // still assigned to position of last tile in path
                         modelAnimator.SetBool("isWalking", false);
                         isWalking = false;
+                        modelAnimator.SetBool("isRunning", false);
+                        isRunning = false;
 
                         Debug.Log($"MechController :: Final Path Destination Reached!");
                         currentState = MechState.NONE;
@@ -216,6 +235,8 @@ public class MechController : MonoBehaviour
                             modelOrientation.SetLookTarget(directionToNextTile);
                             modelAnimator.SetBool("isWalking", false);
                             isWalking = false;
+                            modelAnimator.SetBool("isRunning", false);
+                            isRunning = false;
 
                             Debug.Log($"MechController :: Wait to change direction...");
                         }

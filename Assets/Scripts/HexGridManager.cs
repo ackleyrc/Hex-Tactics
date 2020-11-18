@@ -99,6 +99,11 @@ public class HexGridManager : MonoBehaviour
         return float.MaxValue;
     }
 
+    public Cube GetHexCubeForWorldPosition(Vector3 worldPos)
+    {
+        return HexGrid.PixelToCube(worldPos.x, worldPos.y, TILE_WIDTH);
+    }
+
     public Cube GetHexCubeUnderMouse()
     {
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
