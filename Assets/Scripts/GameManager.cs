@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     public ActionPanelGUI actionPanelGUI;
 
     public Button endTurnButton;
+    public CanvasGroup endTurnGroup;
 
     public enum PlayerTurn { NONE, HUMAN_PLAYER, COMPUTER_PLAYER }
     public PlayerTurn CurrentPlayerTurn { get; private set; }
@@ -261,14 +262,20 @@ public class GameManager : MonoBehaviour
         {
             CurrentUnitIndex = 0;
             CurrentPlayerTurn = PlayerTurn.COMPUTER_PLAYER;
-            endTurnButton.gameObject.SetActive(false);
+
+            endTurnGroup.alpha = 0.0f;
+            endTurnGroup.interactable = false;
+            endTurnGroup.blocksRaycasts = false;
         }
         else if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER &&
                  CurrentUnitIndex >= MechEnemies.Count)
         {
             CurrentUnitIndex = 0;
             CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
-            endTurnButton.gameObject.SetActive(true);
+
+            endTurnGroup.alpha = 1.0f;
+            endTurnGroup.interactable = true;
+            endTurnGroup.blocksRaycasts = true;
         }
 
         Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
