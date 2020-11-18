@@ -50,8 +50,8 @@ public class HexInfoGUI : MonoBehaviour
 
             detailsText.text = $"<b>Coordinates:</b>\n\t( {hexCube.q} , {hexCube.r} )\n" +
                                $"<b>Terrain:</b>:\n\t{HexGridManager.Instance.terrainData.GetTerrainDisplayName(terrain)}\n" +
-                               $"<b>Movement:</b>\n\t{(isTraversible == false ? "Not Traversible" : (movementCost == 1 ? "100%" : "50%"))}\n";
-                               //$"<b>{(allowsLOS ? "+ Allows Line of Sight" : "- Blocks Line of Sight")}</b>";
+                               $"<b>Movement:</b>\n\t{(isTraversible == false ? "Not Traversible" : (movementCost == 1 ? "100%" : "50%"))}\n" +
+                               $"<b>{(allowsLOS ? "+ Allows Line of Sight" : "- Blocks Line of Sight")}</b>";
 
             /*
             if (isDisplaying == true)
