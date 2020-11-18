@@ -29,7 +29,8 @@ public class InputHandler : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.CurrentPlayerTurn != GameManager.PlayerTurn.HUMAN_PLAYER ||
+        if (PauseScreenGUI.Instance.IsDisplayed == true ||
+            GameManager.Instance.CurrentPlayerTurn != GameManager.PlayerTurn.HUMAN_PLAYER ||
             GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.NONE)
         {
             selectionHighlight.gameObject.SetActive(false);
