@@ -118,7 +118,7 @@ public class MechAIManager : MonoBehaviour
         {
             //Debug.Log($"MechAIManager :: Potential Target: {opposingMech.MechName}");
 
-            if (GameManager.Instance.CheckForBlockingMech(fromHexTile, opposingMech.GetCurrentHexTile()) != null)
+            if (GameManager.Instance.CheckForLineOfSight(fromHexTile, opposingMech.GetCurrentHexTile()) != null)
             {
                 continue;
             }

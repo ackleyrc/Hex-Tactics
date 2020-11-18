@@ -34,7 +34,7 @@ public class LineOfSightGUI : MonoBehaviour
         {
             if (enemyMech.health.CurrentHealth > 0)
             {
-                bool isLOSBlocked = GameManager.Instance.CheckForBlockingMech(fromHexTile, enemyMech.GetCurrentHexTile(), ignoreMech);
+                bool isLOSBlocked = GameManager.Instance.CheckForLineOfSight(fromHexTile, enemyMech.GetCurrentHexTile(), ignoreMech) != null;
                 lineRenderers[lineCount].startColor = isLOSBlocked ? Color.gray : Color.red;
                 lineRenderers[lineCount].endColor = isLOSBlocked ? Color.gray : Color.red;
                 lineRenderers[lineCount].sortingOrder = isLOSBlocked ? defaultSortingOrder : defaultSortingOrder + 1;

@@ -46,6 +46,13 @@ public class HighlightIndicator : MonoBehaviour
         spriteRendererFG.color = spriteData.CollateralColor;
     }
 
+    public void DisplayAsBlockedLOSIndicator()
+    {
+        spriteRendererBG.color = spriteData.BackgroundDarkColor;
+        spriteRendererFG.sprite = spriteData.BlockingLOSSprite;
+        spriteRendererFG.color = spriteData.BlockingLOSColor;
+    }
+
     public void DisplayAsDeadIndicator()
     {
         spriteRendererBG.color = spriteData.BackgroundDarkColor;

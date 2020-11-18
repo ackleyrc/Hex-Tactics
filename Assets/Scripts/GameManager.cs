@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
     public int CurrentUnitIndex { get; private set; }
 
     private const float COLLATERAL_DISTANCE_THRESHOLD = 0.80f;
+    private const float TERRAIN_BLOCKING_LOS_THRESHOLD = 0.90f;
 
     private void Start()
     {
@@ -64,7 +65,7 @@ public class GameManager : MonoBehaviour
         MechController mechEnemy_02 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         MechEnemies.Add(mechEnemy_01);
         MechEnemies.Add(mechEnemy_02);
-        mechEnemy_01.Initialize(new Cube(4, 3), 0, Allegiance.ENEMY, mechNames.EnemyMechNames[0]);
+        mechEnemy_01.Initialize(new Cube(5, 0), 0, Allegiance.ENEMY, mechNames.EnemyMechNames[0]);
         mechEnemy_02.Initialize(new Cube(3, 2), 1, Allegiance.ENEMY, mechNames.EnemyMechNames[1]);
 
         foreach (MechController friendlyMech in MechFriendlies)
@@ -99,7 +100,7 @@ public class GameManager : MonoBehaviour
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
     }
 
-    public MechController CheckForBlockingMech(Cube fromHexTile, Cube toHexTile, MechController ignoreMech = null)
+    public Cube CheckForLineOfSight(Cube fromHexTile, Cube toHexTile, MechController ignoreMech = null)
     {
         List<Cube> cubesLine = Cube.Line(fromHexTile, toHexTile);
 
@@ -108,6 +109,26 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < cubesLine.Count; i++)
         {
+            HexTerrainType terrain = HexGridManager.Instance.GetHexTerrainType(cubesLine[i]);
+            bool terrainAllowsLOS = HexGridManager.Instance.terrainData.AllowsLineOfSight(terrain);
+
+            if (terrainAllowsLOS == false)
+            {
+                if (i == 0 || i == cubesLine.Count - 1)
+                {
+                    return cubesLine[i];
+                }
+                else
+                {
+                    Vector3 blockerPos = HexGridManager.Instance.GetHexCubeWorldPostion(cubesLine[i]);
+                    if (DistanceToLine(blockerPos, attackerPos, targetPos) <= TERRAIN_BLOCKING_LOS_THRESHOLD)
+                    {
+                        //Debug.Log($"GameManager :: Distance To Line: {DistanceToLine(blockerPos, attackerPos, targetPos)}");
+                        return cubesLine[i];
+                    }
+                }
+            }
+
             if (i == 0 || i == cubesLine.Count - 1)
             {
                 continue; // Ignore attacking mech at starting hex and target mech at ending hex
@@ -122,7 +143,7 @@ public class GameManager : MonoBehaviour
                 if (DistanceToLine(blockerPos, attackerPos, targetPos) <= COLLATERAL_DISTANCE_THRESHOLD)
                 {
                     //Debug.Log($"GameManager :: Distance To Line: {DistanceToLine(blockerPos, attackerPos, targetPos)}");
-                    return blockingFriendlyMech;
+                    return cubesLine[i];
                 }
             }
 
@@ -135,7 +156,7 @@ public class GameManager : MonoBehaviour
                 if (DistanceToLine(blockerPos, attackerPos, targetPos) <= COLLATERAL_DISTANCE_THRESHOLD)
                 {
                     //Debug.Log($"GameManager :: Distance To Line: {DistanceToLine(blockerPos, attackerPos, targetPos)}");
-                    return blockingEnemyMech;
+                    return cubesLine[i];
                 }
             }
         }
