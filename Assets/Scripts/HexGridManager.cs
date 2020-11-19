@@ -20,6 +20,9 @@ public class HexGridManager : MonoBehaviour
     private const float TILE_HEIGHT = 2.56f; // sprite is 3.84f total
     private const float TILE_UNDER_HEIGHT = 1.28f;
 
+    private int mapWidth;
+    private int mapLength;
+
     private void Awake()
     {
         _Instance = this;
@@ -123,10 +126,20 @@ public class HexGridManager : MonoBehaviour
         return HexGrid.CubeToPixel(hexCube, TILE_WIDTH);
     }
 
+    public Vector2 GetMapCenter()
+    {
+        float x = (mapWidth - 0.5f) * TILE_WIDTH * 0.5f;
+        float y = (mapLength - 1) * 0.75f * TILE_HEIGHT * 0.5f;
+        return new Vector2(x, y);
+    }
+
     private void Generate()
     {
         HexGrid = new HexGrid();
         HexGrid.GenerateRectangularGrid(HexGrid.Alignment.Horizontal, mapData.HexTileArrays[0].TerrainTypes.Length, mapData.HexTileArrays.Length);
+
+        mapWidth = mapData.HexTileArrays[0].TerrainTypes.Length;
+        mapLength = mapData.HexTileArrays.Length;
 
         foreach (Cube cube in HexGrid.GetHexes())
         {

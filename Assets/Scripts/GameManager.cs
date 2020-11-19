@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     public int CurrentUnitIndex { get; private set; }
 
     private const float COLLATERAL_DISTANCE_THRESHOLD = 0.80f;
-    private const float TERRAIN_BLOCKING_LOS_THRESHOLD = 0.90f;
+    private const float TERRAIN_BLOCKING_LOS_THRESHOLD = 1.20f;
 
     private void Start()
     {
@@ -59,15 +59,15 @@ public class GameManager : MonoBehaviour
         MechController mechFriendly_02 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
         MechFriendlies.Add(mechFriendly_01);
         MechFriendlies.Add(mechFriendly_02);
-        mechFriendly_01.Initialize(new Cube(2, 1), 0, Allegiance.FRIENDLY, mechNames.FriendlyMechNames[0]);
-        mechFriendly_02.Initialize(new Cube(1, 2), 1, Allegiance.FRIENDLY, mechNames.FriendlyMechNames[1]);
+        mechFriendly_01.Initialize(new Cube(0, 6), 0, Allegiance.FRIENDLY, mechNames.FriendlyMechNames[0]);
+        mechFriendly_02.Initialize(new Cube(1, 7), 1, Allegiance.FRIENDLY, mechNames.FriendlyMechNames[1]);
 
         MechController mechEnemy_01 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         MechController mechEnemy_02 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         MechEnemies.Add(mechEnemy_01);
         MechEnemies.Add(mechEnemy_02);
-        mechEnemy_01.Initialize(new Cube(5, 0), 0, Allegiance.ENEMY, mechNames.EnemyMechNames[0]);
-        mechEnemy_02.Initialize(new Cube(3, 2), 1, Allegiance.ENEMY, mechNames.EnemyMechNames[1]);
+        mechEnemy_01.Initialize(new Cube(5, 4), 0, Allegiance.ENEMY, mechNames.EnemyMechNames[0]);
+        mechEnemy_02.Initialize(new Cube(7, 3), 1, Allegiance.ENEMY, mechNames.EnemyMechNames[1]);
 
         foreach (MechController friendlyMech in MechFriendlies)
         {
