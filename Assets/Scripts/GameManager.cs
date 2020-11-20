@@ -281,14 +281,30 @@ public class GameManager : MonoBehaviour
         Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
         Debug.Log($"GameManager :: New Player Turn: {CurrentPlayerTurn}");
 
+        DisplayCurrentTurn();
+
         if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER)
         {
             actionPanelGUI.gameObject.SetActive(false);
+
+            if (HasComputerPlayerWon() == true)
+            {
+                GameManager.Instance.CurrentActionPhase = GameManager.ActionPhase.NONE;
+                WinConditionGUI.Instance.Display(humanPlayerWon: false);
+                return;
+            }
 
             StartCoroutine(ConductEnemyTurn());
         }
         else if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
         {
+            if (HasHumanPlayerWon() == true)
+            {
+                GameManager.Instance.CurrentActionPhase = GameManager.ActionPhase.NONE;
+                WinConditionGUI.Instance.Display(humanPlayerWon: true);
+                return;
+            }
+
             actionPanelGUI.gameObject.SetActive(true);
 
             if (MechFriendlies[CurrentUnitIndex].health.CurrentHealth <= 0)
@@ -296,8 +312,32 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(SkipTurn());
             }
         }
+    }
 
-        DisplayCurrentTurn();
+    private bool HasComputerPlayerWon()
+    {
+        foreach (MechController friendlyMech in MechFriendlies)
+        {
+            if (friendlyMech.health.CurrentHealth > 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool HasHumanPlayerWon()
+    {
+        foreach (MechController enemyMech in MechEnemies)
+        {
+            if (enemyMech.health.CurrentHealth > 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private IEnumerator SkipTurn()

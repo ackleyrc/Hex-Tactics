@@ -34,7 +34,7 @@ public class HexInfoGUI : MonoBehaviour
 
     private void Start()
     {
-        infoPanelRect.transform.localPosition = Vector3.left * infoPanelRect.sizeDelta.x;
+        infoPanelRect.localPosition = Vector3.left * infoPanelRect.sizeDelta.x;
         infoPanelGroup.alpha = 0.0f;
         isDisplaying = false;
     }
@@ -93,9 +93,9 @@ public class HexInfoGUI : MonoBehaviour
         {
             if (infoPanelRect.localPosition.x > -infoPanelRect.sizeDelta.x + 0.1f)
             {
-                float posNormalized = Mathf.Abs(infoPanelRect.transform.localPosition.x / infoPanelRect.sizeDelta.x);
+                float posNormalized = Mathf.Abs(infoPanelRect.localPosition.x / infoPanelRect.sizeDelta.x);
                 float t = Mathf.Clamp01(posNormalized + Time.unscaledDeltaTime * lerpPosSpeed);
-                infoPanelRect.transform.localPosition = Vector3.Lerp(Vector3.zero, Vector3.left * infoPanelRect.sizeDelta.x, t);
+                infoPanelRect.localPosition = Vector3.Lerp(Vector3.zero, Vector3.left * infoPanelRect.sizeDelta.x, t);
             }
 
             if (infoPanelGroup.alpha > 0.01f)
