@@ -11,15 +11,21 @@ public class GameManager : MonoBehaviour
     private static GameManager _Instance;
     public static GameManager Instance { get { return _Instance; } }
 
+    private static int instanceCount = 0;
+
     private void Awake()
     {
+        instanceCount++;
         _Instance = this;
+        this.InstanceIndex = instanceCount;
     }
 
     private void OnDestroy()
     {
+        Debug.Log($"GameManager::OnDestroy()");
         if (_Instance == this)
         {
+            Debug.Log($"GameManager :: Nullify Instance");
             _Instance = null;
         }
     }
@@ -51,8 +57,19 @@ public class GameManager : MonoBehaviour
     private const float COLLATERAL_DISTANCE_THRESHOLD = 0.80f;
     private const float TERRAIN_BLOCKING_LOS_THRESHOLD = 1.20f;
 
+    public int InstanceIndex { get; private set; }
+
     private void Start()
     {
+        endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
+
+        Initialize();
+    }
+
+    private void Initialize()
+    {
+        Debug.Log($"GameManager::Initialize()");
+
         // TODO: Refactor initialization for better extensibility (e.g. of different counts of mechs on each side)
 
         MechController mechFriendly_01 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
@@ -89,6 +106,10 @@ public class GameManager : MonoBehaviour
         CurrentUnitIndex = 0;
         CurrentActionPhase = ActionPhase.PRIMARY;
 
+        endTurnGroup.alpha = 1.0f;
+        endTurnGroup.interactable = true;
+        endTurnGroup.blocksRaycasts = true;
+
         actionPanelGUI.DisplayMoveEnabled();
         actionPanelGUI.DisplayAttackEnabled();
 
@@ -97,8 +118,43 @@ public class GameManager : MonoBehaviour
                                Allegiance.FRIENDLY);
 
         DisplayCurrentTurn();
+    }
 
-        endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
+    private void ClearGameState()
+    {
+        Debug.Log($"GameManager::ClearGameState()");
+
+        foreach (MechController friendlyMech in MechFriendlies)
+        {
+            friendlyMech.OnMoveStarted -= HandleMoveStarted;
+            friendlyMech.OnMoveStopped -= HandleMoveStopped;
+            friendlyMech.OnAttackStarted -= HandleAttackStarted;
+            friendlyMech.OnAttackStopped -= HandleAttackStopped;
+
+            Destroy(friendlyMech.gameObject);
+        }
+
+        MechFriendlies.Clear();
+
+        foreach (MechController enemyMech in MechEnemies)
+        {
+            enemyMech.OnMoveStarted -= HandleMoveStarted;
+            enemyMech.OnMoveStopped -= HandleMoveStopped;
+            enemyMech.OnAttackStarted -= HandleAttackStarted;
+            enemyMech.OnAttackStopped -= HandleAttackStopped;
+
+            Destroy(enemyMech.gameObject);
+        }
+
+        MechEnemies.Clear();
+    }
+
+    public void ResetGame()
+    {
+        Debug.Log($"GameManager::ResetGame()");
+
+        ClearGameState();
+        Initialize();
     }
 
     public Cube CheckForLineOfSight(Cube fromHexTile, Cube toHexTile, MechController ignoreMech = null)
@@ -195,8 +251,11 @@ public class GameManager : MonoBehaviour
 
     public MechController GetEnemyMechAt(Cube hexTile)
     {
+        //Debug.Log($"GameManager::GetEnemyMechAt( {hexTile} )");
+
         foreach (MechController mech in MechEnemies)
         {
+            //Debug.Log($"GameManager :: mech: {mech.MechName}");
             if (mech.GetCurrentHexTile() == hexTile)
             {
                 return mech;
@@ -208,7 +267,7 @@ public class GameManager : MonoBehaviour
 
     private void DisplayCurrentTurn()
     {
-        Debug.Log($"GameManager::DisplayCurrentTurn()");
+        //Debug.Log($"GameManager::DisplayCurrentTurn()");
 
         currentTurnGUI.DisplayTurn(CurrentPlayerTurn);
         unitTurnGUI.SetCurrentTurn(CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER ? Allegiance.FRIENDLY : Allegiance.ENEMY, CurrentUnitIndex);
@@ -254,6 +313,17 @@ public class GameManager : MonoBehaviour
         //Debug.Log($"GameManager :: Current Unit Index: {CurrentUnitIndex}");
         //Debug.Log($"GameManager :: Current Player Turn: {CurrentPlayerTurn}");
 
+        if (HasHumanPlayerWon() == true)
+        {
+            StartCoroutine(HandleEndOfGame(humanPlayerWon: true));
+            return;
+        }
+        else if (HasComputerPlayerWon() == true)
+        {
+            StartCoroutine(HandleEndOfGame(humanPlayerWon: false));
+            return;
+        }
+
         CurrentUnitIndex++;
         CurrentActionPhase = ActionPhase.PRIMARY;
 
@@ -287,24 +357,10 @@ public class GameManager : MonoBehaviour
         {
             actionPanelGUI.gameObject.SetActive(false);
 
-            if (HasComputerPlayerWon() == true)
-            {
-                GameManager.Instance.CurrentActionPhase = GameManager.ActionPhase.NONE;
-                WinConditionGUI.Instance.Display(humanPlayerWon: false);
-                return;
-            }
-
             StartCoroutine(ConductEnemyTurn());
         }
         else if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
         {
-            if (HasHumanPlayerWon() == true)
-            {
-                GameManager.Instance.CurrentActionPhase = GameManager.ActionPhase.NONE;
-                WinConditionGUI.Instance.Display(humanPlayerWon: true);
-                return;
-            }
-
             actionPanelGUI.gameObject.SetActive(true);
 
             if (MechFriendlies[CurrentUnitIndex].health.CurrentHealth <= 0)
@@ -338,6 +394,21 @@ public class GameManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    private IEnumerator HandleEndOfGame(bool humanPlayerWon)
+    {
+        GameManager.Instance.CurrentActionPhase = GameManager.ActionPhase.NONE;
+
+        endTurnGroup.alpha = 0.0f;
+        endTurnGroup.interactable = false;
+        endTurnGroup.blocksRaycasts = false;
+
+        actionPanelGUI.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(1.0f);
+        
+        WinConditionGUI.Instance.Display(humanPlayerWon);
     }
 
     private IEnumerator SkipTurn()
@@ -379,10 +450,14 @@ public class GameManager : MonoBehaviour
 
     private void HandleMoveStopped(MechController mechStoppingMove)
     {
-        Debug.Log($"GameManager::HandleMoveStopped()");
+        Debug.Log($"GameManager::HandleMoveStopped( {mechStoppingMove.MechName} )");
 
         CurrentPlayerTurn = mechStoppingMove.MechAllegiance == Allegiance.FRIENDLY ? PlayerTurn.HUMAN_PLAYER : PlayerTurn.COMPUTER_PLAYER;
         CurrentActionPhase = ActionPhase.SECONDARY;
+
+        //Debug.Log($"GameManager :: CurrentPlayerTurn: {CurrentPlayerTurn}");
+        //Debug.Log($"GameManager :: CurrentActionPhase: {CurrentActionPhase}");
+        //Debug.Log($"GameManager :: CurrentUnitIndex: {CurrentUnitIndex}");
 
         if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
         {

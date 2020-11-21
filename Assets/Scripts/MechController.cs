@@ -56,7 +56,7 @@ public class MechController : MonoBehaviour
 
     public void TravelPath(List<Cube> path)
     {
-        Debug.Log($"MechController::SetPath( {path.Count} )");
+        //Debug.Log($"MechController::SetPath( {path.Count} )");
 
         currentPath = new Queue<Cube>();
         foreach (Cube cube in path)
@@ -84,7 +84,7 @@ public class MechController : MonoBehaviour
 
     public void AttackTarget(MechController mechTarget)
     {
-        Debug.Log($"MechController::AttackTarget( {mechTarget} )");
+        Debug.Log($"MechController::AttackTarget( {mechTarget?.MechName} )");
 
         Vector3 targetHexTilePos = HexGridManager.Instance.GetHexCubeWorldPostion(mechTarget.GetCurrentHexTile());
         Vector3 currentHexTilePos = HexGridManager.Instance.GetHexCubeWorldPostion(latestHexTile);
@@ -123,7 +123,7 @@ public class MechController : MonoBehaviour
             // If mech is now facing toward target, fire weapon (otherwise wait)...
             if (modelOrientation.IsFacingDirection(directionToTarget) == true)
             {
-                Debug.Log($"MechController :: Begin Firing Laser...");
+                //Debug.Log($"MechController :: Begin Firing Laser...");
                 laserWeapon.FireLaser(currentAttackTarget.firingTarget, weaponFireDuration);
                 modelAnimator.SetBool("isFiringLaser", true);
                 isFiringWeapon = true;
@@ -133,7 +133,7 @@ public class MechController : MonoBehaviour
         {
             if (weaponFireElapsed >= weaponFireDuration)
             {
-                Debug.Log($"MechController :: DONE Firing Laser");
+                //Debug.Log($"MechController :: DONE Firing Laser");
                 modelAnimator.SetBool("isFiringLaser", false);
                 currentAttackTarget.health.InflictDamage(1);
                 currentState = MechState.NONE;

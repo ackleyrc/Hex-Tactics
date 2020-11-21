@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class WinConditionGUI : MonoBehaviour
 {
@@ -54,6 +55,11 @@ public class WinConditionGUI : MonoBehaviour
 
     private void Start()
     {
+        Initialize();
+    }
+
+    private void Initialize()
+    {
         canvasGroup.alpha = 0.0f;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
@@ -64,6 +70,7 @@ public class WinConditionGUI : MonoBehaviour
         restartButton.onClick.AddListener(OnClickRestartButton);
         exitButton.onClick.AddListener(OnClickExitButton);
         isDisplaying = false;
+        isRevealingButtons = false;
     }
 
     public void Display(bool humanPlayerWon)
@@ -155,7 +162,8 @@ public class WinConditionGUI : MonoBehaviour
 
     private void OnClickRestartButton()
     {
-        Debug.LogWarning($"WinConditionGUI :: TODO: Implement RESTART");
+        GameManager.Instance.ResetGame();
+        Initialize();
     }
 
     private void OnClickExitButton()

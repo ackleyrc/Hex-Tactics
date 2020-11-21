@@ -22,7 +22,7 @@ public class MechHealth : MonoBehaviour
 
     public void InflictDamage(int damagePoints)
     {
-        Debug.Log($"MechHealth::InflictDamage( {damagePoints} )");
+        //Debug.Log($"MechHealth::InflictDamage( {damagePoints} )");
 
         CurrentHealth -= damagePoints;
         healthBar.UpdateHealthBar(Mathf.Clamp01((float)CurrentHealth / (float)initialHealth));
@@ -30,7 +30,7 @@ public class MechHealth : MonoBehaviour
         if (CurrentHealth <= 0.0f)
         {
             modelAnimator.SetBool("isDead", true);
-            GameObject deathSmoke = GameObject.Instantiate(deathSmokePrefab);
+            GameObject deathSmoke = GameObject.Instantiate(deathSmokePrefab, this.transform);
             deathSmoke.transform.position = modelAnimator.transform.position;
             deathSmoke.transform.rotation = modelAnimator.transform.rotation;
             deathSmoke.transform.localScale = Vector3.zero;

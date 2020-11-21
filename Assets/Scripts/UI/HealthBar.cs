@@ -13,7 +13,7 @@ public class HealthBar : MonoBehaviour
 
     public void UpdateHealthBar(float healthNormalized)
     {
-        Debug.Log($"HealthBar::UpdateHealthBar( {healthNormalized} )");
+        //Debug.Log($"HealthBar::UpdateHealthBar( {healthNormalized} )");
 
         int reNormNumerator = (int)(healthNormalized * healthPoints.Length) - (healthPoints.Length % 2);
         int reNormDenominator = healthPoints.Length - (healthPoints.Length % 2);

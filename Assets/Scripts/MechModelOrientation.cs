@@ -24,7 +24,7 @@ public class MechModelOrientation : MonoBehaviour
 
     public void SetLookTarget(Vector3 relativeDirection)
     {
-        Debug.Log($"MechModelOrientation::SetLookTarget( {relativeDirection} )");
+        //Debug.Log($"MechModelOrientation::SetLookTarget( {relativeDirection} )");
 
         if (Mathf.Approximately(relativeDirection.x, 0.0f) && Mathf.Approximately(relativeDirection.y, 0.0f))
         {
@@ -35,7 +35,7 @@ public class MechModelOrientation : MonoBehaviour
         Vector3 targetZZeroed = new Vector3(relativeDirection.x, relativeDirection.y, 0.0f);
         targetLookDirection = targetZZeroed;
 
-        Debug.Log($"MechModelOrientation :: targetLookDirection: {targetLookDirection}");
+        //Debug.Log($"MechModelOrientation :: targetLookDirection: {targetLookDirection}");
     }
 
     public bool IsFacingDirection(Vector3 targetDirection)
@@ -50,7 +50,7 @@ public class MechModelOrientation : MonoBehaviour
         {
             if (isChangingLookDirection == false)
             {
-                Debug.Log($"MechModelOrientation :: Beginning to rotate...");
+                //Debug.Log($"MechModelOrientation :: Beginning to rotate...");
                 isChangingLookDirection = true;
                 modelAnimator.SetBool("isTurning", true);
             }
@@ -58,7 +58,7 @@ public class MechModelOrientation : MonoBehaviour
             // Rotations to the exact opposite directions produce strange results, so we'll add a slight bias to resolve this...
             if (Mathf.Abs(Vector3.Dot(currentLookDirection.normalized, targetLookDirection.normalized) + 1.0f) < 0.001f)
             {
-                Debug.Log($"Rotating 180 degrees...");
+                //Debug.Log($"Rotating 180 degrees...");
                 currentLookDirection = Vector3.RotateTowards(currentLookDirection, targetLookDirection, turnRadiansPerSecond * Time.deltaTime, float.MaxValue);
                 mechModelTransform.rotation = Quaternion.LookRotation(Quaternion.Euler(skewRotation) * currentLookDirection, Quaternion.Euler(skewRotation) * UP_BG_BASIS);
             }
@@ -72,7 +72,7 @@ public class MechModelOrientation : MonoBehaviour
         {
             if (isChangingLookDirection == true)
             {
-                Debug.Log($"MechModelOrientation :: Done Rotating!");
+                //Debug.Log($"MechModelOrientation :: Done Rotating!");
                 isChangingLookDirection = false;
                 modelAnimator.SetBool("isTurning", false);
             }

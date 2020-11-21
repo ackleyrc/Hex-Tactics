@@ -79,6 +79,8 @@ public class InputHandler : MonoBehaviour
                 {
                     MechController enemyMechClicked = GameManager.Instance.GetEnemyMechAt(hexCubeUnderMouse);
 
+                    //Debug.Log($"InputHandler :: enemyMechClicked: {enemyMechClicked?.MechName}");
+
                     if (enemyMechClicked != null)
                     {
                         if (enemyMechClicked.health.CurrentHealth > 0)
@@ -104,7 +106,7 @@ public class InputHandler : MonoBehaviour
 
                             if (path != null && path.Count > 1)
                             {
-                                Debug.Log($"InputHanlder :: Obtained path of length: {path.Count}");
+                                //Debug.Log($"InputHanlder :: Obtained path of length: {path.Count}");
                                 selectedMech.TravelPath(path);
                             }
                             else
@@ -130,6 +132,8 @@ public class InputHandler : MonoBehaviour
 
             HexInfoGUI.Instance.UpdateInfoPanel(currentHexTileUnderMouse);
 
+            //Debug.Log($"InputHandler :: Selected Mech: {selectedMech?.MechName}");
+
             if (selectedMech == null)
             {
                 if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse))
@@ -138,6 +142,8 @@ public class InputHandler : MonoBehaviour
                     selectionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
 
                     MechController friendlyMechUnderMouse = GameManager.Instance.GetFriendlyMechAt(currentHexTileUnderMouse);
+
+                    //Debug.Log($"InputHandler :: Friendly Mech Under Mouse: {friendlyMechUnderMouse?.MechName} [{friendlyMechUnderMouse?.UnitIndex}]");
 
                     if (friendlyMechUnderMouse != null &&
                         GameManager.Instance.CurrentUnitIndex == friendlyMechUnderMouse.UnitIndex)
@@ -335,6 +341,8 @@ public class InputHandler : MonoBehaviour
 
     private void SelectMech(MechController mechToSelect)
     {
+        //Debug.Log($"InputHandler::SelectMech( {mechToSelect?.MechName} )");
+
         selectedMech = mechToSelect;
         selectionHighlight.gameObject.SetActive(true);
         selectionHighlight.DisplayAsSelectIndicator(isSelected: true);
@@ -348,6 +356,8 @@ public class InputHandler : MonoBehaviour
 
     private void DeselectMech()
     {
+        //Debug.Log($"InputHandler::DeselectMech()");
+
         selectedMech = null;
 
         if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse))

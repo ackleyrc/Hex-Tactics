@@ -32,8 +32,11 @@ public class HexGridManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        Debug.Log($"HexGridManager::OnDestroy()");
+
         if (_Instance == this)
         {
+            Debug.Log($"HexGridManager :: Nullify Instance");
             _Instance = null;
         }
     }

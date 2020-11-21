@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PauseScreenGUI : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class PauseScreenGUI : MonoBehaviour
 
     public CanvasGroup canvasGroup;
     public Button resumeButton;
+    public Button restartButton;
     public Button exitButton;
     public float fadeInDuration;
     public float fadeOutDuration;
@@ -34,6 +36,7 @@ public class PauseScreenGUI : MonoBehaviour
     private void Start()
     {
         resumeButton.onClick.AddListener(OnClickResumeButton);
+        restartButton.onClick.AddListener(OnClickRestartButton);
         exitButton.onClick.AddListener(OnClickExitButton);
     }
 
@@ -54,6 +57,12 @@ public class PauseScreenGUI : MonoBehaviour
 
     private void OnClickResumeButton()
     {
+        StartCoroutine(FadeOut());
+    }
+
+    private void OnClickRestartButton()
+    {
+        GameManager.Instance.ResetGame();
         StartCoroutine(FadeOut());
     }
 
