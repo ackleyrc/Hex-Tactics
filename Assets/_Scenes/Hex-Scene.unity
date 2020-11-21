@@ -5059,7 +5059,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "<b>Pan</b>\t\tWASD\n<b>Zoom</b> \tMouse Wheel"
+  m_Text: "<b>Pan</b>\t\tWASD / MMB\n<b>Zoom</b> \tMouse Wheel"
 --- !u!222 &894632256
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11444,6 +11444,7 @@ MonoBehaviour:
   maxVertical: 16.5
   minSize: 8
   maxSize: 13
+  dragSpeed: 0.018
 --- !u!20 &2098637583
 Camera:
   m_ObjectHideFlags: 0

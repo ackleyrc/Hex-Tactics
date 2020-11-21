@@ -20,10 +20,14 @@ public class CameraControl : MonoBehaviour
     public float minSize;
     public float maxSize;
 
+    public float dragSpeed;
+    private Vector3 lastMousePos;
+
     private void Start()
     {
         Vector3 mapCenter = HexGridManager.Instance.GetMapCenter();
         controlledCamera.transform.position = new Vector3(mapCenter.x, mapCenter.y, mapCameraZDistance);
+        lastMousePos = Input.mousePosition;
     }
 
     private void Update()
@@ -54,6 +58,16 @@ public class CameraControl : MonoBehaviour
         {
             nextPositionX = Mathf.Clamp(nextPositionX - panSpeed * Time.deltaTime, minHorizontal, maxHorizontal);
         }
+
+        Vector3 mouseDrag = Vector3.zero;
+        if (Input.GetMouseButton(2) == true)
+        {
+            mouseDrag = Input.mousePosition - lastMousePos;
+            float dragFactor = dragSpeed * (1.0f + (controlledCamera.orthographicSize - minSize) / (maxSize - minSize) * 0.5f);
+            nextPositionX = Mathf.Clamp(nextPositionX - mouseDrag.x * dragFactor, minHorizontal, maxHorizontal);
+            nextPositionY = Mathf.Clamp(nextPositionY - mouseDrag.y * dragFactor, minVertical, maxVertical);
+        }
+        lastMousePos = Input.mousePosition;
 
         controlledCamera.transform.position = new Vector3(nextPositionX, nextPositionY, mapCameraZDistance);
 
