@@ -47,11 +47,13 @@ public class HexInfoGUI : MonoBehaviour
             bool isTraversible = HexGridManager.Instance.terrainData.IsTraversible(terrain);
             float movementCost = HexGridManager.Instance.terrainData.GetMovementCost(terrain);
             bool allowsLOS = HexGridManager.Instance.terrainData.AllowsLineOfSight(terrain);
+            float defenseMultiplier = HexGridManager.Instance.terrainData.GetDefenseMultiplier(terrain);
 
             detailsText.text = $"<b>Coordinates:</b>\n\t( {hexCube.q} , {hexCube.r} )\n" +
                                $"<b>Terrain:</b>:\n\t{HexGridManager.Instance.terrainData.GetTerrainDisplayName(terrain)}\n" +
                                $"<b>Movement:</b>\n\t{(isTraversible == false ? "Not Traversible" : (movementCost == 1 ? "100%" : "50%"))}\n" +
-                               $"<b>{(allowsLOS ? "+ Allows Line of Sight" : "- Blocks Line of Sight")}</b>";
+                               $"<b>{(allowsLOS ? "Allows Line of Sight" : "Blocks Line of Sight")}</b>\n" +
+                               $"{(isTraversible == false ? "<b>Defense Bonus:</b>\n\tn/a" : defenseMultiplier < 1.0f ? "<b>Defense Bonus:</b>\n\t50% Damage Received" : "<b>No Defense Bonus:</b>\n\t100% Damage Received")}";
 
             /*
             if (isDisplaying == true)

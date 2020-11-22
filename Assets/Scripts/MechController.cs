@@ -136,7 +136,8 @@ public class MechController : MonoBehaviour
             {
                 //Debug.Log($"MechController :: DONE Firing Laser");
                 modelAnimator.SetBool("isFiringLaser", false);
-                currentAttackTarget.health.InflictDamage(1);
+                float defenseMultipler = HexGridManager.Instance.GetDefenseMultiplier(currentAttackTarget.GetCurrentHexTile());
+                currentAttackTarget.health.InflictDamage(Mathf.RoundToInt(2.0f * defenseMultipler)); // For now, this should be either 2 or 1
                 currentState = MechState.NONE;
 
                 OnAttackStopped?.Invoke(this);

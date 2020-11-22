@@ -18,43 +18,52 @@ MonoBehaviour:
     traversible: 0
     movementCost: 1000
     allowsLOS: 1
+    defenseMultiplier: 0
   - terrainType: 2
     displayName: Grassy Sand
     traversible: 1
     movementCost: 2
     allowsLOS: 1
+    defenseMultiplier: 1
   - terrainType: 3
     displayName: Grassy Sand with Palms
     traversible: 1
     movementCost: 2
     allowsLOS: 1
+    defenseMultiplier: 0.5
   - terrainType: 4
     displayName: Tropical Jungle
     traversible: 0
     movementCost: 1000
     allowsLOS: 0
+    defenseMultiplier: 0
   - terrainType: 5
     displayName: Sand
     traversible: 1
     movementCost: 2
     allowsLOS: 1
+    defenseMultiplier: 1
   - terrainType: 6
     displayName: Sand with Palms
     traversible: 1
     movementCost: 2
     allowsLOS: 1
+    defenseMultiplier: 0.5
   - terrainType: 7
     displayName: Forested Wetlands
     traversible: 0
     movementCost: 1000
     allowsLOS: 0
+    defenseMultiplier: 0
   - terrainType: 8
     displayName: Tropical Plains
     traversible: 1
     movementCost: 1
     allowsLOS: 1
+    defenseMultiplier: 1
   - terrainType: 9
     displayName: Wetlands
     traversible: 1
     movementCost: 2
     allowsLOS: 1
+    defenseMultiplier: 1

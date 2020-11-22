@@ -122,6 +122,16 @@ public class HexGridManager : MonoBehaviour
         return float.MaxValue;
     }
 
+    public float GetDefenseMultiplier(Cube cube)
+    {
+        if (cubeToTerrainType.ContainsKey(cube) == true)
+        {
+            return terrainData.GetDefenseMultiplier(cubeToTerrainType[cube]);
+        }
+
+        return 1.0f;
+    }
+
     public Cube GetHexCubeForWorldPosition(Vector3 worldPos)
     {
         return HexGrid.PixelToCube(worldPos.x, worldPos.y, TILE_WIDTH);

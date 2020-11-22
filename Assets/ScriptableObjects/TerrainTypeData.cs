@@ -74,6 +74,19 @@ public class TerrainTypeData : ScriptableObject
 
         return false;
     }
+
+    public float GetDefenseMultiplier(HexTerrainType terrainType)
+    {
+        foreach (TerrainMetaData terrainTypeData in terrainData)
+        {
+            if (terrainTypeData.TerrainType == terrainType)
+            {
+                return terrainTypeData.DefenseMultiplier;
+            }
+        }
+
+        return 1.0f;
+    }
 }
 
 [System.Serializable]
@@ -98,4 +111,8 @@ public class TerrainMetaData
     [SerializeField]
     private bool allowsLOS;
     public bool AllowsLOS { get { return allowsLOS; } }
+
+    [SerializeField]
+    private float defenseMultiplier;
+    public float DefenseMultiplier { get { return defenseMultiplier; } }
 }
