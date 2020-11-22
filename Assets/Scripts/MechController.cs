@@ -14,6 +14,7 @@ public class MechController : MonoBehaviour
     public float walkingSpeed = 1.0f;
     public float runningSpeed = 2.0f;
     public float weaponFireDuration = 2.0f;
+    public float weightedDistanceRange = 3.0f;
 
     private Queue<Cube> currentPath = new Queue<Cube>();
     private Cube latestHexTile;

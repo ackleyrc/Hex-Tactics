@@ -32,19 +32,36 @@ public class HexGridManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        Debug.Log($"HexGridManager::OnDestroy()");
-
         if (_Instance == this)
         {
-            Debug.Log($"HexGridManager :: Nullify Instance");
             _Instance = null;
         }
+    }
+
+    public HashSet<Cube> GetReachableHexes(Cube start, float weightedRange)
+    {
+        return HexGrid.GetReachable(start, weightedRange, (Cube c) => CanTravelOverHex(c), (Cube c) => GetTerrainMovementCost(c));
     }
 
     public List<Cube> GetPath(Cube start, Cube finish)
     {
         //return HexGrid.GetShortestPath(start, finish, (Cube c) => CanTravelOverHex(c));
         return HexGrid.GetQuickestPath(start, finish, (Cube c) => CanTravelOverHex(c), (Cube c) => GetTerrainMovementCost(c));
+    }
+
+    public float GetPathCost(List<Cube> path)
+    {
+        float cost = 0;
+        if (path != null && path.Count > 1)
+        {
+            for (int i = 1; i < path.Count; i++)
+            {
+                float prevCost = HexGridManager.Instance.GetTerrainMovementCost(path[i - 1]);
+                float nextCost = HexGridManager.Instance.GetTerrainMovementCost(path[i]);
+                cost += (0.5f * prevCost) + (0.5f * nextCost);
+            }
+        }
+        return cost;
     }
 
     public bool CanTravelOverHex(Cube cube)

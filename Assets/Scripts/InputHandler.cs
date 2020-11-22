@@ -9,8 +9,12 @@ public class InputHandler : MonoBehaviour
     public HighlightIndicator warningHighlight;
     public float collateralDistanceThreshold = 0.80f;
 
+    public List<HighlightIndicator> movementRangeHighlights;
+
     private Cube currentHexTileUnderMouse = new Cube (-1, -1);
     private MechController selectedMech = null;
+
+    private bool movementHighlightsHidden = false;
 
     private void Awake()
     {
@@ -18,8 +22,22 @@ public class InputHandler : MonoBehaviour
         actionHighlight = GameObject.Instantiate(actionHighlight) as HighlightIndicator;
         warningHighlight = GameObject.Instantiate(warningHighlight) as HighlightIndicator;
 
+        movementRangeHighlights = new List<HighlightIndicator>();
+
+        // Start with 12 to begin with...
+        for (int i = 0; i < 12; i++)
+        {
+            HighlightIndicator highlight = GameObject.Instantiate(selectionHighlight) as HighlightIndicator;
+            movementRangeHighlights.Add(highlight);
+            highlight.DisplayAsMoveRangeIndicator();
+            highlight.gameObject.SetActive(false);
+        }
+
+        Debug.Log($"InputHander :: Initially Created Movement Range Highlights: {movementRangeHighlights.Count}");
+        movementHighlightsHidden = true;
+
         selectionHighlight.DisplayAsGenericHighlight();
-        actionHighlight.DisplayAsMoveIndicator(true);
+        actionHighlight.DisplayAsDestinationIndicator(true);
         warningHighlight.DisplayAsBlockedLOSIndicator();
 
         selectionHighlight.gameObject.SetActive(false);
@@ -33,9 +51,16 @@ public class InputHandler : MonoBehaviour
             GameManager.Instance.CurrentPlayerTurn != GameManager.PlayerTurn.HUMAN_PLAYER ||
             GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.NONE)
         {
+            // TODO: Avoid these invocations every frame
             selectionHighlight.gameObject.SetActive(false);
             actionHighlight.gameObject.SetActive(false);
             warningHighlight.gameObject.SetActive(false);
+
+            if (movementHighlightsHidden == false)
+            {
+                HideMovementRange();
+                movementHighlightsHidden = true;
+            }
 
             HexInfoGUI.Instance.Hide();
 
@@ -107,7 +132,11 @@ public class InputHandler : MonoBehaviour
                             if (path != null && path.Count > 1)
                             {
                                 //Debug.Log($"InputHanlder :: Obtained path of length: {path.Count}");
-                                selectedMech.TravelPath(path);
+                                float pathCost = HexGridManager.Instance.GetPathCost(path);
+                                if (pathCost <= selectedMech.weightedDistanceRange)
+                                {
+                                    selectedMech.TravelPath(path);
+                                }
                             }
                             else
                             {
@@ -136,6 +165,12 @@ public class InputHandler : MonoBehaviour
 
             if (selectedMech == null)
             {
+                if (movementHighlightsHidden == false)
+                {
+                    HideMovementRange();
+                    movementHighlightsHidden = true;
+                }
+
                 if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse))
                 {
                     selectionHighlight.gameObject.SetActive(true);
@@ -203,6 +238,12 @@ public class InputHandler : MonoBehaviour
                         {
                             GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
                             GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                        }
+
+                        if (movementHighlightsHidden == false)
+                        {
+                            HideMovementRange();
+                            movementHighlightsHidden = true;
                         }
 
                         LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
@@ -275,6 +316,12 @@ public class InputHandler : MonoBehaviour
                             }
                         }
 
+                        if (movementHighlightsHidden == false)
+                        {
+                            HideMovementRange();
+                            movementHighlightsHidden = true;
+                        }
+
                         LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
                         MovePathGUI.Instance.HidePath();
                     }
@@ -283,20 +330,41 @@ public class InputHandler : MonoBehaviour
                         if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
                         {
                             List<Cube> pathToHexUnderMouse = HexGridManager.Instance.GetPath(selectedMech.GetCurrentHexTile(), currentHexTileUnderMouse);
+                            float pathCost = HexGridManager.Instance.GetPathCost(pathToHexUnderMouse);
                             bool isCompletePath = pathToHexUnderMouse != null && pathToHexUnderMouse.Count > 1;
+                            bool isPathInRange = pathCost <= selectedMech.weightedDistanceRange;
 
-                            actionHighlight.DisplayAsMoveIndicator(isValid: isCompletePath);
+                            if (isCompletePath == true)
+                            {
+                                actionHighlight.DisplayAsDestinationIndicator(isPathInRange);
+                            }
+                            else
+                            {
+                                actionHighlight.DisplayAsNonTraversibleIndicator();
+                            }
+
                             actionHighlight.gameObject.SetActive(true);
                             actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
 
-                            GameManager.Instance.actionPanelGUI.DisplayMovePending();
-                            GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                            DisplayMovementRange(currentHexTileUnderMouse);
+                            movementHighlightsHidden = false;
+
+                            if (isPathInRange == true)
+                            {
+                                GameManager.Instance.actionPanelGUI.DisplayMovePending();
+                                GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                            }
+                            else
+                            {
+                                GameManager.Instance.actionPanelGUI.DisplayMoveEnabled();
+                                GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
+                            }
 
                             LineOfSightGUI.Instance.DisplayLinesOfSight(currentHexTileUnderMouse, selectedMech);
 
                             if (isCompletePath == true)
                             {
-                                MovePathGUI.Instance.DisplayPath(pathToHexUnderMouse, true);
+                                MovePathGUI.Instance.DisplayPath(pathToHexUnderMouse, isValid: isPathInRange);
                             }
                             else
                             {
@@ -308,6 +376,12 @@ public class InputHandler : MonoBehaviour
                             actionHighlight.DisplayAsGenericHighlight();
                             actionHighlight.gameObject.SetActive(true);
                             actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
+
+                            if (movementHighlightsHidden == false)
+                            {
+                                HideMovementRange();
+                                movementHighlightsHidden = true;
+                            }
 
                             GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
                             GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
@@ -339,6 +413,52 @@ public class InputHandler : MonoBehaviour
         }
     }
 
+    private void DisplayMovementRange(Cube currentHexUnderMouse)
+    {
+        Debug.Log($"InputHander::DisplayMovementRange( currentHexUnderMouse: {currentHexUnderMouse} )");
+
+        int activeHighlightCount = 0;
+
+        // Do not display movement range highlights over select mech's hex or potential destination
+        foreach (Cube reachableCube in GameManager.Instance.GetCurrentUnitReachableRange())
+        {
+            if (reachableCube != selectedMech.GetCurrentHexTile() &&
+                reachableCube != currentHexUnderMouse)
+            {
+                if (activeHighlightCount >= movementRangeHighlights.Count)
+                {
+                    HighlightIndicator highlight = GameObject.Instantiate(selectionHighlight) as HighlightIndicator;
+                    movementRangeHighlights.Add(highlight);
+                    highlight.DisplayAsMoveRangeIndicator();
+                }
+
+                movementRangeHighlights[activeHighlightCount].gameObject.SetActive(true);
+                movementRangeHighlights[activeHighlightCount].transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(reachableCube);
+                activeHighlightCount++;
+            }
+        }
+
+        Debug.Log($"InputHander :: Active Highlights: {activeHighlightCount}");
+
+        if (activeHighlightCount < movementRangeHighlights.Count)
+        {
+            for (int i = activeHighlightCount; i < movementRangeHighlights.Count; i++)
+            {
+                movementRangeHighlights[activeHighlightCount].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private void HideMovementRange()
+    {
+        Debug.Log($"InputHander::HideMovementRange()");
+
+        foreach (HighlightIndicator highlight in movementRangeHighlights)
+        {
+            highlight.gameObject.SetActive(false);
+        }
+    }
+
     private void SelectMech(MechController mechToSelect)
     {
         //Debug.Log($"InputHandler::SelectMech( {mechToSelect?.MechName} )");
@@ -349,6 +469,12 @@ public class InputHandler : MonoBehaviour
         selectionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(mechToSelect.GetCurrentHexTile());
 
         actionHighlight.gameObject.SetActive(false);
+
+        if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
+        {
+            DisplayMovementRange(currentHexTileUnderMouse);
+            movementHighlightsHidden = false;
+        }
 
         LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
         MovePathGUI.Instance.HidePath();
@@ -384,6 +510,12 @@ public class InputHandler : MonoBehaviour
 
         actionHighlight.gameObject.SetActive(false);
         warningHighlight.gameObject.SetActive(false);
+
+        if (movementHighlightsHidden == false)
+        {
+            HideMovementRange();
+            movementHighlightsHidden = true;
+        }
 
         if (GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.PRIMARY)
         {

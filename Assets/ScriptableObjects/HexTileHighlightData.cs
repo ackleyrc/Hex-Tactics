@@ -12,6 +12,10 @@ public class HexTileHighlightData : ScriptableObject
     public Color BackgroundDarkColor { get { return backgroundDarkColor; } }
 
     [SerializeField]
+    private Color backgroundNeutralColor;
+    public Color BackgroundNeutralColor { get { return backgroundNeutralColor; } }
+
+    [SerializeField]
     private Color backgroundLightColor;
     public Color BackgroundLightColor { get { return backgroundLightColor; } }
 
@@ -46,6 +50,14 @@ public class HexTileHighlightData : ScriptableObject
     [SerializeField]
     private Color moveInvalidColor;
     public Color MoveInvalidColor { get { return moveInvalidColor; } }
+
+    [SerializeField]
+    private Sprite moveNonTraversibleSprite;
+    public Sprite MoveNonTraversibleSprite { get { return moveNonTraversibleSprite; } }
+
+    [SerializeField]
+    private Color moveNonTraversibleColor;
+    public Color MoveNonTraversibleColor { get { return moveNonTraversibleColor; } }
 
     [SerializeField]
     private Sprite attackSprite;

@@ -8669,6 +8669,7 @@ MonoBehaviour:
   warningHighlight: {fileID: 5266290912761434645, guid: 3823d3a8bbc78a144a1890ab1900aaa0,
     type: 3}
   collateralDistanceThreshold: 0.8
+  movementRangeHighlights: []
 --- !u!1 &1580512981
 GameObject:
   m_ObjectHideFlags: 0

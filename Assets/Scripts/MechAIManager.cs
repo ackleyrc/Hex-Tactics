@@ -54,8 +54,9 @@ public class MechAIManager : MonoBehaviour
     {
         Debug.Log($"MechAIManager::AttempReposition( {controlledMech.MechName} )");
 
-        // Evaluate positions up to 4 tiles away
-        for (int tileDistance = 1; tileDistance <= 4; tileDistance++)
+        // For now, enemy mechs will not attempt to re-position if they cannot gain sight of an human player unit within one move action
+        // At best, the furthest hexes will be as many hexes away as the mech's weighted distance limit (i.e. lowest movement cost is 1)
+        for (int tileDistance = 1; tileDistance <= controlledMech.weightedDistanceRange; tileDistance++)
         {
             List<Cube> potentialHexes = HexGridManager.Instance.HexGrid.GetRing(controlledMech.GetCurrentHexTile(), tileDistance);
 
@@ -75,8 +76,11 @@ public class MechAIManager : MonoBehaviour
 
                         if (path != null && path.Count > 1)
                         {
-                            controlledMech.TravelPath(path);
-                            return true;
+                            if (HexGridManager.Instance.GetPathCost(path) <= controlledMech.weightedDistanceRange)
+                            {
+                                controlledMech.TravelPath(path);
+                                return true;
+                            }
                         }
                     }
                 }

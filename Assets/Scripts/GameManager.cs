@@ -22,10 +22,8 @@ public class GameManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        Debug.Log($"GameManager::OnDestroy()");
         if (_Instance == this)
         {
-            Debug.Log($"GameManager :: Nullify Instance");
             _Instance = null;
         }
     }
@@ -58,6 +56,8 @@ public class GameManager : MonoBehaviour
     private const float TERRAIN_BLOCKING_LOS_THRESHOLD = 1.20f;
 
     public int InstanceIndex { get; private set; }
+
+    private HashSet<Cube> currentReachableRange = new HashSet<Cube>();
 
     private void Start()
     {
@@ -117,6 +117,7 @@ public class GameManager : MonoBehaviour
                                new string[] { mechNames.EnemyMechNames[0], mechNames.EnemyMechNames[1] },
                                Allegiance.FRIENDLY);
 
+        CacheReachableRange();
         DisplayCurrentTurn();
     }
 
@@ -299,6 +300,41 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public HashSet<Cube> GetCurrentUnitReachableRange()
+    {
+        return currentReachableRange;
+    }
+
+    private void CacheReachableRange()
+    {
+        currentReachableRange.Clear();
+
+        if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
+        {
+            if (CurrentUnitIndex >= 0 && CurrentUnitIndex < MechFriendlies.Count)
+            {
+                MechController currentMech = MechFriendlies[CurrentUnitIndex];
+                currentReachableRange = HexGridManager.Instance.GetReachableHexes(currentMech.GetCurrentHexTile(), currentMech.weightedDistanceRange);
+            }
+        }
+        else if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER)
+        {
+            if (CurrentUnitIndex >= 0 && CurrentUnitIndex < MechEnemies.Count)
+            {
+                MechController currentMech = MechEnemies[CurrentUnitIndex];
+                currentReachableRange = HexGridManager.Instance.GetReachableHexes(currentMech.GetCurrentHexTile(), currentMech.weightedDistanceRange);
+            }
+        }
+
+        Debug.Log($"GameManager :: Cached Reachable Hexes: {currentReachableRange.Count}");
+        /*
+        foreach (Cube cube in currentReachableRange)
+        {
+            Debug.Log($"GameManager :: Reachable Hex: {cube}");
+        }
+        */
+    }
+
     private void HandleEndTurnButtonClicked()
     {
         Debug.Log($"GameManager::HandleEndTurnButtonClicked()");
@@ -351,6 +387,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
         Debug.Log($"GameManager :: New Player Turn: {CurrentPlayerTurn}");
 
+        CacheReachableRange();
         DisplayCurrentTurn();
 
         if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER)

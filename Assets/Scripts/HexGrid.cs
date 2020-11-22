@@ -129,10 +129,11 @@ public class HexGrid
     public delegate bool CubeFilterCriteria(Cube cube);
 
     /// <summary>
-    /// Returns a list of list of cube coordinates, where each sub-list contains the coordinates 
+    /// Returns a list of lists of cube coordinates, where each sub-list contains the coordinates 
     /// reachable at that index distance from the provided start coordinate.
     /// </summary>
-    public List<List<Cube>> Reachable(Cube start, int range, CubeFilterCriteria criteria)
+    /// <param name="range">Number of hexes away, inclusive</param>
+    public List<List<Cube>> GetReachable(Cube start, int range, CubeFilterCriteria criteria)
     {
         HashSet<Cube> visited = new HashSet<Cube> { start };
         List<List<Cube>> reachable = new List<List<Cube>> { new List<Cube> { start } };
@@ -197,6 +198,88 @@ public class HexGrid
     /// <summary> This function must return a weight of 1 or greater to guarantee that the quickest path is always returned </summary>
     public delegate float CubeWeight(Cube cube);
 
+    /// <summary>
+    /// Returns a list of cube coordinates, where each coordinate position is
+    /// reachable within the given weight distance from the provided start coordinate.
+    /// </summary>
+    /// <param name="range">Weighted distance away, inclusive</param>
+    public HashSet<Cube> GetReachable(Cube start, float weightedRange, CubeFilterCriteria criteria, CubeWeight weight)
+    {
+        HashSet<Cube> reachable = new HashSet<Cube> { start };
+
+        HashSet<Cube> openCubes = new HashSet<Cube>(); // set of cubes to be evaluated
+        HashSet<Cube> closedCubes = new HashSet<Cube>(); // set of cubes already evaluated
+
+        Dictionary<Cube, float> costSoFar = new Dictionary<Cube, float>(); // associates a key cube with the weighted cost so far to get there
+
+        openCubes.Add(start);
+        costSoFar.Add(start, 0.0f); // cost from start to start is zero
+        reachable.Add(start);
+
+        while (openCubes.Count > 0)
+        {
+            // TODO: This can be optimized with some sort of ordered priority queue, such as a binary heap
+            // Get the cube in the open set that has the current lowest cost
+            Cube currentCube = openCubes.First();
+            foreach (Cube cube in openCubes)
+            {
+                if (costSoFar.ContainsKey(cube) && costSoFar[cube] < costSoFar[currentCube])
+                {
+                    currentCube = cube;
+                }
+            }
+
+            // Exit loop when no more hexes are availabe within the given range limit
+            if (costSoFar[currentCube] > weightedRange)
+            {
+                break;
+            }
+
+            openCubes.Remove(currentCube);
+            closedCubes.Add(currentCube);
+
+            foreach (Cube neighbor in GetNeighbors(currentCube))
+            {
+                if (criteria(neighbor) == false)
+                {
+                    //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} NOT Traversible");
+                    continue;
+                }
+
+                if (closedCubes.Contains(neighbor))
+                {
+                    //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} already Evaluted");
+                    continue; // ignore if already evaluated
+                }
+
+                float newCost = costSoFar[currentCube] + (0.5f * weight(currentCube) + 0.5f * weight(neighbor));
+
+                if (newCost <= weightedRange)
+                {
+                    if (openCubes.Contains(neighbor) == false) // newly discovered node
+                    {
+                        //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} added to Open Cubes");
+                        openCubes.Add(neighbor);
+                    }
+                    else if (newCost >= costSoFar[neighbor]) // hexes in the openCubes will already have a cost so far
+                    {
+                        continue; // This is not a better path
+                    }
+
+                    // Otherwise, this is the best path up til now
+                    costSoFar[neighbor] = newCost;
+
+                    if (reachable.Contains(neighbor) == false)
+                    {
+                        reachable.Add(neighbor);
+                    }
+                }
+            }
+        }
+
+        return reachable;
+    }
+
     public List<Cube> GetQuickestPath(Cube start, Cube target, CubeFilterCriteria criteria, CubeWeight weight)
     {
         List<Cube> quickestPath = new List<Cube>();
@@ -214,7 +297,7 @@ public class HexGrid
 
         while (openCubes.Count > 0)
         {
-            // TODO: This can be optimized witch some sort of ordered priority queue, such as a binary heap
+            // TODO: This can be optimized with some sort of ordered priority queue, such as a binary heap
             // Get the cube in the open set that has the current lowest fScore
             Cube currentCube = openCubes.First();
             foreach (Cube cube in openCubes)

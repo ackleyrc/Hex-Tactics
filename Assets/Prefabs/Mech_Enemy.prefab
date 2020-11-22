@@ -143,7 +143,9 @@ MonoBehaviour:
   modelAnimator: {fileID: 3055113366417209522}
   firingTarget: {fileID: 1314141886276800928}
   walkingSpeed: 1
+  runningSpeed: 2
   weaponFireDuration: 2
+  weightedDistanceRange: 4
 --- !u!114 &8395210111100171822
 MonoBehaviour:
   m_ObjectHideFlags: 0
