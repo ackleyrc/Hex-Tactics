@@ -280,6 +280,119 @@ public class HexGrid
         return reachable;
     }
 
+    /// <summary>
+    /// Obtain a map all cube hex coordinates and the weight distance to the nearest destination of interest that can bre reached from the origin hex tile.
+    /// The distance map is restricted to a minimum weighted distance range away from the origin. The map may contain hex coordinate keys beyond this range
+    /// if any of the provided destinations exceed the minimum weighted distance range.
+    /// NOTE: The origin is always considered valid regardless of the criteria filter.
+    /// </summary>
+    public Dictionary<Cube, float> GetDistanceMap(Cube origin, List<Cube> destinations, float minWeightedDistanceRange, CubeFilterCriteria criteria, CubeWeight weight)
+    {
+        Dictionary<Cube, float> distanceMap = new Dictionary<Cube, float>();
+
+        // The distance map will be populated working from each destination to the start. 
+        //  Note that not all destinations may be reachable from the origin
+        foreach (Cube destination in destinations)
+        {
+            bool isDestinationReachable = false;
+            int originToDestination = CubeDistance(origin, destination);
+
+            HashSet<Cube> openCubes = new HashSet<Cube>(); // set of cubes to be evaluated
+            HashSet<Cube> closedCubes = new HashSet<Cube>(); // set of cubes already evaluated
+
+            Dictionary<Cube, float> costSoFar = new Dictionary<Cube, float>(); // associates a key cube with the weighted cost so far to get there
+
+            openCubes.Add(destination);
+            costSoFar.Add(destination, 0.0f); // distance cost to destination from the same hex is zero
+
+            while (openCubes.Count > 0)
+            {
+                // TODO: This can be optimized with some sort of ordered priority queue, such as a binary heap
+                // Get the cube in the open set that has the current lowest cost
+                Cube currentCube = openCubes.First();
+                foreach (Cube cube in openCubes)
+                {
+                    if (costSoFar.ContainsKey(cube) && costSoFar[cube] < costSoFar[currentCube])
+                    {
+                        currentCube = cube;
+                    }
+                }
+
+                openCubes.Remove(currentCube);
+                closedCubes.Add(currentCube);
+
+                foreach (Cube neighbor in GetNeighbors(currentCube))
+                {
+                    if (neighbor != origin &&
+                        criteria(neighbor) == false)
+                    {
+                        //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} NOT Traversible");
+                        continue;
+                    }
+
+                    if (closedCubes.Contains(neighbor))
+                    {
+                        //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} already Evaluted");
+                        continue; // ignore if already evaluated
+                    }
+
+                    float newCost = costSoFar[currentCube] + (0.5f * weight(currentCube) + 0.5f * weight(neighbor));
+
+                    if (distanceMap.ContainsKey(neighbor) && 
+                        distanceMap[neighbor] < newCost)
+                    {
+                        // We cannot expand beyond this neighbor and do better than the distance measured so far...
+                        //  Any hex coordinate already in the distance map must be reachable from the origin,
+                        //  so if this neighbor is in the distance map and reachable from the current destination, 
+                        //  then we can be sure that the current destination is reachable from the origin,
+                        //  and we may ignore expanding further via this neighbor
+                        isDestinationReachable = true;
+                        continue;
+                    }
+
+                    if (newCost <= minWeightedDistanceRange ||
+                        CubeDistance(origin, neighbor) < originToDestination)
+                    {
+                        if (openCubes.Contains(neighbor) == false) // newly discovered node
+                        {
+                            //Debug.Log($"HexGrid :: Neighbor Cube {neighbor} added to Open Cubes");
+                            openCubes.Add(neighbor);
+                        }
+                        else if (newCost >= costSoFar[neighbor]) // hexes in the openCubes will already have a cost so far
+                        {
+                            continue; // This is not a better path
+                        }
+
+                        // Otherwise, this is the best path up til now
+                        costSoFar[neighbor] = newCost;
+
+                        if (neighbor == origin)
+                        {
+                            isDestinationReachable = true;
+                        }
+                    }
+                }
+            }
+
+            if (isDestinationReachable == true)
+            {
+                foreach (KeyValuePair<Cube, float> cubeDistance in costSoFar)
+                {
+                    if (distanceMap.ContainsKey(cubeDistance.Key) == false)
+                    {
+                        distanceMap.Add(cubeDistance.Key, cubeDistance.Value);
+                    }
+                    else if (cubeDistance.Value < distanceMap[cubeDistance.Key])
+                    {
+                        distanceMap[cubeDistance.Key] = cubeDistance.Value;
+                    }
+                }
+            }
+        }
+
+        return distanceMap;
+    }
+
     public List<Cube> GetQuickestPath(Cube start, Cube target, CubeFilterCriteria criteria, CubeWeight weight)
     {
         List<Cube> quickestPath = new List<Cube>();

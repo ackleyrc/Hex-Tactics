@@ -9,12 +9,12 @@ public class HexGridManager : MonoBehaviour
 
     public TerrainTypeData terrainData;
     public HexTileSpriteData spriteData;
-    public HexTileMapData mapData;
+    public HexTileMapData mapData; // Should only be used when initially generating the map (static data)
     public HexTile hexPrefab;
 
     public HexGrid HexGrid { get; private set; }
 
-    private Dictionary<Cube, HexTerrainType> cubeToTerrainType = new Dictionary<Cube, HexTerrainType>();
+    private Dictionary<Cube, HexTerrainType> cubeToTerrainType = new Dictionary<Cube, HexTerrainType>(); // This should be used for evaluation at run-time (potentially dynamic data)
 
     private const float TILE_WIDTH = 2.56f;
     private const float TILE_HEIGHT = 2.56f; // sprite is 3.84f total
@@ -36,6 +36,26 @@ public class HexGridManager : MonoBehaviour
         {
             _Instance = null;
         }
+    }
+
+    public IEnumerable<Cube> GetDefensiveHexTiles()
+    {
+        foreach (Cube cube in cubeToTerrainType.Keys)
+        {
+            HexTerrainType terrain = cubeToTerrainType[cube];
+            float defensiveMultiplier = terrainData.GetDefenseMultiplier(terrain);
+
+            if (terrainData.IsTraversible(terrain) &&
+                defensiveMultiplier < 1.0f)
+            {
+                yield return cube;
+            }
+        }
+    }
+
+    public Dictionary<Cube, float> GetDistanceMap(Cube origin, List<Cube> destinations, float minWeightedRange)
+    {
+        return HexGrid.GetDistanceMap(origin, destinations, minWeightedRange, (Cube c) => CanTravelOverHex(c), (Cube c) => GetTerrainMovementCost(c));
     }
 
     public HashSet<Cube> GetReachableHexes(Cube start, float weightedRange)

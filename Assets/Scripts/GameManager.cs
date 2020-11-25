@@ -56,8 +56,9 @@ public class GameManager : MonoBehaviour
     private const float TERRAIN_BLOCKING_LOS_THRESHOLD = 1.20f;
 
     public int InstanceIndex { get; private set; }
-
-    private HashSet<Cube> currentReachableRange = new HashSet<Cube>();
+    
+    // We cache this for displaying a unit's movement range so we do not have to re-evaluate it every time the cursor moves between hexes
+    private HashSet<Cube> currentUnitReachableRange = new HashSet<Cube>();
 
     private void Start()
     {
@@ -302,19 +303,19 @@ public class GameManager : MonoBehaviour
 
     public HashSet<Cube> GetCurrentUnitReachableRange()
     {
-        return currentReachableRange;
+        return currentUnitReachableRange;
     }
 
     private void CacheReachableRange()
     {
-        currentReachableRange.Clear();
+        currentUnitReachableRange.Clear();
 
         if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
         {
             if (CurrentUnitIndex >= 0 && CurrentUnitIndex < MechFriendlies.Count)
             {
                 MechController currentMech = MechFriendlies[CurrentUnitIndex];
-                currentReachableRange = HexGridManager.Instance.GetReachableHexes(currentMech.GetCurrentHexTile(), currentMech.weightedDistanceRange);
+                currentUnitReachableRange = HexGridManager.Instance.GetReachableHexes(currentMech.GetCurrentHexTile(), currentMech.weightedDistanceRange);
             }
         }
         else if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER)
@@ -322,11 +323,11 @@ public class GameManager : MonoBehaviour
             if (CurrentUnitIndex >= 0 && CurrentUnitIndex < MechEnemies.Count)
             {
                 MechController currentMech = MechEnemies[CurrentUnitIndex];
-                currentReachableRange = HexGridManager.Instance.GetReachableHexes(currentMech.GetCurrentHexTile(), currentMech.weightedDistanceRange);
+                currentUnitReachableRange = HexGridManager.Instance.GetReachableHexes(currentMech.GetCurrentHexTile(), currentMech.weightedDistanceRange);
             }
         }
 
-        Debug.Log($"GameManager :: Cached Reachable Hexes: {currentReachableRange.Count}");
+        Debug.Log($"GameManager :: Cached Reachable Hexes: {currentUnitReachableRange.Count}");
         /*
         foreach (Cube cube in currentReachableRange)
         {

@@ -26,10 +26,69 @@ public class MechAIManager : MonoBehaviour
     {
         Debug.Log($"MechAIManager::ConductUnitTurn( {controlledMech.MechName} )");
 
-        // Iterate through opposing units, find closest one(s)
-        // Attack the nearest mech
+        ConductUnitTurn_Version1(controlledMech);
+    }
 
-        MechController targetMech = AcquireTarget(controlledMech.GetCurrentHexTile());
+#region VERSION_1
+    private void ConductUnitTurn_Version1(MechController controlledMech)
+    {
+        // TODO: Implement basic utility function evaluation
+        //      For the moment, continue doing version 0
+        ConductUnitTurn_Version0(controlledMech);
+
+        /*
+        Cube currenMechHex = controlledMech.GetCurrentHexTile();
+
+        // Each key is a hex within the mech's movement range, each value the utility score for that hex
+        // Each utility score is derived from various factors under consideration,
+        //  including: distance to nearest cover, exposure to opponents, target opportunities
+
+        Dictionary<Cube, float> hexUtilityScores = new Dictionary<Cube, float>();
+        foreach (Cube reachableCube in HexGridManager.Instance.GetReachableHexes(currenMechHex, controlledMech.weightedDistanceRange))
+        {
+            hexUtilityScores.Add(reachableCube, 0.0f);
+        }
+
+        // Evaluate Defensive Proximity Utility scores
+        float relevantRange = controlledMech.weightedDistanceRange * 2.0f;
+        List<Cube> relevantDefensiveHexes = new List<Cube>();
+        foreach (Cube defensiveHex in HexGridManager.Instance.GetDefensiveHexTiles())
+        {
+            if (HexGridManager.Instance.HexGrid.CubeDistance(currenMechHex, defensiveHex) < relevantRange)
+            {
+                relevantDefensiveHexes.Add(defensiveHex);
+            }
+        }
+
+        Dictionary<Cube, float> distanceToNearestCover = HexGridManager.Instance.GetDistanceMap(currenMechHex, relevantDefensiveHexes, relevantRange);
+
+        foreach (Cube cube in new List<Cube>(hexUtilityScores.Keys))
+        {
+            if (distanceToNearestCover.ContainsKey(cube) == false)
+            {
+                //Debug.Log($"MechAIManager :: Reachable Hex {cube} NOT in Distance Map: {distanceToNearestCover[cube]}");
+                hexUtilityScores[cube] = 0.0f;
+            }
+            else
+            {
+                hexUtilityScores[cube] = Mathf.Clamp01(1.0f - (distanceToNearestCover[cube] / relevantRange));
+                //Debug.Log($"MechAIManager :: Hex {cube} Defensive Proximity Distance: {distanceToNearestCover[cube]}");
+                //Debug.Log($"MechAIManager :: Hex {cube} Defensive Proximity Utility: {hexUtilityScores[cube]}");
+            }
+        }
+        */
+
+        // Acquiring a target after (optionally) moving should use the same/similar target opportunity evaluation
+    }
+    #endregion VERSION_1
+
+    #region VERSION_0
+    private void ConductUnitTurn_Version0(MechController controlledMech)
+    {
+        // Iterate through opposing units, find closest one(s)
+        // Attack the nearest mech. Break tie with lowest health
+
+        MechController targetMech = AcquireTarget_v0(controlledMech.GetCurrentHexTile());
 
         if (targetMech != null)
         {
@@ -39,9 +98,9 @@ public class MechAIManager : MonoBehaviour
         {
             Debug.Log($"MechAIManager :: AI Could NOT acquire target at CURRENT POSITION");
 
-            if (AttempReposition(controlledMech) == true)
+            if (AttempReposition_v0(controlledMech) == true)
             {
-                controlledMech.OnMoveStopped += ContinueUnitTurn;
+                controlledMech.OnMoveStopped += ContinueUnitTurn_v0;
             }
             else
             {
@@ -50,7 +109,7 @@ public class MechAIManager : MonoBehaviour
         }
     }
 
-    private bool AttempReposition(MechController controlledMech)
+    private bool AttempReposition_v0(MechController controlledMech)
     {
         Debug.Log($"MechAIManager::AttempReposition( {controlledMech.MechName} )");
 
@@ -68,7 +127,7 @@ public class MechAIManager : MonoBehaviour
                     GameManager.Instance.GetFriendlyMechAt(potentialHex) == false &&
                     GameManager.Instance.GetEnemyMechAt(potentialHex) == false)
                 {
-                    MechController potentialTargetMech = AcquireTarget(fromHexTile: potentialHex);
+                    MechController potentialTargetMech = AcquireTarget_v0(fromHexTile: potentialHex);
 
                     if (potentialTargetMech != null)
                     {
@@ -90,13 +149,13 @@ public class MechAIManager : MonoBehaviour
         return false;
     }
 
-    private void ContinueUnitTurn(MechController controlledMech)
+    private void ContinueUnitTurn_v0(MechController controlledMech)
     {
         Debug.Log($"MechAIManager::ContinueUnitTurn( {controlledMech.MechName} )");
 
-        controlledMech.OnMoveStopped -= ContinueUnitTurn;
+        controlledMech.OnMoveStopped -= ContinueUnitTurn_v0;
 
-        MechController targetMech = AcquireTarget(controlledMech.GetCurrentHexTile());
+        MechController targetMech = AcquireTarget_v0(controlledMech.GetCurrentHexTile());
 
         if (targetMech != null)
         {
@@ -112,7 +171,7 @@ public class MechAIManager : MonoBehaviour
         }
     }
 
-    private MechController AcquireTarget(Cube fromHexTile)
+    private MechController AcquireTarget_v0(Cube fromHexTile)
     {
         int nearestDistance = int.MaxValue;
         MechController targetMech = null;
@@ -156,4 +215,5 @@ public class MechAIManager : MonoBehaviour
 
         return targetMech;
     }
+#endregion VERSION_0
 }
