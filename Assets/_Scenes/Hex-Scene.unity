@@ -2350,6 +2350,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b970d4e9f7fc84346b0166372189a94a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defenseBonusWeight: 1.5
+  exposureAvoidanceWeight: 0.25
+  targetOpportunityWeight: 1.25
 --- !u!4 &433775934
 Transform:
   m_ObjectHideFlags: 0
