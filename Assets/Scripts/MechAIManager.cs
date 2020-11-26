@@ -36,8 +36,11 @@ public class MechAIManager : MonoBehaviour
         //      For the moment, continue doing version 0
         ConductUnitTurn_Version0(controlledMech);
 
-        /*
         Cube currenMechHex = controlledMech.GetCurrentHexTile();
+
+        // We'll assume at first that the current mech's position is optimal until we begin evaluating utility scores of nearby hexes
+        Cube bestReachableHexCube = currenMechHex;
+        float bestReachableHexUtility = 0.0f;
 
         // Each key is a hex within the mech's movement range, each value the utility score for that hex
         // Each utility score is derived from various factors under consideration,
@@ -73,10 +76,63 @@ public class MechAIManager : MonoBehaviour
             {
                 hexUtilityScores[cube] = Mathf.Clamp01(1.0f - (distanceToNearestCover[cube] / relevantRange));
                 //Debug.Log($"MechAIManager :: Hex {cube} Defensive Proximity Distance: {distanceToNearestCover[cube]}");
-                //Debug.Log($"MechAIManager :: Hex {cube} Defensive Proximity Utility: {hexUtilityScores[cube]}");
+                Debug.Log($"MechAIManager :: Hex {cube} Defensive Proximity Utility: {hexUtilityScores[cube]}");
             }
         }
-        */
+
+        // Evaluate Exposure & Target Opportunity Utility scores
+        float normalizedHealth = Mathf.Clamp01(controlledMech.health.CurrentHealth / (float)controlledMech.health.initialHealth);
+        foreach (Cube cube in new List<Cube>(hexUtilityScores.Keys))
+        {
+            int numOpponentsExposedTo = 0;
+            float sumTargetOpportunityUtility = 0.0f;
+
+            // For the moment, we are assuming that the controlled mech is always one of the computer player's
+            foreach (MechController opposingMech in GameManager.Instance.MechFriendlies)
+            {
+                if (opposingMech.health.CurrentHealth <= 0)
+                {
+                    continue;
+                }
+
+                if (GameManager.Instance.CheckForLineOfSight(fromHexTile: cube, opposingMech.GetCurrentHexTile()) != null)
+                {
+                    continue;
+                }
+
+                numOpponentsExposedTo++;
+
+                float distanceToOpponent = HexGridManager.Instance.HexGrid.CubeDistance(cube, opposingMech.GetCurrentHexTile());
+                float proximityUtility = 1.0f - Mathf.Clamp01(distanceToOpponent / (controlledMech.weightedDistanceRange * 2.0f)); // TODO: Set denominator to attack range
+                float defenseMultipler = HexGridManager.Instance.GetDefenseMultiplier(opposingMech.GetCurrentHexTile());
+                int tentativeDamage = Mathf.RoundToInt(2.0f * defenseMultipler); // For now, this should be 2 or 1
+                float vulnerabilityUtility = 1.0f - ((opposingMech.health.CurrentHealth - tentativeDamage) / (float)opposingMech.health.initialHealth);
+                sumTargetOpportunityUtility += (proximityUtility * vulnerabilityUtility);
+            }
+            
+            // Note: including exposureUtility is way too evasive at the moment...
+            // TODO: Test weighting exposureUtility by inverse proportion to controlled mech health
+            //          and target opportunity utility in direct proportion to controlled mech health?
+
+            //float exposureUtility = Mathf.Clamp01((numOpponentsExposedTo == 0 ? 1.0f : 0.5f / numOpponentsExposedTo) * normalizedHealth);
+            //hexUtilityScores[cube] = (1.0f * hexUtilityScores[cube] + exposureUtility) / 2.0f;
+            //Debug.Log($"MechAIManager :: Hex {cube} Opponents Exposed To: {numOpponentsExposedTo}");
+            //Debug.Log($"MechAIManager :: Hex {cube} Exposure Utility: {exposureUtility}");
+
+            float targetOpportunityUtility = Mathf.Clamp01(numOpponentsExposedTo == 0 ? 0.0f : sumTargetOpportunityUtility / numOpponentsExposedTo);
+            hexUtilityScores[cube] = (1.0f * hexUtilityScores[cube] + targetOpportunityUtility) / 2.0f;
+            Debug.Log($"MechAIManager :: Hex {cube} Sum Target Opportunity Utility: {sumTargetOpportunityUtility}");
+            Debug.Log($"MechAIManager :: Hex {cube} Target Opportunity Utility: {targetOpportunityUtility}");
+
+            Debug.Log($"MechAIManager :: Hex {cube} Overall Utility: {hexUtilityScores[cube]}");
+
+            if (hexUtilityScores[cube] > bestReachableHexUtility)
+            {
+                bestReachableHexCube = cube;
+                bestReachableHexUtility = hexUtilityScores[cube];
+                Debug.Log($"MechAIManager :: NEW BEST Hex {cube}");
+            }
+        }
 
         // Acquiring a target after (optionally) moving should use the same/similar target opportunity evaluation
     }
@@ -181,12 +237,12 @@ public class MechAIManager : MonoBehaviour
         {
             //Debug.Log($"MechAIManager :: Potential Target: {opposingMech.MechName}");
 
-            if (GameManager.Instance.CheckForLineOfSight(fromHexTile, opposingMech.GetCurrentHexTile()) != null)
+            if (opposingMech.health.CurrentHealth <= 0)
             {
                 continue;
             }
 
-            if (opposingMech.health.CurrentHealth <= 0)
+            if (GameManager.Instance.CheckForLineOfSight(fromHexTile, opposingMech.GetCurrentHexTile()) != null)
             {
                 continue;
             }
