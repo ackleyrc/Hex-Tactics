@@ -22,7 +22,7 @@ public class WinConditionGUI : MonoBehaviour
             _Instance = null;
         }
     }
-    #endregion SINGLETON_MGMT
+#endregion SINGLETON_MGMT
 
     public HUDColorPalette colorPalette;
 
@@ -163,6 +163,7 @@ public class WinConditionGUI : MonoBehaviour
     private void OnClickRestartButton()
     {
         GameManager.Instance.ResetGame();
+        DifficultySelectionGUI.Instance.Display();
         Initialize();
     }
 

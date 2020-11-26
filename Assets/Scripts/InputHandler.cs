@@ -52,7 +52,9 @@ public class InputHandler : MonoBehaviour
 
     private void Update()
     {
-        if (PauseScreenGUI.Instance.IsDisplayed == true ||
+        if (TitleScreenGUI.Instance.IsDisplaying == true ||
+            DifficultySelectionGUI.Instance.IsDisplaying == true ||
+            PauseScreenGUI.Instance.IsDisplayed == true ||
             GameManager.Instance.CurrentPlayerTurn != GameManager.PlayerTurn.HUMAN_PLAYER ||
             GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.NONE)
         {

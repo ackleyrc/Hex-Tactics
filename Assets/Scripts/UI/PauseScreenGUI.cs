@@ -63,7 +63,16 @@ public class PauseScreenGUI : MonoBehaviour
     private void OnClickRestartButton()
     {
         GameManager.Instance.ResetGame();
-        StartCoroutine(FadeOut());
+        DifficultySelectionGUI.Instance.Display();
+
+        IsDisplayed = false;
+
+        Time.timeScale = 1.0f;
+
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+
+        canvasGroup.alpha = 0.0f;
     }
 
     private void OnClickExitButton()

@@ -5,15 +5,37 @@ using UnityEngine.UI;
 
 public class TitleScreenGUI : MonoBehaviour
 {
+#region SINGLETON_MGMT
+    private static TitleScreenGUI _Instance;
+    public static TitleScreenGUI Instance { get { return _Instance; } }
+
+    private void Awake()
+    {
+        _Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (_Instance == this)
+        {
+            _Instance = null;
+        }
+    }
+#endregion SINGLETON_MGMT
+
     public CanvasGroup canvasGroup;
     public Button startButton;
     public Button exitButton;
     public float fadeOutDuration;
 
+    public bool IsDisplaying { get; private set; }
+
     private void Start()
     {
         startButton.onClick.AddListener(OnClickStartButton);
         exitButton.onClick.AddListener(OnClickExitButton);
+
+        IsDisplaying = true;
     }
 
     private void OnClickStartButton()
@@ -28,14 +50,22 @@ public class TitleScreenGUI : MonoBehaviour
 
     private IEnumerator FadeOut()
     {
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
-
         while (canvasGroup.alpha > 0.0f)
         {
             yield return null;
 
             canvasGroup.alpha = canvasGroup.alpha - Time.unscaledDeltaTime / fadeOutDuration;
+
+            if (canvasGroup.alpha < 0.15f &&
+                DifficultySelectionGUI.Instance.IsDisplaying == false)
+            {
+                canvasGroup.interactable = false;
+                canvasGroup.blocksRaycasts = false;
+
+                DifficultySelectionGUI.Instance.Display();
+
+                IsDisplaying = false;
+            }
         }
     }
 }

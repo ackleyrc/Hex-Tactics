@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Difficulty
+{
+    EASY,
+    MODERATE,
+    //HARD
+}
+
 public class MechAIManager : MonoBehaviour
 {
 #region SINGLETON_MGMT
@@ -22,11 +29,25 @@ public class MechAIManager : MonoBehaviour
     }
 #endregion SINGLETON_MGMT
 
+    private Difficulty currentDifficulty = Difficulty.MODERATE;
+
+    public void SetDifficulty(Difficulty difficulty)
+    {
+        currentDifficulty = difficulty;
+    }
+
     public void ConductUnitTurn(MechController controlledMech)
     {
         Debug.Log($"MechAIManager::ConductUnitTurn( {controlledMech.MechName} )");
 
-        ConductUnitTurn_Version1(controlledMech);
+        if (currentDifficulty == Difficulty.EASY)
+        {
+            ConductUnitTurn_Version0(controlledMech);
+        }
+        else
+        {
+            ConductUnitTurn_Version1(controlledMech);
+        }
     }
 
 #region VERSION_1
