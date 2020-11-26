@@ -16,18 +16,23 @@ public class InputHandler : MonoBehaviour
 
     private bool movementHighlightsHidden = false;
 
+    private Transform highlightsParent;
+
     private void Awake()
     {
-        selectionHighlight = GameObject.Instantiate(selectionHighlight) as HighlightIndicator;
-        actionHighlight = GameObject.Instantiate(actionHighlight) as HighlightIndicator;
-        warningHighlight = GameObject.Instantiate(warningHighlight) as HighlightIndicator;
+        highlightsParent = GameObject.Instantiate(new GameObject(), Vector3.zero, Quaternion.identity, this.transform).transform;
+        highlightsParent.gameObject.name = "HighlightsParent";
+
+        selectionHighlight = GameObject.Instantiate(selectionHighlight, highlightsParent) as HighlightIndicator;
+        actionHighlight = GameObject.Instantiate(actionHighlight, highlightsParent) as HighlightIndicator;
+        warningHighlight = GameObject.Instantiate(warningHighlight, highlightsParent) as HighlightIndicator;
 
         movementRangeHighlights = new List<HighlightIndicator>();
 
         // Start with 12 to begin with...
         for (int i = 0; i < 12; i++)
         {
-            HighlightIndicator highlight = GameObject.Instantiate(selectionHighlight) as HighlightIndicator;
+            HighlightIndicator highlight = GameObject.Instantiate(selectionHighlight, highlightsParent) as HighlightIndicator;
             movementRangeHighlights.Add(highlight);
             highlight.DisplayAsMoveRangeIndicator();
             highlight.gameObject.SetActive(false);
@@ -427,7 +432,7 @@ public class InputHandler : MonoBehaviour
             {
                 if (activeHighlightCount >= movementRangeHighlights.Count)
                 {
-                    HighlightIndicator highlight = GameObject.Instantiate(selectionHighlight) as HighlightIndicator;
+                    HighlightIndicator highlight = GameObject.Instantiate(selectionHighlight, highlightsParent) as HighlightIndicator;
                     movementRangeHighlights.Add(highlight);
                     highlight.DisplayAsMoveRangeIndicator();
                 }

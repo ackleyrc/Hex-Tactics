@@ -23,9 +23,14 @@ public class HexGridManager : MonoBehaviour
     private int mapWidth;
     private int mapLength;
 
+    private Transform hexTilesParent;
+
     private void Awake()
     {
         _Instance = this;
+
+        hexTilesParent = GameObject.Instantiate(new GameObject(), Vector3.zero, Quaternion.identity, this.transform).transform;
+        hexTilesParent.gameObject.name = "HexTilesParent";
 
         Generate();
     }
@@ -206,7 +211,7 @@ public class HexGridManager : MonoBehaviour
                 {
                     HexTerrainType terrainType = mapData.HexTileArrays[row].TerrainTypes[col];
                     bool createUnderground = (row == 0) || (row == mapData.HexTileArrays.Length - 1) || (col == 0) || (col == mapData.HexTileArrays[row].TerrainTypes.Length - 1);
-                    HexTile hexTile = CreateHex(terrainType, -row, createUnderground);
+                    HexTile hexTile = CreateHex(terrainType, -row, createUnderground, hexTilesParent);
 
                     Vector3 position = HexGrid.CubeToPixel(cube, TILE_WIDTH);
                     hexTile.transform.position = position;
@@ -217,10 +222,10 @@ public class HexGridManager : MonoBehaviour
         }
     }
 
-    private HexTile CreateHex(HexTerrainType terrainType, int sortingOrder, bool createUnderground = false)
+    private HexTile CreateHex(HexTerrainType terrainType, int sortingOrder, bool createUnderground, Transform parent)
     {
         // tile sprite
-        HexTile hexTile = GameObject.Instantiate(hexPrefab, this.transform) as HexTile;
+        HexTile hexTile = GameObject.Instantiate(hexPrefab, parent) as HexTile;
         hexTile.gameObject.name = $"{terrainType}";
         hexTile.spriteRenderer.sprite = spriteData.GetSpriteForTerrainType(terrainType);
         hexTile.spriteRenderer.sortingOrder = sortingOrder;
