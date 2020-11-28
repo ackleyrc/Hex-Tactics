@@ -281,7 +281,7 @@ public class InputHandler : MonoBehaviour
                         {
                             Cube blockingHex = GameManager.Instance.CheckForLineOfSight(selectedMech.GetCurrentHexTile(), enemyMechUnderMouse.GetCurrentHexTile());
 
-                            Debug.Log($"InputHandler :: Blocking Hex? {blockingHex}");
+                            //Debug.Log($"InputHandler :: Blocking Hex? {blockingHex}");
 
                             if (blockingHex != null)
                             {
@@ -422,7 +422,7 @@ public class InputHandler : MonoBehaviour
 
     private void DisplayMovementRange(Cube currentHexUnderMouse)
     {
-        Debug.Log($"InputHander::DisplayMovementRange( currentHexUnderMouse: {currentHexUnderMouse} )");
+        //Debug.Log($"InputHander::DisplayMovementRange( currentHexUnderMouse: {currentHexUnderMouse} )");
 
         int activeHighlightCount = 0;
 
@@ -445,7 +445,7 @@ public class InputHandler : MonoBehaviour
             }
         }
 
-        Debug.Log($"InputHander :: Active Highlights: {activeHighlightCount}");
+        //Debug.Log($"InputHander :: Active Highlights: {activeHighlightCount}");
 
         if (activeHighlightCount < movementRangeHighlights.Count)
         {

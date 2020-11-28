@@ -11,13 +11,9 @@ public class GameManager : MonoBehaviour
     private static GameManager _Instance;
     public static GameManager Instance { get { return _Instance; } }
 
-    private static int instanceCount = 0;
-
     private void Awake()
     {
-        instanceCount++;
         _Instance = this;
-        this.InstanceIndex = instanceCount;
     }
 
     private void OnDestroy()
@@ -29,7 +25,7 @@ public class GameManager : MonoBehaviour
     }
 #endregion SINGLETON_MGMT
 
-    public MechNamesData mechNames;
+    public MechEntityDetailsData mechDetails;
 
     public MechController mechFriendlyPrefab;
     public MechController mechEnemyPrefab;
@@ -77,15 +73,15 @@ public class GameManager : MonoBehaviour
         MechController mechFriendly_02 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
         MechFriendlies.Add(mechFriendly_01);
         MechFriendlies.Add(mechFriendly_02);
-        mechFriendly_01.Initialize(new Cube(0, 6), 0, Allegiance.FRIENDLY, mechNames.FriendlyMechNames[0]);
-        mechFriendly_02.Initialize(new Cube(1, 7), 1, Allegiance.FRIENDLY, mechNames.FriendlyMechNames[1]);
+        mechFriendly_01.Initialize(new Cube(0, 6), 0, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 0));
+        mechFriendly_02.Initialize(new Cube(1, 7), 1, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 1));
 
         MechController mechEnemy_01 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         MechController mechEnemy_02 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         MechEnemies.Add(mechEnemy_01);
         MechEnemies.Add(mechEnemy_02);
-        mechEnemy_01.Initialize(new Cube(5, 4), 0, Allegiance.ENEMY, mechNames.EnemyMechNames[0]);
-        mechEnemy_02.Initialize(new Cube(7, 3), 1, Allegiance.ENEMY, mechNames.EnemyMechNames[1]);
+        mechEnemy_01.Initialize(new Cube(5, 4), 0, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 0));
+        mechEnemy_02.Initialize(new Cube(7, 3), 1, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 1));
 
         foreach (MechController friendlyMech in MechFriendlies)
         {
@@ -114,8 +110,8 @@ public class GameManager : MonoBehaviour
         actionPanelGUI.DisplayMoveEnabled();
         actionPanelGUI.DisplayAttackEnabled();
 
-        unitTurnGUI.Initialize(new string[] { mechNames.FriendlyMechNames[0], mechNames.FriendlyMechNames[1] },
-                               new string[] { mechNames.EnemyMechNames[0], mechNames.EnemyMechNames[1] },
+        unitTurnGUI.Initialize(new string[] { mechDetails.GetName(Allegiance.FRIENDLY, 0), mechDetails.GetName(Allegiance.FRIENDLY, 1) },
+                               new string[] { mechDetails.GetName(Allegiance.ENEMY, 0), mechDetails.GetName(Allegiance.ENEMY, 1) },
                                Allegiance.FRIENDLY);
 
         CacheReachableRange();

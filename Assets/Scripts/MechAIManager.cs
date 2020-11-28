@@ -67,12 +67,12 @@ public class MechAIManager : MonoBehaviour
     {
         // TODO: Implement basic utility function evaluation
         //      For the moment, continue doing version 0
-        ConductUnitTurn_Version0(controlledMech);
+        //ConductUnitTurn_Version0(controlledMech);
 
-        Cube currenMechHex = controlledMech.GetCurrentHexTile();
+        Cube currentMechHex = controlledMech.GetCurrentHexTile();
 
         // We'll assume at first that the current mech's position is optimal until we begin evaluating utility scores of nearby hexes
-        Cube bestReachableHexCube = currenMechHex;
+        Cube bestReachableHexCube = currentMechHex;
         float bestReachableHexUtility = 0.0f;
 
         // Each key is a hex within the mech's movement range, each value the utility score for that hex
@@ -80,7 +80,7 @@ public class MechAIManager : MonoBehaviour
         //  including: distance to nearest cover, exposure to opponents, target opportunities
 
         Dictionary<Cube, float[]> hexUtilityScores = new Dictionary<Cube, float[]>();
-        foreach (Cube reachableCube in HexGridManager.Instance.GetReachableHexes(currenMechHex, controlledMech.weightedDistanceRange))
+        foreach (Cube reachableCube in HexGridManager.Instance.GetReachableHexes(currentMechHex, controlledMech.weightedDistanceRange))
         {
             hexUtilityScores.Add(reachableCube, new float[(int)UtilityFactor.COUNT]);
         }
@@ -90,13 +90,13 @@ public class MechAIManager : MonoBehaviour
         List<Cube> relevantDefensiveHexes = new List<Cube>();
         foreach (Cube defensiveHex in HexGridManager.Instance.GetDefensiveHexTiles())
         {
-            if (HexGridManager.Instance.HexGrid.CubeDistance(currenMechHex, defensiveHex) < relevantRange)
+            if (HexGridManager.Instance.HexGrid.CubeDistance(currentMechHex, defensiveHex) < relevantRange)
             {
                 relevantDefensiveHexes.Add(defensiveHex);
             }
         }
 
-        Dictionary<Cube, float> distanceToNearestCover = HexGridManager.Instance.GetDistanceMap(currenMechHex, relevantDefensiveHexes, relevantRange);
+        Dictionary<Cube, float> distanceToNearestCover = HexGridManager.Instance.GetDistanceMap(currentMechHex, relevantDefensiveHexes, relevantRange);
 
         foreach (Cube cube in new List<Cube>(hexUtilityScores.Keys))
         {
@@ -168,28 +168,95 @@ public class MechAIManager : MonoBehaviour
             {
                 bestReachableHexCube = cube;
                 bestReachableHexUtility = overallUtility;
-                //Debug.Log($"MechAIManager :: NEW BEST Hex {cube}");
+                Debug.Log($"MechAIManager :: NEW BEST Hex {cube} :: DEF: {hexUtilityScores[cube][(int)UtilityFactor.DEFENSE_BONUS]}" +
+                                                                 $" EXP: {hexUtilityScores[cube][(int)UtilityFactor.EXPOSURE_AVOIDANCE]}" +
+                                                                 $" TGT: {hexUtilityScores[cube][(int)UtilityFactor.TARGET_OPPORTUNITY]}");
             }
         }
 
-        if (bestReachableHexCube != currenMechHex)
+        MechController targetMech = AcquireTarget_v1(controlledMech, bestReachableHexCube);
+
+        // Evaluate parameters for AI Dialogue logic
+        float defenseMult = HexGridManager.Instance.GetDefenseMultiplier(targetMech.GetCurrentHexTile());
+        int tentativeDmg = Mathf.RoundToInt(2.0f * defenseMult); // For now, this should be 2 or 1
+
+        float currDefenseMult = HexGridManager.Instance.GetDefenseMultiplier(currentMechHex);
+        float newDefenseMult = HexGridManager.Instance.GetDefenseMultiplier(bestReachableHexCube);
+
+        int currNumOpponentsExposedTo = 0;
+        int newNumOpponentsExposedTo = 0;
+        foreach (MechController opposingMech in GameManager.Instance.MechFriendlies)
         {
-            if (AttempReposition_v1(controlledMech, bestReachableHexCube) == true)
+            if (opposingMech.health.CurrentHealth <= 0)
             {
-                controlledMech.OnMoveStopped += ContinueUnitTurn_v1;
+                continue;
+            }
+
+            if (GameManager.Instance.CheckForLineOfSight(fromHexTile: currentMechHex, opposingMech.GetCurrentHexTile()) == null)
+            {
+                currNumOpponentsExposedTo++;
+            }
+
+            if (GameManager.Instance.CheckForLineOfSight(fromHexTile: bestReachableHexCube, opposingMech.GetCurrentHexTile()) == null)
+            {
+                newNumOpponentsExposedTo++;
+            }
+        }
+
+        // Determine AI Dialogue Line
+        if (targetMech != null &&
+            targetMech.health.CurrentHealth - tentativeDmg <= 0.0f)
+        {
+            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.KILL_SHOT);
+        }
+        else if (targetMech != null &&
+                 targetMech.health.CurrentHealth <= targetMech.health.initialHealth * 0.5f &&
+                 (currNumOpponentsExposedTo >= 2 || newNumOpponentsExposedTo >= 2))
+        {
+            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.VULNERABLE_TARGET);
+        }
+        else if (bestReachableHexCube == currentMechHex)
+        {
+            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.STAY_PUT);
+        }
+        else if (currDefenseMult == 1.0f && newDefenseMult != 1.0f)
+        {
+            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.TAKE_COVER);
+        }
+        else if (newNumOpponentsExposedTo < currNumOpponentsExposedTo)
+        {
+            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.REDUCE_EXPOSURE);
+        }
+        else if (targetMech != null && currNumOpponentsExposedTo == 0 && newNumOpponentsExposedTo >= 1)
+        {
+            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.MOVE_TO_ATTACK);
+        }
+        else if (targetMech != null)
+        {
+            int currDistanceToTarget = HexGridManager.Instance.HexGrid.CubeDistance(currentMechHex, targetMech.GetCurrentHexTile());
+            int newDistanceToTaget = HexGridManager.Instance.HexGrid.CubeDistance(bestReachableHexCube, targetMech.GetCurrentHexTile());
+
+            if (newDistanceToTaget < currDistanceToTarget)
+            {
+                DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.APPROACH_TARGET);
+            }
+        }
+
+        // Execute actions
+        if (bestReachableHexCube != currentMechHex &&
+            AttempReposition_v1(controlledMech, bestReachableHexCube) == true)
+        {
+            controlledMech.OnMoveStopped += ContinueUnitTurn_v1;
+        }
+        else
+        {
+            if (targetMech != null)
+            {
+                controlledMech.AttackTarget(targetMech);
             }
             else
             {
-                MechController targetMech = AcquireTarget_v1(controlledMech, controlledMech.GetCurrentHexTile());
-
-                if (targetMech != null)
-                {
-                    controlledMech.AttackTarget(targetMech);
-                }
-                else
-                {
-                    GameManager.Instance.ConcludeCurrentTurn();
-                }
+                GameManager.Instance.ConcludeCurrentTurn();
             }
         }
     }
@@ -242,11 +309,13 @@ public class MechAIManager : MonoBehaviour
         {
             if (opposingMech.health.CurrentHealth <= 0)
             {
+                //Debug.Log($"MechAIManager :: Dead Opponent: {opposingMech?.MechName}");
                 continue;
             }
 
-            if (GameManager.Instance.CheckForLineOfSight(fromHexTile, opposingMech.GetCurrentHexTile()) != null)
+            if (GameManager.Instance.CheckForLineOfSight(fromHexTile, opposingMech.GetCurrentHexTile(), controlledMech) != null)
             {
+                //Debug.Log($"MechAIManager :: No LOS to {opposingMech?.MechName}");
                 continue;
             }
 
@@ -282,7 +351,7 @@ public class MechAIManager : MonoBehaviour
         }
         else // if (targetMech == null)
         {
-            Debug.Log($"MechAIManager :: AI Could NOT acquire target at CURRENT POSITION");
+            //Debug.Log($"MechAIManager :: AI Could NOT acquire target at CURRENT POSITION");
 
             if (AttempReposition_v0(controlledMech) == true)
             {
