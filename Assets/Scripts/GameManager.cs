@@ -456,8 +456,6 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log($"GameManager::ConductEnemyTurn()");
 
-        yield return new WaitForSeconds(1.5f);
-
         //Debug.Log($"GameManager :: Current Unit Index: {CurrentUnitIndex}");
         //Debug.Log($"GameManager :: Current Player Turn: {CurrentPlayerTurn}");
         //Debug.Log($"GameManager :: Enemy Mechs: {MechEnemies?.Count}");
@@ -470,6 +468,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            yield return new WaitForSeconds(1.5f);
+
             ConcludeCurrentTurn();
         }
     }

@@ -42,11 +42,11 @@ public class MechAIManager : MonoBehaviour
 
         if (currentDifficulty == Difficulty.EASY)
         {
-            ConductUnitTurn_Version0(controlledMech);
+            StartCoroutine(ConductUnitTurn_Version0(controlledMech));
         }
         else
         {
-            ConductUnitTurn_Version1(controlledMech);
+            StartCoroutine(ConductUnitTurn_Version1(controlledMech));
         }
     }
 
@@ -63,7 +63,7 @@ public class MechAIManager : MonoBehaviour
         COUNT = 3
     }
 
-    private void ConductUnitTurn_Version1(MechController controlledMech)
+    private IEnumerator ConductUnitTurn_Version1(MechController controlledMech)
     {
         // TODO: Implement basic utility function evaluation
         //      For the moment, continue doing version 0
@@ -176,71 +176,9 @@ public class MechAIManager : MonoBehaviour
 
         MechController targetMech = AcquireTarget_v1(controlledMech, bestReachableHexCube);
 
-        // Evaluate parameters for AI Dialogue logic
-        float defenseMult = HexGridManager.Instance.GetDefenseMultiplier(targetMech.GetCurrentHexTile());
-        int tentativeDmg = Mathf.RoundToInt(2.0f * defenseMult); // For now, this should be 2 or 1
+        DialogueGUI.Instance.HandleAIDialogue(controlledMech, targetMech, currentMechHex, bestReachableHexCube);
 
-        float currDefenseMult = HexGridManager.Instance.GetDefenseMultiplier(currentMechHex);
-        float newDefenseMult = HexGridManager.Instance.GetDefenseMultiplier(bestReachableHexCube);
-
-        int currNumOpponentsExposedTo = 0;
-        int newNumOpponentsExposedTo = 0;
-        foreach (MechController opposingMech in GameManager.Instance.MechFriendlies)
-        {
-            if (opposingMech.health.CurrentHealth <= 0)
-            {
-                continue;
-            }
-
-            if (GameManager.Instance.CheckForLineOfSight(fromHexTile: currentMechHex, opposingMech.GetCurrentHexTile()) == null)
-            {
-                currNumOpponentsExposedTo++;
-            }
-
-            if (GameManager.Instance.CheckForLineOfSight(fromHexTile: bestReachableHexCube, opposingMech.GetCurrentHexTile()) == null)
-            {
-                newNumOpponentsExposedTo++;
-            }
-        }
-
-        // Determine AI Dialogue Line
-        if (targetMech != null &&
-            targetMech.health.CurrentHealth - tentativeDmg <= 0.0f)
-        {
-            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.KILL_SHOT);
-        }
-        else if (targetMech != null &&
-                 targetMech.health.CurrentHealth <= targetMech.health.initialHealth * 0.5f &&
-                 (currNumOpponentsExposedTo >= 2 || newNumOpponentsExposedTo >= 2))
-        {
-            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.VULNERABLE_TARGET);
-        }
-        else if (bestReachableHexCube == currentMechHex)
-        {
-            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.STAY_PUT);
-        }
-        else if (currDefenseMult == 1.0f && newDefenseMult != 1.0f)
-        {
-            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.TAKE_COVER);
-        }
-        else if (newNumOpponentsExposedTo < currNumOpponentsExposedTo)
-        {
-            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.REDUCE_EXPOSURE);
-        }
-        else if (targetMech != null && currNumOpponentsExposedTo == 0 && newNumOpponentsExposedTo >= 1)
-        {
-            DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.MOVE_TO_ATTACK);
-        }
-        else if (targetMech != null)
-        {
-            int currDistanceToTarget = HexGridManager.Instance.HexGrid.CubeDistance(currentMechHex, targetMech.GetCurrentHexTile());
-            int newDistanceToTaget = HexGridManager.Instance.HexGrid.CubeDistance(bestReachableHexCube, targetMech.GetCurrentHexTile());
-
-            if (newDistanceToTaget < currDistanceToTarget)
-            {
-                DialogueGUI.Instance.DisplayAIDialogueLine(controlledMech, AIContext.APPROACH_TARGET);
-            }
-        }
+        yield return new WaitForSeconds(1.5f);
 
         // Execute actions
         if (bestReachableHexCube != currentMechHex &&
@@ -338,7 +276,7 @@ public class MechAIManager : MonoBehaviour
 #endregion VERSION_1
 
 #region VERSION_0
-    private void ConductUnitTurn_Version0(MechController controlledMech)
+    private IEnumerator ConductUnitTurn_Version0(MechController controlledMech)
     {
         // Iterate through opposing units, find closest one(s)
         // Attack the nearest mech. Break tie with lowest health
@@ -347,15 +285,28 @@ public class MechAIManager : MonoBehaviour
 
         if (targetMech != null)
         {
+            //DialogueGUI.Instance.HandleAIDialogue(controlledMech, targetMech, controlledMech.GetCurrentHexTile(), controlledMech.GetCurrentHexTile());
+
+            yield return new WaitForSeconds(1.5f);
+
             controlledMech.AttackTarget(targetMech);
         }
         else // if (targetMech == null)
         {
             //Debug.Log($"MechAIManager :: AI Could NOT acquire target at CURRENT POSITION");
 
-            if (AttempReposition_v0(controlledMech) == true)
+            List<Cube> prospectivePath = AttempReposition_v0(controlledMech);
+
+            if (prospectivePath != null && prospectivePath.Count > 1)
             {
+                MechController anticipatedTargetMech = AcquireTarget_v0(prospectivePath[prospectivePath.Count - 1]);
+
+                //DialogueGUI.Instance.HandleAIDialogue(controlledMech, anticipatedTargetMech, controlledMech.GetCurrentHexTile(), prospectivePath[prospectivePath.Count - 1]);
+
+                yield return new WaitForSeconds(1.5f);
+
                 controlledMech.OnMoveStopped += ContinueUnitTurn_v0;
+                controlledMech.TravelPath(prospectivePath);
             }
             else
             {
@@ -364,7 +315,7 @@ public class MechAIManager : MonoBehaviour
         }
     }
 
-    private bool AttempReposition_v0(MechController controlledMech)
+    private List<Cube> AttempReposition_v0(MechController controlledMech)
     {
         Debug.Log($"MechAIManager::AttempReposition( {controlledMech.MechName} )");
 
@@ -392,8 +343,7 @@ public class MechAIManager : MonoBehaviour
                         {
                             if (HexGridManager.Instance.GetPathCost(path) <= controlledMech.weightedDistanceRange)
                             {
-                                controlledMech.TravelPath(path);
-                                return true;
+                                return path;
                             }
                         }
                     }
@@ -401,7 +351,7 @@ public class MechAIManager : MonoBehaviour
             }
         }
 
-        return false;
+        return null;
     }
 
     private void ContinueUnitTurn_v0(MechController controlledMech)

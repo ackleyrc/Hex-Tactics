@@ -6130,13 +6130,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mechDetails: {fileID: 11400000, guid: a47545ae504fd384697e9510f619cd97, type: 2}
-  aiDialogueData: {fileID: 11400000, guid: 5bdf8de1744a22c45bac411373e46f76, type: 2}
+  aiEasyDialogueData: {fileID: 11400000, guid: 5bdf8de1744a22c45bac411373e46f76, type: 2}
+  aiModerateDialogueData: {fileID: 11400000, guid: 5bdf8de1744a22c45bac411373e46f76,
+    type: 2}
   panelGroup: {fileID: 1820273719}
+  autoTypeSpeed: 16
+  dialogueDuration: 5
   portraitBorder: {fileID: 1404734749}
   portraitImage: {fileID: 2016733926}
   characterNameText: {fileID: 1142767690}
-  speechText: {fileID: 1516050257}
   speechBG: {fileID: 2048039144}
+  speechText: {fileID: 1516050257}
 --- !u!1 &933356351
 GameObject:
   m_ObjectHideFlags: 0
