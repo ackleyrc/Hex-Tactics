@@ -12,6 +12,8 @@ public enum AIContext
     VULNERABLE_TARGET,
     KILL_SHOT,
     STAY_PUT,
+    ATTACK_NEARBY_TARGET,
+    NO_TARGET,
 }
 
 [CreateAssetMenu(fileName = "AIDialogueData", menuName = "ScriptableObjects/AIDialogueData", order = 5)]

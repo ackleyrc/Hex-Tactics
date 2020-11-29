@@ -176,7 +176,7 @@ public class MechAIManager : MonoBehaviour
 
         MechController targetMech = AcquireTarget_v1(controlledMech, bestReachableHexCube);
 
-        DialogueGUI.Instance.HandleAIDialogue(controlledMech, targetMech, currentMechHex, bestReachableHexCube);
+        DialogueGUI.Instance.HandleModerateAIDialogue(controlledMech, targetMech, currentMechHex, bestReachableHexCube);
 
         yield return new WaitForSeconds(1.5f);
 
@@ -285,7 +285,7 @@ public class MechAIManager : MonoBehaviour
 
         if (targetMech != null)
         {
-            //DialogueGUI.Instance.HandleAIDialogue(controlledMech, targetMech, controlledMech.GetCurrentHexTile(), controlledMech.GetCurrentHexTile());
+            DialogueGUI.Instance.HandleEasyAIDialogue(controlledMech, targetMech, controlledMech.GetCurrentHexTile(), controlledMech.GetCurrentHexTile());
 
             yield return new WaitForSeconds(1.5f);
 
@@ -301,7 +301,7 @@ public class MechAIManager : MonoBehaviour
             {
                 MechController anticipatedTargetMech = AcquireTarget_v0(prospectivePath[prospectivePath.Count - 1]);
 
-                //DialogueGUI.Instance.HandleAIDialogue(controlledMech, anticipatedTargetMech, controlledMech.GetCurrentHexTile(), prospectivePath[prospectivePath.Count - 1]);
+                DialogueGUI.Instance.HandleEasyAIDialogue(controlledMech, anticipatedTargetMech, controlledMech.GetCurrentHexTile(), prospectivePath[prospectivePath.Count - 1]);
 
                 yield return new WaitForSeconds(1.5f);
 
@@ -310,6 +310,10 @@ public class MechAIManager : MonoBehaviour
             }
             else
             {
+                DialogueGUI.Instance.HandleEasyAIDialogue(controlledMech, null, controlledMech.GetCurrentHexTile(), controlledMech.GetCurrentHexTile());
+
+                yield return new WaitForSeconds(1.5f);
+
                 GameManager.Instance.ConcludeCurrentTurn();
             }
         }

@@ -41,7 +41,7 @@ public class DialogueGUI : MonoBehaviour
     public Image speechBG;
     public Text speechText;
 
-    public void HandleAIDialogue(MechController aiMech, MechController targetMech, Cube currHexPos, Cube newHexPos)
+    public void HandleModerateAIDialogue(MechController aiMech, MechController targetMech, Cube currHexPos, Cube newHexPos)
     {
         // Evaluate parameters for AI Dialogue logic
         float defenseMult = targetMech == null ? 0.0f : HexGridManager.Instance.GetDefenseMultiplier(targetMech.GetCurrentHexTile());
@@ -74,29 +74,29 @@ public class DialogueGUI : MonoBehaviour
         if (targetMech != null &&
             targetMech.health.CurrentHealth - tentativeDmg <= 0.0f)
         {
-            DisplayAIDialogueLine(aiMech, AIContext.KILL_SHOT);
+            DisplayAIDialogueLine(aiMech, AIContext.KILL_SHOT, Difficulty.MODERATE);
         }
         else if (targetMech != null &&
                  targetMech.health.CurrentHealth <= targetMech.health.initialHealth * 0.5f &&
                  (currNumOpponentsExposedTo >= 2 || newNumOpponentsExposedTo >= 2))
         {
-            DisplayAIDialogueLine(aiMech, AIContext.VULNERABLE_TARGET);
+            DisplayAIDialogueLine(aiMech, AIContext.VULNERABLE_TARGET, Difficulty.MODERATE);
         }
         else if (newHexPos == currHexPos)
         {
-            DisplayAIDialogueLine(aiMech, AIContext.STAY_PUT);
+            DisplayAIDialogueLine(aiMech, AIContext.STAY_PUT, Difficulty.MODERATE);
         }
         else if (currDefenseMult == 1.0f && newDefenseMult != 1.0f)
         {
-            DisplayAIDialogueLine(aiMech, AIContext.TAKE_COVER);
+            DisplayAIDialogueLine(aiMech, AIContext.TAKE_COVER, Difficulty.MODERATE);
         }
         else if (newNumOpponentsExposedTo < currNumOpponentsExposedTo)
         {
-            DisplayAIDialogueLine(aiMech, AIContext.REDUCE_EXPOSURE);
+            DisplayAIDialogueLine(aiMech, AIContext.REDUCE_EXPOSURE, Difficulty.MODERATE);
         }
         else if (targetMech != null && currNumOpponentsExposedTo == 0 && newNumOpponentsExposedTo >= 1)
         {
-            DisplayAIDialogueLine(aiMech, AIContext.MOVE_TO_ATTACK);
+            DisplayAIDialogueLine(aiMech, AIContext.MOVE_TO_ATTACK, Difficulty.MODERATE);
         }
         else if (targetMech != null)
         {
@@ -105,12 +105,77 @@ public class DialogueGUI : MonoBehaviour
 
             if (newDistanceToTaget < currDistanceToTarget)
             {
-                DisplayAIDialogueLine(aiMech, AIContext.APPROACH_TARGET);
+                DisplayAIDialogueLine(aiMech, AIContext.APPROACH_TARGET, Difficulty.MODERATE);
             }
         }
     }
 
-    public void DisplayAIDialogueLine(MechController aiMech, AIContext context)
+    public void HandleEasyAIDialogue(MechController aiMech, MechController targetMech, Cube currHexPos, Cube newHexPos)
+    {
+        // Evaluate parameters for AI Dialogue logic
+        float defenseMult = targetMech == null ? 0.0f : HexGridManager.Instance.GetDefenseMultiplier(targetMech.GetCurrentHexTile());
+        int tentativeDmg = Mathf.RoundToInt(2.0f * defenseMult); // For now, this should be 2 or 1
+
+        int currNumOpponentsExposedTo = 0;
+        int newNumOpponentsExposedTo = 0;
+        foreach (MechController opposingMech in GameManager.Instance.MechFriendlies)
+        {
+            if (opposingMech.health.CurrentHealth <= 0)
+            {
+                continue;
+            }
+
+            if (GameManager.Instance.CheckForLineOfSight(fromHexTile: currHexPos, opposingMech.GetCurrentHexTile()) == null)
+            {
+                currNumOpponentsExposedTo++;
+            }
+
+            if (GameManager.Instance.CheckForLineOfSight(fromHexTile: newHexPos, opposingMech.GetCurrentHexTile()) == null)
+            {
+                newNumOpponentsExposedTo++;
+            }
+        }
+
+        // Determine AI Dialogue Line
+        if (targetMech == null &&
+            newHexPos == currHexPos)
+        {
+            DisplayAIDialogueLine(aiMech, AIContext.NO_TARGET, Difficulty.EASY);
+        }
+        else if (targetMech != null &&
+            targetMech.health.CurrentHealth - tentativeDmg <= 0.0f)
+        {
+            DisplayAIDialogueLine(aiMech, AIContext.KILL_SHOT, Difficulty.EASY);
+        }
+        else if (targetMech != null &&
+                 currHexPos != newHexPos)
+        {
+            DisplayAIDialogueLine(aiMech, AIContext.MOVE_TO_ATTACK, Difficulty.EASY);
+        }
+        else if (targetMech != null &&
+                 targetMech.health.CurrentHealth <= targetMech.health.initialHealth * 0.5f &&
+                 (currNumOpponentsExposedTo >= 2 || newNumOpponentsExposedTo >= 2))
+        {
+            DisplayAIDialogueLine(aiMech, AIContext.VULNERABLE_TARGET, Difficulty.EASY);
+        }
+        else if (targetMech != null &&
+                 (currNumOpponentsExposedTo >= 2 || newNumOpponentsExposedTo >= 2))
+        {
+            DisplayAIDialogueLine(aiMech, AIContext.ATTACK_NEARBY_TARGET, Difficulty.EASY);
+        }
+        else if (targetMech != null &&
+                 Random.Range(0, 2) >= 1)
+        {
+            DisplayAIDialogueLine(aiMech, AIContext.GENERIC_ATTACK, Difficulty.EASY);
+        }
+        else if (targetMech != null &&
+                 newHexPos == currHexPos)
+        {
+            DisplayAIDialogueLine(aiMech, AIContext.STAY_PUT, Difficulty.EASY);
+        }
+    }
+
+    public void DisplayAIDialogueLine(MechController aiMech, AIContext context, Difficulty difficulty)
     {
         Debug.Log($"DialogueGUI::DisplayAIDialogueLine( {aiMech} , {context} )");
 
@@ -118,7 +183,7 @@ public class DialogueGUI : MonoBehaviour
         characterNameText.text = aiMech.MechName;
 
         StopAllCoroutines();
-        StartCoroutine(RenderDialogue(aiModerateDialogueData.GetLine(context)));
+        StartCoroutine(RenderDialogue(difficulty == Difficulty.MODERATE ? aiModerateDialogueData.GetLine(context) : aiEasyDialogueData.GetLine(context)));
 
         Debug.Log($"DialogueGUI :: Dialogue Line: {speechText.text}");
     }
@@ -221,4 +286,24 @@ public class DialogueGUI : MonoBehaviour
     /// risks
     /// contingencies
     /// threats
+
+    /// ATTACK
+    /// assailing
+    /// assaulting
+    /// striking
+    /// firing
+    /// opening fire
+    /// targeting
+
+    /// NEARBY
+    /// adjacent
+    /// proximal
+    /// at hand
+    /// close
+    
+    /// NO TARGET
+    /// Sensors return negative...
+    /// No threats in sight...
+    /// No targets in range...
+    /// Enemies not detected...
 }

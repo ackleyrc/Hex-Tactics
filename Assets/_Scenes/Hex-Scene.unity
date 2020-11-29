@@ -6130,7 +6130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mechDetails: {fileID: 11400000, guid: a47545ae504fd384697e9510f619cd97, type: 2}
-  aiEasyDialogueData: {fileID: 11400000, guid: 5bdf8de1744a22c45bac411373e46f76, type: 2}
+  aiEasyDialogueData: {fileID: 11400000, guid: c9d5965fc1bf2774c8a92ed1d8df00d0, type: 2}
   aiModerateDialogueData: {fileID: 11400000, guid: 5bdf8de1744a22c45bac411373e46f76,
     type: 2}
   panelGroup: {fileID: 1820273719}
@@ -12779,10 +12779,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 28
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 2
     m_MaxSize: 40
     m_Alignment: 6
     m_AlignByGeometry: 0
