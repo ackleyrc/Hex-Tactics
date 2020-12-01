@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
             _Instance = null;
         }
     }
-#endregion SINGLETON_MGMT
+    #endregion SINGLETON_MGMT
 
     public MechEntityDetailsData mechDetails;
 

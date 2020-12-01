@@ -22,7 +22,9 @@ public class PauseScreenGUI : MonoBehaviour
             _Instance = null;
         }
     }
-#endregion SINGLETON_MGMT
+    #endregion SINGLETON_MGMT
+
+    public event System.Action OnRestartGame = delegate { };
 
     public CanvasGroup canvasGroup;
     public Button resumeButton;
@@ -73,6 +75,8 @@ public class PauseScreenGUI : MonoBehaviour
         canvasGroup.blocksRaycasts = false;
 
         canvasGroup.alpha = 0.0f;
+
+        OnRestartGame?.Invoke();
     }
 
     private void OnClickExitButton()

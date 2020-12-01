@@ -22,7 +22,9 @@ public class WinConditionGUI : MonoBehaviour
             _Instance = null;
         }
     }
-#endregion SINGLETON_MGMT
+    #endregion SINGLETON_MGMT
+
+    public event System.Action OnRestartGame = delegate { };
 
     public HUDColorPalette colorPalette;
 
@@ -165,6 +167,8 @@ public class WinConditionGUI : MonoBehaviour
         GameManager.Instance.ResetGame();
         DifficultySelectionGUI.Instance.Display();
         Initialize();
+
+        OnRestartGame?.Invoke();
     }
 
     private void OnClickExitButton()

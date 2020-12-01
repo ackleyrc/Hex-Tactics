@@ -38,6 +38,8 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         TitleScreenGUI.Instance.OnStartGame += HandleStartGameFromTitleScreen;
+        PauseScreenGUI.Instance.OnRestartGame += HandleRestartGameFromPauseScreen;
+        WinConditionGUI.Instance.OnRestartGame += HandleRestartGameFromWinLoseScreen;
 
         musicTitleScreen.loop = true;
         musicTitleScreen.Play();
@@ -66,6 +68,59 @@ public class AudioManager : MonoBehaviour
 
             currentMusicState = MusicState.GAMEPLAY;
         }
+    }
+
+    private void HandleRestartGameFromPauseScreen()
+    {
+        SkipToNextGameplayTrack();
+    }
+
+    private void HandleRestartGameFromWinLoseScreen()
+    {
+        SkipToNextGameplayTrack();
+    }
+
+    private void SkipToNextGameplayTrack()
+    {
+        if (musicTrackB.isPlaying == false &&
+            musicTrackA.isPlaying == true)
+        {
+            currentGameplayClipIndex = (currentGameplayClipIndex + 1) % audioData.GameplayTracks.Length;
+            musicTrackB.clip = audioData.GameplayTracks[currentGameplayClipIndex];
+
+            musicTrackA.Stop();
+            musicTrackB.Stop();
+            musicTrackB.Play();
+
+            Debug.Log($"AudioManager :: Switch from Track A to Track B with index [{currentGameplayClipIndex}]");
+        }
+        else if (musicTrackA.isPlaying == false &&
+                 musicTrackB.isPlaying == true)
+        {
+            currentGameplayClipIndex = (currentGameplayClipIndex + 1) % audioData.GameplayTracks.Length;
+            musicTrackA.clip = audioData.GameplayTracks[currentGameplayClipIndex];
+
+            musicTrackB.Stop();
+            musicTrackA.Stop();
+            musicTrackA.Play();
+
+            Debug.Log($"AudioManager :: Switch from Track B to Track A with index [{currentGameplayClipIndex}]");
+        }
+        else if (musicTrackA.isPlaying == false &&
+                 musicTrackB.isPlaying == false)
+        {
+            currentGameplayClipIndex = (currentGameplayClipIndex + 1) % audioData.GameplayTracks.Length;
+            musicTrackA.clip = audioData.GameplayTracks[currentGameplayClipIndex];
+
+            musicTrackB.Stop();
+            musicTrackA.Stop();
+            musicTrackA.Play();
+
+            Debug.Log($"AudioManager :: Start Track A with index [{currentGameplayClipIndex}]");
+        }
+        // else both are playing, in which case we let the crossfade play out
+
+        currentMusicState = MusicState.GAMEPLAY;
     }
 
     private void Update()
