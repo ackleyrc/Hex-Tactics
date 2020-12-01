@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     }
     #endregion SINGLETON_MGMT
 
+    /// <summary> Boolean parameter indicates whether the human player has won </summary>
+    public event System.Action<bool> OnWinLoseConditionMet = delegate { };
+
     public MechEntityDetailsData mechDetails;
 
     public MechController mechFriendlyPrefab;
@@ -443,6 +446,8 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         
         WinConditionGUI.Instance.Display(humanPlayerWon);
+
+        OnWinLoseConditionMet?.Invoke(humanPlayerWon);
     }
 
     private IEnumerator SkipTurn()

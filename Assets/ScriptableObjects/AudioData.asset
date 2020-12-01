@@ -18,3 +18,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 533ce01c6c0c9664390ca174cb3df81d, type: 3}
   - {fileID: 8300000, guid: 6a10f81370cc5204f874537a7310ac9f, type: 3}
   - {fileID: 8300000, guid: 4d22e84dbaf886940b1a13593f82a88d, type: 3}
+  missionSuccessStinger: {fileID: 8300000, guid: 986b2aa338ad7a64a8c54431f0c56016,
+    type: 3}
+  missionFailedStinger: {fileID: 8300000, guid: 13f8ec85a462c884894022b2f5531ccb,
+    type: 3}

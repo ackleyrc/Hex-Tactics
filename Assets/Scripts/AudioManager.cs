@@ -27,6 +27,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource musicTitleScreen;
     public AudioSource musicTrackA;
     public AudioSource musicTrackB;
+    public AudioSource stinger;
 
     private enum MusicState { NONE, TITLE_SCREEN, INTRO, GAMEPLAY, OUTRO, CREDITS }
     private MusicState currentMusicState = MusicState.NONE;
@@ -40,6 +41,7 @@ public class AudioManager : MonoBehaviour
         TitleScreenGUI.Instance.OnStartGame += HandleStartGameFromTitleScreen;
         PauseScreenGUI.Instance.OnRestartGame += HandleRestartGameFromPauseScreen;
         WinConditionGUI.Instance.OnRestartGame += HandleRestartGameFromWinLoseScreen;
+        GameManager.Instance.OnWinLoseConditionMet += HandleWinLoseConditionMet;
 
         musicTitleScreen.loop = true;
         musicTitleScreen.Play();
@@ -77,6 +79,8 @@ public class AudioManager : MonoBehaviour
 
     private void HandleRestartGameFromWinLoseScreen()
     {
+        stinger.Stop();
+
         SkipToNextGameplayTrack();
     }
 
@@ -152,5 +156,21 @@ public class AudioManager : MonoBehaviour
                 Debug.Log($"AudioManager :: Switch from Track B to Track A with index [{currentGameplayClipIndex}]");
             }
         }
+    }
+
+    private void HandleWinLoseConditionMet(bool humanPlayerWon)
+    {
+        Debug.Log($"AudioManager::HandleWinLoseConditionmet( humanPlayerWon: {humanPlayerWon} )");
+
+        musicTrackB.Stop();
+        musicTrackA.Stop();
+
+        stinger.Stop();
+        stinger.clip = humanPlayerWon ? audioData.MissionSuccessStinger : audioData.MissionFailedStinger;
+        stinger.time = humanPlayerWon ? 0.0f : 1.2f; // after drum stick count off, includes cymbal
+        //stinger.time = humanPlayerWon ? 0.0f : 1.5f; // After cymbal, start of first note
+        stinger.Play();
+
+        currentMusicState = MusicState.OUTRO;
     }
 }
