@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "HexTileHighlightData", menuName = "ScriptableObjects/HexTileHighlightData", order = 3)]
+[CreateAssetMenu(fileName = "HexTileHighlightData", menuName = "ScriptableObjects/HexTileHighlightData", order = 0)]
 public class HexTileHighlightData : ScriptableObject
 {
     [SerializeField]

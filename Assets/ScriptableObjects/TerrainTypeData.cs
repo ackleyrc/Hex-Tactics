@@ -16,7 +16,7 @@ public enum HexTerrainType
     WETLANDS = 9,
 }
 
-[CreateAssetMenu(fileName = "TerrainTypeData", menuName = "ScriptableObjects/TerrainTypeData", order = 6)]
+[CreateAssetMenu(fileName = "TerrainTypeData", menuName = "ScriptableObjects/TerrainTypeData", order = 0)]
 public class TerrainTypeData : ScriptableObject
 {
     [SerializeField]

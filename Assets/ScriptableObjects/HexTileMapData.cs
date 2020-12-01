@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "HexTileMapData", menuName = "ScriptableObjects/HexTileMapData", order = 2)]
+[CreateAssetMenu(fileName = "HexTileMapData", menuName = "ScriptableObjects/HexTileMapData", order = 0)]
 public class HexTileMapData : ScriptableObject
 {
     [SerializeField]

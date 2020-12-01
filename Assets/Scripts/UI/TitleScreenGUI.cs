@@ -21,7 +21,9 @@ public class TitleScreenGUI : MonoBehaviour
             _Instance = null;
         }
     }
-#endregion SINGLETON_MGMT
+    #endregion SINGLETON_MGMT
+
+    public event System.Action OnStartGame = delegate { };
 
     public CanvasGroup canvasGroup;
     public Button startButton;
@@ -41,6 +43,8 @@ public class TitleScreenGUI : MonoBehaviour
     private void OnClickStartButton()
     {
         StartCoroutine(FadeOut());
+
+        OnStartGame?.Invoke();
     }
 
     private void OnClickExitButton()

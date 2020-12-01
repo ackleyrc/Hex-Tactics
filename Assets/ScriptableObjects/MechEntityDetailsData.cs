@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "MechEntityDetailsData", menuName = "ScriptableObjects/MechEntityDetailsData", order = 4)]
+[CreateAssetMenu(fileName = "MechEntityDetailsData", menuName = "ScriptableObjects/MechEntityDetailsData", order = 0)]
 public class MechEntityDetailsData : ScriptableObject
 {
     [SerializeField]

@@ -16,7 +16,7 @@ public enum AIContext
     NO_TARGET,
 }
 
-[CreateAssetMenu(fileName = "AIDialogueData", menuName = "ScriptableObjects/AIDialogueData", order = 5)]
+[CreateAssetMenu(fileName = "AIDialogueData", menuName = "ScriptableObjects/AIDialogueData", order = 0)]
 public class AIDialogueData : ScriptableObject
 {
     [SerializeField]

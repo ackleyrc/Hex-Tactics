@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "HUDColorPalette", menuName = "ScriptableObjects/HUDColorPalette", order = 5)]
+[CreateAssetMenu(fileName = "HUDColorPalette", menuName = "ScriptableObjects/HUDColorPalette", order = 0)]
 public class HUDColorPalette : ScriptableObject
 {
     [SerializeField]

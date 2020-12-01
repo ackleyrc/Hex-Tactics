@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "HexTileSpriteData", menuName = "ScriptableObjects/HexTileSpriteData", order = 1)]
+[CreateAssetMenu(fileName = "HexTileSpriteData", menuName = "ScriptableObjects/HexTileSpriteData", order = 0)]
 public class HexTileSpriteData : ScriptableObject
 {
     [SerializeField]
