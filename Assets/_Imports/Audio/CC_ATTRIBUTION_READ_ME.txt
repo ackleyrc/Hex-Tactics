@@ -149,9 +149,86 @@ I Feel You by Kevin MacLeod
 https://incompetech.filmmusic.io/song/3894-i-feel-you
 Electronica | Experimental | Rock
 
+MAP EDITOR?
+Chill Wave by Kevin MacLeod
+https://incompetech.filmmusic.io/song/3498-chill-wave
+Electronica | Funk
+
 
 This game uses these sounds from freesound:
+AMBIENT WIND
 Desert Ambient LOOP by Imjeax ( https://freesound.org/people/Imjeax/sounds/427401/ )
 http://creativecommons.org/licenses/by/3.0/
 04001 looping hollow open air wind 1 by Robinhood76 ( https://freesound.org/people/Robinhood76/sounds/175513/ )
 http://creativecommons.org/licenses/by-nc/3.0/
+
+LASER FIRING
+Wierd Laser by deleted_user_4798915 ( https://freesound.org/people/deleted_user_4798915/sounds/318205/ )
+http://creativecommons.org/licenses/by-nc/3.0/
+Laser by SamsterBirdies ( https://freesound.org/people/SamsterBirdies/sounds/470903/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+Beam by Deatlev ( https://freesound.org/people/Deatlev/sounds/254942/ )
+http://creativecommons.org/licenses/by/3.0/
+
+MECH COLLAPSING
+Iron Door Groan 1 by thatjeffcarter ( https://freesound.org/people/thatjeffcarter/sounds/133452/ )
+http://creativecommons.org/licenses/by/3.0/
+Iron Door Groan 2 by thatjeffcarter ( https://freesound.org/people/thatjeffcarter/sounds/133451/ )
+http://creativecommons.org/licenses/by/3.0/
+Doorcreak by chipfork71 ( https://freesound.org/people/chipfork71/sounds/50857/ )
+http://creativecommons.org/licenses/by/3.0/
+Heavy Door Creaking_03 by rambler 52 ( https://freesound.org/people/rambler52/sounds/455320/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+Metal Door Groaning by Mafon2 ( https://freesound.org/people/Mafon2/sounds/379803/ )
+http://creativecommons.org/licenses/by/3.0/
+
+MECH CRASH
+Exploding Car (with Fire) (Mixed) by EFlexMusic ( https://freesound.org/people/EFlexMusic/sounds/396270/ )
+http://creativecommons.org/licenses/by-nc/3.0/
+Explode001 by mitchelk ( https://freesound.org/people/mitchelk/sounds/136765/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+Explosion_001 by cydon ( https://freesound.org/people/cydon/sounds/268557/ )
+http://creativecommons.org/licenses/by-nc/3.0/
+Explosion 3 by harpoyume ( https://freesound.org/people/harpoyume/sounds/86026/ )
+http://creativecommons.org/licenses/by-nc/3.0/
+explosion 4 by harpoyume ( https://freesound.org/people/harpoyume/sounds/86032/ )
+http://creativecommons.org/licenses/by-nc/3.0/
+Huge Explosion by CGEffex ( https://freesound.org/people/CGEffex/sounds/93834/ )
+http://creativecommons.org/licenses/by-nc/3.0/
+Explosion by FlashTrauma ( https://freesound.org/people/FlashTrauma/sounds/398283/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+Explosion (Pas) by studiomandragore ( https://freesound.org/people/studiomandragore/sounds/401628/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+
+MECH LANDING
+impact_ by sangnamsa ( https://freesound.org/people/sangnamsa/sounds/473941/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+Hard Landing by hatchetgirl ( https://freesound.org/people/hatchetgirl/sounds/386905/ )
+http://creativecommons.org/licenses/by/3.0/
+Booom by bareform ( https://freesound.org/people/bareform/sounds/218718/ )
+http://creativecommons.org/licenses/by-nc/3.0/
+Metallic Thump by ZurfR ( https://freesound.org/people/ZurfR/sounds/400584/ )
+http://creativecommons.org/licenses/by-nc/3.0/
+book-hit by Kneeling ( https://freesound.org/people/Kneeling/sounds/448005/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+door metal big heavy close kinda slam thud echo offmic by kyles ( https://freesound.org/people/kyles/sounds/406197/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+
+SIZZLE (w/ LASER ATTACK)
+Arc Welding by kev_durr ( https://freesound.org/people/kev_durr/sounds/396511/ )
+http://creativecommons.org/licenses/by/3.0/
+welding a piece of metal with sparks flying all over the place by Tomlijia ( https://freesound.org/people/Tomlija/sounds/103333/ )
+http://creativecommons.org/licenses/by/3.0/
+Weld_01_Outdoor by snapssound ( https://freesound.org/people/snapssound/sounds/528121/ )
+http://creativecommons.org/licenses/by/3.0/
+industrial_welding_long by gilly11 ( https://freesound.org/people/gilly11/sounds/143582/ )
+http://creativecommons.org/licenses/by/3.0/
+Welding_TIG by markpSFX ( https://freesound.org/people/markpSFX/sounds/262190/ )
+http://creativecommons.org/licenses/by/3.0/
+Water Hitting Hot Metal by JasonElrod ( https://freesound.org/people/JasonElrod/sounds/85482/ )
+http://creativecommons.org/licenses/by/3.0/
+
+
+
+
+
