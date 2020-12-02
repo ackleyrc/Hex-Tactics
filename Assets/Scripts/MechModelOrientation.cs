@@ -53,6 +53,7 @@ public class MechModelOrientation : MonoBehaviour
                 //Debug.Log($"MechModelOrientation :: Beginning to rotate...");
                 isChangingLookDirection = true;
                 modelAnimator.SetBool("isTurning", true);
+                modelAnimator.speed = 1.3f;
             }
 
             // Rotations to the exact opposite directions produce strange results, so we'll add a slight bias to resolve this...

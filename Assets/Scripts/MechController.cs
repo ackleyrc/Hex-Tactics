@@ -11,8 +11,8 @@ public class MechController : MonoBehaviour
     public MechModelOrientation modelOrientation;
     public Animator modelAnimator;
     public Transform firingTarget;
-    public float walkingSpeed = 1.0f;
-    public float runningSpeed = 2.0f;
+    public float walkingSpeed = 1.3f;
+    public float runningSpeed = 2.6f;
     public float weaponFireDuration = 2.0f;
     public float weightedDistanceRange = 3.0f;
 
@@ -126,6 +126,7 @@ public class MechController : MonoBehaviour
             {
                 //Debug.Log($"MechController :: Begin Firing Laser...");
                 laserWeapon.FireLaser(currentAttackTarget.firingTarget, weaponFireDuration);
+                modelAnimator.speed = 1.0f;
                 modelAnimator.SetBool("isFiringLaser", true);
                 isFiringWeapon = true;
             }
@@ -173,6 +174,8 @@ public class MechController : MonoBehaviour
 
                     isRunning = false;
                     modelAnimator.SetBool("isRunning", false);
+
+                    modelAnimator.speed = 1.3f;
                 }
                 else if (movementCost == 1.0f && isRunning == false)
                 {
@@ -181,6 +184,8 @@ public class MechController : MonoBehaviour
 
                     isRunning = true;
                     modelAnimator.SetBool("isRunning", true);
+
+                    modelAnimator.speed = 1.3f;
                 }
 
                 distanceTravelled += (movementCost > 1.0f ? walkingSpeed : runningSpeed) * Time.deltaTime;
@@ -207,6 +212,7 @@ public class MechController : MonoBehaviour
                         isWalking = false;
                         modelAnimator.SetBool("isRunning", false);
                         isRunning = false;
+                        modelAnimator.speed = 1.0f;
 
                         Debug.Log($"MechController :: Final Path Destination Reached!");
                         currentState = MechState.NONE;
@@ -239,6 +245,8 @@ public class MechController : MonoBehaviour
                             isWalking = false;
                             modelAnimator.SetBool("isRunning", false);
                             isRunning = false;
+
+                            modelAnimator.speed = 1.0f;
 
                             Debug.Log($"MechController :: Wait to change direction...");
                         }
