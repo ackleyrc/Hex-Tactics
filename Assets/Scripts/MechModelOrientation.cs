@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class MechModelOrientation : MonoBehaviour
 {
+    public MechController mechController;
     public Transform mechModelTransform;
     public Animator modelAnimator;
     public Vector3 skewRotation;
     public float turnRadiansPerSecond;
+    public AudioSource locomotionSoundEffect;
 
     private Vector3 targetLookDirection;
     private Vector3 currentLookDirection;
@@ -54,6 +56,14 @@ public class MechModelOrientation : MonoBehaviour
                 isChangingLookDirection = true;
                 modelAnimator.SetBool("isTurning", true);
                 modelAnimator.speed = 1.3f;
+
+                if (mechController.CurrentState == MechController.MechState.ATTACKING)
+                {
+                    Debug.Log($"MechModelOrientation :: Play Locomotion for turning to Attack");
+                    locomotionSoundEffect.Stop();
+                    locomotionSoundEffect.time = 1.0f;
+                    locomotionSoundEffect.Play();
+                }
             }
 
             // Rotations to the exact opposite directions produce strange results, so we'll add a slight bias to resolve this...
@@ -76,6 +86,11 @@ public class MechModelOrientation : MonoBehaviour
                 //Debug.Log($"MechModelOrientation :: Done Rotating!");
                 isChangingLookDirection = false;
                 modelAnimator.SetBool("isTurning", false);
+
+                if (mechController.CurrentState == MechController.MechState.ATTACKING)
+                {
+                    locomotionSoundEffect.time = 21.35f;
+                }
             }
         }
     }

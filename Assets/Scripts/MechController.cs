@@ -15,6 +15,7 @@ public class MechController : MonoBehaviour
     public float runningSpeed = 2.6f;
     public float weaponFireDuration = 2.0f;
     public float weightedDistanceRange = 3.0f;
+    public AudioSource locomotionSoundEffect;
 
     private Queue<Cube> currentPath = new Queue<Cube>();
     private Cube latestHexTile;
@@ -26,8 +27,8 @@ public class MechController : MonoBehaviour
     private float weaponFireElapsed = 0.0f;
     private bool isFiringWeapon = false;
 
-    private enum MechState { NONE, TRAVELLING, ATTACKING }
-    private MechState currentState = MechState.NONE;
+    public enum MechState { NONE, TRAVELLING, ATTACKING }
+    public MechState CurrentState { get; private set; } = MechState.NONE;
 
     public int UnitIndex { get; private set; }
     public string MechName { get; private set; }
@@ -59,6 +60,8 @@ public class MechController : MonoBehaviour
     {
         //Debug.Log($"MechController::SetPath( {path.Count} )");
 
+        CurrentState = MechState.TRAVELLING;
+
         currentPath = new Queue<Cube>();
         foreach (Cube cube in path)
         {
@@ -78,7 +81,12 @@ public class MechController : MonoBehaviour
 
         modelOrientation.SetLookTarget(directionToNextTile);
 
-        currentState = MechState.TRAVELLING;
+        if (locomotionSoundEffect.isPlaying == false)
+        {
+            locomotionSoundEffect.Stop();
+            locomotionSoundEffect.time = 1.0f;
+            locomotionSoundEffect.Play();
+        }
 
         OnMoveStarted?.Invoke(this);
     }
@@ -86,6 +94,8 @@ public class MechController : MonoBehaviour
     public void AttackTarget(MechController mechTarget)
     {
         Debug.Log($"MechController::AttackTarget( {mechTarget?.MechName} )");
+
+        CurrentState = MechState.ATTACKING;
 
         Vector3 targetHexTilePos = HexGridManager.Instance.GetHexCubeWorldPostion(mechTarget.GetCurrentHexTile());
         Vector3 currentHexTilePos = HexGridManager.Instance.GetHexCubeWorldPostion(latestHexTile);
@@ -95,14 +105,13 @@ public class MechController : MonoBehaviour
         currentAttackTarget = mechTarget;
         isFiringWeapon = false;
         weaponFireElapsed = 0.0f;
-        currentState = MechState.ATTACKING;
 
         OnAttackStarted?.Invoke(this);
     }
 
     private void Update()
     {
-        switch (currentState)
+        switch (CurrentState)
         {
             case MechState.TRAVELLING:
                 TravellingUpdate();
@@ -139,7 +148,7 @@ public class MechController : MonoBehaviour
                 modelAnimator.SetBool("isFiringLaser", false);
                 float defenseMultipler = HexGridManager.Instance.GetDefenseMultiplier(currentAttackTarget.GetCurrentHexTile());
                 currentAttackTarget.health.InflictDamage(Mathf.RoundToInt(2.0f * defenseMultipler)); // For now, this should be either 2 or 1
-                currentState = MechState.NONE;
+                CurrentState = MechState.NONE;
 
                 OnAttackStopped?.Invoke(this);
             }
@@ -215,7 +224,9 @@ public class MechController : MonoBehaviour
                         modelAnimator.speed = 1.0f;
 
                         Debug.Log($"MechController :: Final Path Destination Reached!");
-                        currentState = MechState.NONE;
+                        CurrentState = MechState.NONE;
+
+                        locomotionSoundEffect.time = 21.35f;
 
                         OnMoveStopped?.Invoke(this);
                     }
