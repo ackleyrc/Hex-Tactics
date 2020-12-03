@@ -28,7 +28,8 @@ public class AudioManager : MonoBehaviour
     public AudioSource musicTrackA;
     public AudioSource musicTrackB;
     public AudioSource stinger;
-    public AudioSource uiSfx;
+    public AudioSource hexToHexSfx;
+    public AudioSource actionConfirmSfx;
 
     private enum MusicState { NONE, TITLE_SCREEN, INTRO, GAMEPLAY, OUTRO, CREDITS }
     private MusicState currentMusicState = MusicState.NONE;
@@ -51,8 +52,14 @@ public class AudioManager : MonoBehaviour
 
     public void PlayHexHoverOver()
     {
-        uiSfx.Stop();
-        uiSfx.Play();
+        hexToHexSfx.Stop();
+        hexToHexSfx.Play();
+    }
+
+    public void PlayActionConfirm()
+    {
+        actionConfirmSfx.Stop();
+        actionConfirmSfx.Play();
     }
 
     private void HandleStartGameFromTitleScreen()

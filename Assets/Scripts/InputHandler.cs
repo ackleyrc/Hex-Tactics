@@ -123,6 +123,8 @@ public class InputHandler : MonoBehaviour
                             {
                                 Debug.Log($"InputHandler :: Click to Attack enemy mech at {hexCubeUnderMouse}");
                                 selectedMech.AttackTarget(enemyMechClicked);
+
+                                AudioManager.Instance.PlayActionConfirm();
                             }
                         }
                     }
@@ -143,6 +145,8 @@ public class InputHandler : MonoBehaviour
                                 if (pathCost <= selectedMech.weightedDistanceRange)
                                 {
                                     selectedMech.TravelPath(path);
+
+                                    AudioManager.Instance.PlayActionConfirm();
                                 }
                             }
                             else
