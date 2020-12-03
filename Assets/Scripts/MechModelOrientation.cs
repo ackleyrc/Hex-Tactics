@@ -59,7 +59,7 @@ public class MechModelOrientation : MonoBehaviour
 
                 if (mechController.CurrentState == MechController.MechState.ATTACKING)
                 {
-                    Debug.Log($"MechModelOrientation :: Play Locomotion for turning to Attack");
+                    //Debug.Log($"MechModelOrientation :: Play Locomotion for turning to Attack");
                     locomotionSoundEffect.Stop();
                     locomotionSoundEffect.time = 1.0f;
                     locomotionSoundEffect.Play();

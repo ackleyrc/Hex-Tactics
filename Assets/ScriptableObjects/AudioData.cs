@@ -16,4 +16,42 @@ public class AudioData : ScriptableObject
     [SerializeField]
     private AudioClip missionFailedStinger;
     public AudioClip MissionFailedStinger { get { return missionFailedStinger; } }
+
+    [SerializeField]
+    private AudioClip[] deathCollapse;
+    public AudioClip[] DeathCollapse { get { return deathCollapse; } }
+
+    [SerializeField]
+    private Clip[] deathCrashes;
+    public Clip[] DeathCrashes { get { return deathCrashes; } }
+
+    public AudioClip GetRandomDeathCollapse()
+    {
+        return DeathCollapse[Random.Range(0, DeathCollapse.Length)];
+    }
+
+    public Clip GetRandomDeathCrash()
+    {
+        return DeathCrashes[Random.Range(0, DeathCrashes.Length)];
+    }
+}
+
+[System.Serializable]
+public class Clip
+{
+    [SerializeField]
+    private AudioClip audioClip;
+    public AudioClip AudioClip { get { return audioClip; } }
+
+    [SerializeField]
+    private float startTime;
+    public float StartTime { get { return startTime; } }
+
+    [SerializeField]
+    private float pitch;
+    public float Pitch { get { return pitch; } }
+
+    [SerializeField]
+    private float maxVolume;
+    public float MaxVolume { get { return maxVolume; } }
 }

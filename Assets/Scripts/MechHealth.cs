@@ -11,6 +11,13 @@ public class MechHealth : MonoBehaviour
     public Vector3 deathSmokeMaxScale;
     public float deathSmokeScalingDuration;
 
+    public AudioData audioData;
+    public AudioSource deathCollapseSoundEffect;
+    public float deathCollapseMaxVolume;
+    public float deathCollapseDecayStart;
+    public float deathCollapseDecayDuration;
+    public AudioSource deathCrashSoundEffect;
+
     public int CurrentHealth { get; private set; }
 
     private float deathSmokeScalingElapsed;
@@ -18,6 +25,11 @@ public class MechHealth : MonoBehaviour
     private void Awake()
     {
         CurrentHealth = initialHealth;
+    }
+
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
     }
 
     public void InflictDamage(int damagePoints)
@@ -35,8 +47,43 @@ public class MechHealth : MonoBehaviour
             deathSmoke.transform.position = modelAnimator.transform.position;
             deathSmoke.transform.rotation = modelAnimator.transform.rotation;
             deathSmoke.transform.localScale = Vector3.zero;
+            StartCoroutine(HandleDeathCollapseSoundEffect());
             StartCoroutine(ScaleUpSmoke(deathSmoke));
         }
+    }
+
+    private IEnumerator HandleDeathCollapseSoundEffect()
+    {
+        Debug.Log($"MechHealth::HandleDeathCollapseSoundEffect()");
+
+        deathCollapseSoundEffect.Stop();
+        deathCollapseSoundEffect.clip = audioData.GetRandomDeathCollapse();
+        deathCollapseSoundEffect.Play();
+
+        yield return new WaitForSeconds(deathCollapseDecayStart);
+
+        Clip deathCrash = audioData.GetRandomDeathCrash();
+        deathCrashSoundEffect.clip = deathCrash.AudioClip;
+        deathCrashSoundEffect.time = deathCrash.StartTime;
+        deathCrashSoundEffect.volume = deathCrash.MaxVolume;
+        deathCrashSoundEffect.pitch = deathCrash.Pitch;
+        deathCrashSoundEffect.Play();
+
+        Debug.Log($"MechHealth :: Start Death Collapse SFX Decay...");
+
+        float decayElapsed = 0;
+
+        while (decayElapsed < deathCollapseDecayDuration)
+        {
+            decayElapsed += Time.deltaTime;
+            float decayNormalized = Mathf.Clamp01(decayElapsed / deathCollapseDecayDuration);
+            deathCollapseSoundEffect.volume = Mathf.Lerp(deathCollapseMaxVolume, 0.0f, decayNormalized);
+            yield return null;
+        }
+
+        deathCollapseSoundEffect.Stop();
+
+        Debug.Log($"MechHealth :: Stop Death Collapse SFX");
     }
 
     private IEnumerator ScaleUpSmoke(GameObject deathSmoke)
