@@ -28,6 +28,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource musicTrackA;
     public AudioSource musicTrackB;
     public AudioSource stinger;
+    public AudioSource uiSfx;
 
     private enum MusicState { NONE, TITLE_SCREEN, INTRO, GAMEPLAY, OUTRO, CREDITS }
     private MusicState currentMusicState = MusicState.NONE;
@@ -46,6 +47,12 @@ public class AudioManager : MonoBehaviour
         musicTitleScreen.loop = true;
         musicTitleScreen.Play();
         currentMusicState = MusicState.TITLE_SCREEN;
+    }
+
+    public void PlayHexHoverOver()
+    {
+        uiSfx.Stop();
+        uiSfx.Play();
     }
 
     private void HandleStartGameFromTitleScreen()

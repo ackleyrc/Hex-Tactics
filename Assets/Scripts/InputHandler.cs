@@ -168,6 +168,11 @@ public class InputHandler : MonoBehaviour
 
             HexInfoGUI.Instance.UpdateInfoPanel(currentHexTileUnderMouse);
 
+            if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse))
+            {
+                AudioManager.Instance.PlayHexHoverOver();
+            }
+
             //Debug.Log($"InputHandler :: Selected Mech: {selectedMech?.MechName}");
 
             if (selectedMech == null)
