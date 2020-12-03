@@ -390,6 +390,8 @@ public class GameManager : MonoBehaviour
         CacheReachableRange();
         DisplayCurrentTurn();
 
+        AudioManager.Instance.PlayUnitTurnChange();
+
         if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER)
         {
             actionPanelGUI.gameObject.SetActive(false);

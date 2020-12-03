@@ -30,6 +30,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource stinger;
     public AudioSource hexToHexSfx;
     public AudioSource actionConfirmSfx;
+    public AudioSource unitTurnSfx;
 
     private enum MusicState { NONE, TITLE_SCREEN, INTRO, GAMEPLAY, OUTRO, CREDITS }
     private MusicState currentMusicState = MusicState.NONE;
@@ -60,6 +61,12 @@ public class AudioManager : MonoBehaviour
     {
         actionConfirmSfx.Stop();
         actionConfirmSfx.Play();
+    }
+
+    public void PlayUnitTurnChange()
+    {
+        unitTurnSfx.Stop();
+        unitTurnSfx.Play();
     }
 
     private void HandleStartGameFromTitleScreen()
