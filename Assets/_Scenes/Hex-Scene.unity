@@ -7902,7 +7902,7 @@ MonoBehaviour:
   panelGroup: {fileID: 482842491}
   easyButton: {fileID: 933356354}
   moderateButton: {fileID: 1381677643}
-  panelLerpPosSpeed: 0.01
+  panelLerpPosSpeed: 0.02
   panelLerpAlphaSpeed: 2
 --- !u!225 &1083687841
 CanvasGroup:
@@ -17205,14 +17205,14 @@ MonoBehaviour:
   header: {fileID: 1745912570}
   headerBG: {fileID: 1326389368}
   headerText: {fileID: 1035263430}
-  headerLerpPosSpeed: 0.006
+  headerLerpPosSpeed: 0.06
   subHeader: {fileID: 178012477}
   subHeaderBG: {fileID: 2067676203}
   subHeaderText: {fileID: 866813945}
-  subHeaderLerpPosSpeed: 0.01
+  subHeaderLerpPosSpeed: 0.08
   panel: {fileID: 1430301845}
   panelGroup: {fileID: 1580512983}
   restartButton: {fileID: 700549041}
   exitButton: {fileID: 884154019}
-  panelLerpPosSpeed: 0.01
+  panelLerpPosSpeed: 0.02
   panelLerpAlphaSpeed: 2
