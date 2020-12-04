@@ -60,7 +60,7 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 6175f13e2d9e1804da411d236a5e4d53, type: 3}
     startTime: 0
     pitch: 1
-    maxVolume: 0.3
+    maxVolume: 0.4
   interactableUiClick:
     audioClip: {fileID: 8300000, guid: 6d8fc9ebf76ae754dbebcbd7da3e92c5, type: 3}
     startTime: 0

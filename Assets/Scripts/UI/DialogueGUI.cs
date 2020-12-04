@@ -182,6 +182,8 @@ public class DialogueGUI : MonoBehaviour
         portraitImage.sprite = mechDetails.GetPortrait(Allegiance.ENEMY, aiMech.UnitIndex);
         characterNameText.text = aiMech.MechName;
 
+        AudioManager.Instance.StopAIDialogue();
+
         StopAllCoroutines();
         StartCoroutine(RenderDialogue(difficulty == Difficulty.MODERATE ? aiModerateDialogueData.GetLine(context) : aiEasyDialogueData.GetLine(context)));
 
@@ -210,7 +212,18 @@ public class DialogueGUI : MonoBehaviour
             {
                 speechText.text = $"{lineSubstring}{postFixA}{postFixB}{postFixC}{postFixD}";
             }
+
+            if (maxChars > 1 && maxChars < line.Length)
+            {
+                AudioManager.Instance.PlayAIDialogue();
+            }
+            else if (maxChars >= line.Length)
+            {
+                AudioManager.Instance.StopAIDialogue();
+            }
         }
+
+        AudioManager.Instance.StopAIDialogue();
 
         panelGroup.alpha = 0.0f;
     }
