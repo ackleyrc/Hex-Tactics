@@ -24,9 +24,11 @@ public class TitleScreenGUI : MonoBehaviour
     #endregion SINGLETON_MGMT
 
     public event System.Action OnStartGame = delegate { };
+    public event System.Action OnOpenCredits = delegate { };
 
     public CanvasGroup canvasGroup;
     public Button startButton;
+    public Button creditsButton;
     public Button exitButton;
     public float fadeOutDuration;
 
@@ -35,6 +37,7 @@ public class TitleScreenGUI : MonoBehaviour
     private void Start()
     {
         startButton.onClick.AddListener(OnClickStartButton);
+        creditsButton.onClick.AddListener(OnClickCreditsButton);
         exitButton.onClick.AddListener(OnClickExitButton);
 
         IsDisplaying = true;
@@ -45,6 +48,13 @@ public class TitleScreenGUI : MonoBehaviour
         StartCoroutine(FadeOut());
 
         OnStartGame?.Invoke();
+    }
+
+    private void OnClickCreditsButton()
+    {
+        CreditsScreenGUI.Instance.DisplayCredits();
+
+        OnOpenCredits?.Invoke();
     }
 
     private void OnClickExitButton()

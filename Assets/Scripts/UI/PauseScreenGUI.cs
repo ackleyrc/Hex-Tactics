@@ -22,7 +22,7 @@ public class PauseScreenGUI : MonoBehaviour
             _Instance = null;
         }
     }
-    #endregion SINGLETON_MGMT
+#endregion SINGLETON_MGMT
 
     public event System.Action OnRestartGame = delegate { };
 
@@ -44,15 +44,18 @@ public class PauseScreenGUI : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (TitleScreenGUI.Instance.IsDisplaying == false)
         {
-            if (IsDisplayed == true)
+            if (Input.GetKeyUp(KeyCode.Escape))
             {
-                StartCoroutine(FadeOut());
-            }
-            else
-            {
-                StartCoroutine(FadeIn());
+                if (IsDisplayed == true)
+                {
+                    StartCoroutine(FadeOut());
+                }
+                else
+                {
+                    StartCoroutine(FadeIn());
+                }
             }
         }
     }

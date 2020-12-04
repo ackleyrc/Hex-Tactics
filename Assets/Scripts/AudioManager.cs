@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-#region SINGLETON_MGMT
+    #region SINGLETON_MGMT
     private static AudioManager _Instance;
     public static AudioManager Instance { get { return _Instance; } }
 
@@ -25,6 +25,7 @@ public class AudioManager : MonoBehaviour
     public AudioData audioData;
 
     public AudioSource musicTitleScreen;
+    public AudioSource musicCreditsScreen;
     public AudioSource musicTrackA;
     public AudioSource musicTrackB;
     public AudioSource stinger;
@@ -44,6 +45,8 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         TitleScreenGUI.Instance.OnStartGame += HandleStartGameFromTitleScreen;
+        TitleScreenGUI.Instance.OnOpenCredits += HandleOpenCreditsFromTitleScreen;
+        CreditsScreenGUI.Instance.OnCloseCredits += HandleCloseCreditsScreen;
         PauseScreenGUI.Instance.OnRestartGame += HandleRestartGameFromPauseScreen;
         WinConditionGUI.Instance.OnRestartGame += HandleRestartGameFromWinLoseScreen;
         GameManager.Instance.OnWinLoseConditionMet += HandleWinLoseConditionMet;
@@ -130,6 +133,32 @@ public class AudioManager : MonoBehaviour
             musicTrackA.Play();
 
             currentMusicState = MusicState.GAMEPLAY;
+        }
+    }
+
+    private void HandleOpenCreditsFromTitleScreen()
+    {
+        musicTitleScreen.Stop();
+
+        if (currentMusicState != MusicState.CREDITS)
+        {
+            musicCreditsScreen.Stop();
+            musicCreditsScreen.Play();
+
+            currentMusicState = MusicState.CREDITS;
+        }
+    }
+
+    private void HandleCloseCreditsScreen()
+    {
+        musicCreditsScreen.Stop();
+
+        if (currentMusicState != MusicState.TITLE_SCREEN)
+        {
+            musicTitleScreen.Stop();
+            musicTitleScreen.Play();
+
+            currentMusicState = MusicState.TITLE_SCREEN;
         }
     }
 

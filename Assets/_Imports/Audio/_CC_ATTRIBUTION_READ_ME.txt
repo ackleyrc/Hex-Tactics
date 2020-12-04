@@ -163,36 +163,56 @@ http://creativecommons.org/licenses/by/3.0/
 http://creativecommons.org/licenses/by-nc/3.0/
 
 LASER FIRING
-Wierd Laser by deleted_user_4798915 ( https://freesound.org/people/deleted_user_4798915/sounds/318205/ )
-http://creativecommons.org/licenses/by-nc/3.0/
 Laser by SamsterBirdies ( https://freesound.org/people/SamsterBirdies/sounds/470903/ )
 https://creativecommons.org/publicdomain/zero/1.0/
 Beam by Deatlev ( https://freesound.org/people/Deatlev/sounds/254942/ )
 http://creativecommons.org/licenses/by/3.0/
+Wierd Laser by deleted_user_4798915 ( https://freesound.org/people/deleted_user_4798915/sounds/318205/ )
+http://creativecommons.org/licenses/by-nc/3.0/
+
+SIZZLE (w/ LASER ATTACK)
+welding a piece of metal with sparks flying all over the place by Tomlijia ( https://freesound.org/people/Tomlija/sounds/103333/ )
+http://creativecommons.org/licenses/by/3.0/
+Arc Welding by kev_durr ( https://freesound.org/people/kev_durr/sounds/396511/ )
+http://creativecommons.org/licenses/by/3.0/
+Weld_01_Outdoor by snapssound ( https://freesound.org/people/snapssound/sounds/528121/ )
+http://creativecommons.org/licenses/by/3.0/
+industrial_welding_long by gilly11 ( https://freesound.org/people/gilly11/sounds/143582/ )
+http://creativecommons.org/licenses/by/3.0/
+Welding_TIG by markpSFX ( https://freesound.org/people/markpSFX/sounds/262190/ )
+http://creativecommons.org/licenses/by/3.0/
+Water Hitting Hot Metal by JasonElrod ( https://freesound.org/people/JasonElrod/sounds/85482/ )
+http://creativecommons.org/licenses/by/3.0/
+
+MECH MOVEMENT
+Woodchipper Start (heavy machine) 02 by cmorris035 ( https://freesound.org/people/cmorris035/sounds/319152/ )
+https://creativecommons.org/publicdomain/zero/1.0/
 
 MECH COLLAPSING
-Iron Door Groan 1 by thatjeffcarter ( https://freesound.org/people/thatjeffcarter/sounds/133452/ )
-http://creativecommons.org/licenses/by/3.0/
-Iron Door Groan 2 by thatjeffcarter ( https://freesound.org/people/thatjeffcarter/sounds/133451/ )
-http://creativecommons.org/licenses/by/3.0/
 Doorcreak by chipfork71 ( https://freesound.org/people/chipfork71/sounds/50857/ )
 http://creativecommons.org/licenses/by/3.0/
 Heavy Door Creaking_03 by rambler 52 ( https://freesound.org/people/rambler52/sounds/455320/ )
 https://creativecommons.org/publicdomain/zero/1.0/
 Metal Door Groaning by Mafon2 ( https://freesound.org/people/Mafon2/sounds/379803/ )
 http://creativecommons.org/licenses/by/3.0/
+Iron Door Groan 1 by thatjeffcarter ( https://freesound.org/people/thatjeffcarter/sounds/133452/ )
+http://creativecommons.org/licenses/by/3.0/
+Iron Door Groan 2 by thatjeffcarter ( https://freesound.org/people/thatjeffcarter/sounds/133451/ )
+http://creativecommons.org/licenses/by/3.0/
 
 MECH CRASH
 Exploding Car (with Fire) (Mixed) by EFlexMusic ( https://freesound.org/people/EFlexMusic/sounds/396270/ )
 http://creativecommons.org/licenses/by-nc/3.0/
-Explode001 by mitchelk ( https://freesound.org/people/mitchelk/sounds/136765/ )
-https://creativecommons.org/publicdomain/zero/1.0/
 Explosion_001 by cydon ( https://freesound.org/people/cydon/sounds/268557/ )
 http://creativecommons.org/licenses/by-nc/3.0/
 Explosion 3 by harpoyume ( https://freesound.org/people/harpoyume/sounds/86026/ )
 http://creativecommons.org/licenses/by-nc/3.0/
 explosion 4 by harpoyume ( https://freesound.org/people/harpoyume/sounds/86032/ )
 http://creativecommons.org/licenses/by-nc/3.0/
+Explosion (Pas) by studiomandragore ( https://freesound.org/people/studiomandragore/sounds/401628/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+Explode001 by mitchelk ( https://freesound.org/people/mitchelk/sounds/136765/ )
+https://creativecommons.org/publicdomain/zero/1.0/
 Huge Explosion by CGEffex ( https://freesound.org/people/CGEffex/sounds/93834/ )
 http://creativecommons.org/licenses/by-nc/3.0/
 Explosion by FlashTrauma ( https://freesound.org/people/FlashTrauma/sounds/398283/ )
@@ -214,23 +234,37 @@ https://creativecommons.org/publicdomain/zero/1.0/
 door metal big heavy close kinda slam thud echo offmic by kyles ( https://freesound.org/people/kyles/sounds/406197/ )
 https://creativecommons.org/publicdomain/zero/1.0/
 
-SIZZLE (w/ LASER ATTACK)
-Arc Welding by kev_durr ( https://freesound.org/people/kev_durr/sounds/396511/ )
-http://creativecommons.org/licenses/by/3.0/
-welding a piece of metal with sparks flying all over the place by Tomlijia ( https://freesound.org/people/Tomlija/sounds/103333/ )
-http://creativecommons.org/licenses/by/3.0/
-Weld_01_Outdoor by snapssound ( https://freesound.org/people/snapssound/sounds/528121/ )
-http://creativecommons.org/licenses/by/3.0/
-industrial_welding_long by gilly11 ( https://freesound.org/people/gilly11/sounds/143582/ )
-http://creativecommons.org/licenses/by/3.0/
-Welding_TIG by markpSFX ( https://freesound.org/people/markpSFX/sounds/262190/ )
-http://creativecommons.org/licenses/by/3.0/
-Water Hitting Hot Metal by JasonElrod ( https://freesound.org/people/JasonElrod/sounds/85482/ )
-http://creativecommons.org/licenses/by/3.0/
+HEX TO HEX HOVER OVER
+_hh by bantha brain ( https://freesound.org/people/bantha%20brain/sounds/44384/ )
+https://creativecommons.org/licenses/sampling+/1.0/
+_wood by bantha brain ( https://freesound.org/people/bantha%20brain/sounds/44395/ )
+https://creativecommons.org/licenses/sampling+/1.0/
 
-MECH MOVEMENT
-Woodchipper Start (heavy machine) 02 by cmorris035 ( https://freesound.org/people/cmorris035/sounds/319152/ )
+BUTTON HOVER OVER
+SingleWind2 by BMacZero ( https://freesound.org/people/BMacZero/sounds/96150/ )
 https://creativecommons.org/publicdomain/zero/1.0/
 
+BUTTON CLICK
+Snap Layered 03 by JoshuaPomeroy ( https://freesound.org/people/JoshuaPomeroy/sounds/532242/ )
+https://creativecommons.org/publicdomain/zero/1.0/
 
+CONFIRM ACTION
+click a button by zepurple ( https://freesound.org/people/zepurple/sounds/540267/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+ClipLoad2 by BMacZero ( https://freesound.org/people/BMacZero/sounds/94119/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+Pistol Cock by nebulasnails ( https://freesound.org/people/nebulasnails/sounds/405538/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+Gun Cock by krucifix ( https://freesound.org/people/krucifix/sounds/442847/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+
+START OF NEW UNIT TURN
+SqueakyClick1 by BMacZero ( https://freesound.org/people/BMacZero/sounds/94133/ )
+https://creativecommons.org/publicdomain/zero/1.0/
+Score Counter 01 by rhodesmas ( https://freesound.org/people/rhodesmas/sounds/342759/ )
+http://creativecommons.org/licenses/by/3.0/
+
+AI DIALOGUE
+Morse 30 Wps by evelazquez ( https://freesound.org/people/evelazquez/sounds/329882/ )
+http://creativecommons.org/licenses/by-nc/3.0/
 
