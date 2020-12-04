@@ -42,8 +42,8 @@ public class InputHandler : MonoBehaviour
         movementHighlightsHidden = true;
 
         selectionHighlight.DisplayAsGenericHighlight();
-        actionHighlight.DisplayAsDestinationIndicator(true);
-        warningHighlight.DisplayAsBlockedLOSIndicator();
+        actionHighlight.DisplayAsDestinationIndicator(true, false);
+        warningHighlight.DisplayAsBlockedLOSIndicator(false);
 
         selectionHighlight.gameObject.SetActive(false);
         actionHighlight.gameObject.SetActive(false);
@@ -177,6 +177,8 @@ public class InputHandler : MonoBehaviour
                 AudioManager.Instance.PlayHexHoverOver();
             }
 
+            bool isDefended = HexGridManager.Instance.GetDefenseMultiplier(currentHexTileUnderMouse) != 1.0f;
+
             //Debug.Log($"InputHandler :: Selected Mech: {selectedMech?.MechName}");
 
             if (selectedMech == null)
@@ -199,7 +201,7 @@ public class InputHandler : MonoBehaviour
                     if (friendlyMechUnderMouse != null &&
                         GameManager.Instance.CurrentUnitIndex == friendlyMechUnderMouse.UnitIndex)
                     {
-                        selectionHighlight.DisplayAsSelectIndicator(isSelected: false);
+                        selectionHighlight.DisplayAsSelectIndicator(isSelected: false, isDefended);
                     }
                     else
                     {
@@ -294,11 +296,11 @@ public class InputHandler : MonoBehaviour
 
                             if (blockingHex != null)
                             {
-                                warningHighlight.DisplayAsBlockedLOSIndicator();
+                                warningHighlight.DisplayAsBlockedLOSIndicator(isDefended);
                                 warningHighlight.gameObject.SetActive(true);
                                 warningHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(blockingHex);
 
-                                actionHighlight.DisplayAsAttackIndicator(isValid: false);
+                                actionHighlight.DisplayAsAttackIndicator(isValid: false, isDefended);
                                 actionHighlight.gameObject.SetActive(true);
                                 actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
 
@@ -315,7 +317,7 @@ public class InputHandler : MonoBehaviour
                             }
                             else // if (blockingHex == null)
                             {
-                                actionHighlight.DisplayAsAttackIndicator(isValid: true);
+                                actionHighlight.DisplayAsAttackIndicator(isValid: true, isDefended);
                                 actionHighlight.gameObject.SetActive(true);
                                 actionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
 
@@ -352,7 +354,7 @@ public class InputHandler : MonoBehaviour
 
                             if (isCompletePath == true)
                             {
-                                actionHighlight.DisplayAsDestinationIndicator(isPathInRange);
+                                actionHighlight.DisplayAsDestinationIndicator(isPathInRange, isDefended);
                             }
                             else
                             {
@@ -479,9 +481,11 @@ public class InputHandler : MonoBehaviour
     {
         //Debug.Log($"InputHandler::SelectMech( {mechToSelect?.MechName} )");
 
+        bool isDefended = HexGridManager.Instance.GetDefenseMultiplier(mechToSelect.GetCurrentHexTile()) != 1.0f;
+
         selectedMech = mechToSelect;
         selectionHighlight.gameObject.SetActive(true);
-        selectionHighlight.DisplayAsSelectIndicator(isSelected: true);
+        selectionHighlight.DisplayAsSelectIndicator(isSelected: true, isDefended);
         selectionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(mechToSelect.GetCurrentHexTile());
 
         actionHighlight.gameObject.SetActive(false);
@@ -504,6 +508,8 @@ public class InputHandler : MonoBehaviour
 
         if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse))
         {
+            bool isDefended = HexGridManager.Instance.GetDefenseMultiplier(currentHexTileUnderMouse) != 1.0f;
+
             selectionHighlight.gameObject.SetActive(true);
             selectionHighlight.transform.position = HexGridManager.Instance.GetHexCubeWorldPostion(currentHexTileUnderMouse);
 
@@ -512,7 +518,7 @@ public class InputHandler : MonoBehaviour
             if (friendlyMech != null &&
                 GameManager.Instance.CurrentUnitIndex == friendlyMech.UnitIndex)
             {
-                selectionHighlight.DisplayAsSelectIndicator(isSelected: false);
+                selectionHighlight.DisplayAsSelectIndicator(isSelected: false, isDefended);
             }
             else
             {

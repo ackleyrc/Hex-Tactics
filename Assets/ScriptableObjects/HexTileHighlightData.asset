@@ -36,3 +36,5 @@ MonoBehaviour:
   blockingLOSColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.6666667}
   deadSprite: {fileID: 21300000, guid: ef190e3cd1014154b9c0973f2cf43f50, type: 3}
   deadColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.6666667}
+  defenseBonusSprite: {fileID: 21300000, guid: a297ac646c8c60d488f6a3eb962cd462, type: 3}
+  defenseBonusColor: {r: 0, g: 0, b: 0, a: 0.3764706}

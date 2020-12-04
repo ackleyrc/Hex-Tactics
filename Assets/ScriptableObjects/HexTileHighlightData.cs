@@ -94,4 +94,12 @@ public class HexTileHighlightData : ScriptableObject
     [SerializeField]
     private Color deadColor;
     public Color DeadColor { get { return deadColor; } }
+
+    [SerializeField]
+    private Sprite defenseBonusSprite;
+    public Sprite DefenseBonusSprite { get { return defenseBonusSprite; } }
+
+    [SerializeField]
+    private Color defenseBonusColor;
+    public Color DefenseBonusColor { get { return defenseBonusColor; } }
 }
