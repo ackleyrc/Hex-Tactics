@@ -49,6 +49,9 @@ public class MechController : MonoBehaviour
         this.MechAllegiance = allegiance;
 
         nameGUI.SetName(this.MechName, allegiance);
+
+        bool isDefended = HexGridManager.Instance.GetDefenseMultiplier(startHex) != 1.0f;
+        health.healthBar.DisplayAsDefended(isDefended);
     }
 
     public Cube GetCurrentHexTile()
@@ -87,6 +90,8 @@ public class MechController : MonoBehaviour
             locomotionSoundEffect.time = 1.0f;
             locomotionSoundEffect.Play();
         }
+
+        health.healthBar.DisplayAsDefended(false);
 
         OnMoveStarted?.Invoke(this);
     }
@@ -227,6 +232,9 @@ public class MechController : MonoBehaviour
                         CurrentState = MechState.NONE;
 
                         locomotionSoundEffect.time = 21.35f;
+
+                        bool isDefended = HexGridManager.Instance.GetDefenseMultiplier(latestHexTile) != 1.0f;
+                        health.healthBar.DisplayAsDefended(isDefended);
 
                         OnMoveStopped?.Invoke(this);
                     }

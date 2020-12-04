@@ -5,6 +5,7 @@ public class HealthBar : MonoBehaviour
 {
     public Image[] healthPoints;
     public Text healthText;
+    public GameObject defenseIndicator;
 
     private void Start()
     {
@@ -38,5 +39,10 @@ public class HealthBar : MonoBehaviour
         }
 
         healthText.text = $"{Mathf.RoundToInt(healthNormalized * healthPoints.Length)} HP ";
+    }
+
+    public void DisplayAsDefended(bool isDefended)
+    {
+        defenseIndicator.SetActive(isDefended);
     }
 }

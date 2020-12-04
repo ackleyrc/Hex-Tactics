@@ -40,6 +40,7 @@ public class MechHealth : MonoBehaviour
 
         if (CurrentHealth <= 0.0f)
         {
+            healthBar.DisplayAsDefended(false);
             modelAnimator.speed = 1.0f;
             modelAnimator.SetBool("isDead", true);
             GameObject deathSmoke = GameObject.Instantiate(deathSmokePrefab, this.transform);
