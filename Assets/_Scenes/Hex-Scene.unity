@@ -8608,7 +8608,7 @@ RectTransform:
   - {fileID: 1062456561}
   - {fileID: 2054044424}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -9392,7 +9392,7 @@ MonoBehaviour:
   infoPanelRect: {fileID: 1843607601}
   infoPanelGroup: {fileID: 896391601}
   detailsText: {fileID: 1959498536}
-  lerpPosSpeed: 10
+  lerpPosSpeed: 0.1
   lerpAlphaSpeed: 4
   repopulateOffset: 50
 --- !u!1 &1271492535
@@ -16094,7 +16094,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 154.566, y: -138.33899, z: 10.435989}
 --- !u!1 &2023360793
 GameObject:
@@ -16313,7 +16313,7 @@ MonoBehaviour:
   fadeOutDuration: 0.6
   panelObject: {fileID: 242332806}
   scrollDelay: 1.5
-  scrollSpeed: 50
+  scrollSpeed: 0.6
   positionStart: {x: 0, y: 0, z: 0}
   positionEnd: {x: 0, y: 4200, z: 0}
   creditsLinger: 5
@@ -17205,11 +17205,11 @@ MonoBehaviour:
   header: {fileID: 1745912570}
   headerBG: {fileID: 1326389368}
   headerText: {fileID: 1035263430}
-  headerLerpPosSpeed: 0.6
+  headerLerpPosSpeed: 0.006
   subHeader: {fileID: 178012477}
   subHeaderBG: {fileID: 2067676203}
   subHeaderText: {fileID: 866813945}
-  subHeaderLerpPosSpeed: 1
+  subHeaderLerpPosSpeed: 0.01
   panel: {fileID: 1430301845}
   panelGroup: {fileID: 1580512983}
   restartButton: {fileID: 700549041}

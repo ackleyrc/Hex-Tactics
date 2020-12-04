@@ -109,14 +109,14 @@ public class WinConditionGUI : MonoBehaviour
                 if (header.localPosition.x < -0.1f)
                 {
                     float posNormalized = 1.0f - Mathf.Abs(header.localPosition.x / (header.sizeDelta.x * 2.0f)) + 0.01f;
-                    float t = Mathf.Clamp01(posNormalized + posNormalized * Time.unscaledDeltaTime * headerLerpPosSpeed);
+                    float t = Mathf.Clamp01(posNormalized + posNormalized * Time.unscaledDeltaTime * headerLerpPosSpeed * Screen.dpi);
                     header.localPosition = Vector3.Lerp(Vector3.left * header.sizeDelta.x * 2.0f, Vector3.zero, t);
                 }
 
                 if (subHeader.localPosition.x > 0.1f)
                 {
                     float posNormalized = 1.0f - Mathf.Abs(subHeader.localPosition.x / (subHeader.sizeDelta.x * 2.0f)) + 0.01f;
-                    float t = Mathf.Clamp01(posNormalized + posNormalized * Time.unscaledDeltaTime * subHeaderLerpPosSpeed);
+                    float t = Mathf.Clamp01(posNormalized + posNormalized * Time.unscaledDeltaTime * subHeaderLerpPosSpeed * Screen.dpi);
                     subHeader.localPosition = Vector3.Lerp(Vector3.right * subHeader.sizeDelta.x * 2.0f, Vector3.zero, t);
                 }
             }
@@ -149,7 +149,7 @@ public class WinConditionGUI : MonoBehaviour
             if (panel.localPosition.y > 0.1f)
             {
                 float posNormalized = 1.0f - Mathf.Abs(panel.localPosition.y / panel.sizeDelta.y) + 0.01f;
-                float t = Mathf.Clamp01(posNormalized + (Time.unscaledDeltaTime * panelLerpPosSpeed));
+                float t = Mathf.Clamp01(posNormalized + (Time.unscaledDeltaTime * panelLerpPosSpeed) * Screen.dpi);
                 panel.localPosition = Vector3.Lerp(Vector3.up * panel.sizeDelta.y, Vector3.zero, t);
             }
 

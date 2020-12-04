@@ -82,7 +82,7 @@ public class HexInfoGUI : MonoBehaviour
             if (infoPanelRect.localPosition.x < -0.1f)
             {
                 float posNormalized = 1.0f - Mathf.Abs(infoPanelRect.localPosition.x / infoPanelRect.sizeDelta.x);
-                float t = Mathf.Clamp01(posNormalized + Time.unscaledDeltaTime * lerpPosSpeed);
+                float t = Mathf.Clamp01(posNormalized + Screen.dpi * (Time.unscaledDeltaTime * lerpPosSpeed));
                 infoPanelRect.localPosition = Vector3.Lerp(Vector3.left * infoPanelRect.sizeDelta.x, Vector3.zero, t);
             }
 
@@ -96,7 +96,7 @@ public class HexInfoGUI : MonoBehaviour
             if (infoPanelRect.localPosition.x > -infoPanelRect.sizeDelta.x + 0.1f)
             {
                 float posNormalized = Mathf.Abs(infoPanelRect.localPosition.x / infoPanelRect.sizeDelta.x);
-                float t = Mathf.Clamp01(posNormalized + Time.unscaledDeltaTime * lerpPosSpeed);
+                float t = Mathf.Clamp01(posNormalized + Screen.dpi * (Time.unscaledDeltaTime * lerpPosSpeed));
                 infoPanelRect.localPosition = Vector3.Lerp(Vector3.zero, Vector3.left * infoPanelRect.sizeDelta.x, t);
             }
 

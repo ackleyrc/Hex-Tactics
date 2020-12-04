@@ -120,7 +120,7 @@ public class DifficultySelectionGUI : MonoBehaviour
             if (panel.localPosition.y > 0.1f)
             {
                 float posNormalized = 1.0f - Mathf.Abs(panel.localPosition.y / panel.sizeDelta.y) + 0.01f;
-                float t = Mathf.Clamp01(posNormalized + (Time.unscaledDeltaTime * panelLerpPosSpeed));
+                float t = Mathf.Clamp01(posNormalized + Screen.dpi * (Time.unscaledDeltaTime * panelLerpPosSpeed));
                 panel.localPosition = Vector3.Lerp(Vector3.up * panel.sizeDelta.y, Vector3.zero, t);
             }
 

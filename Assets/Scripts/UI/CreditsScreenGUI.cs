@@ -69,7 +69,7 @@ public class CreditsScreenGUI : MonoBehaviour
                 if (displayTimeElapsed > scrollDelay)
                 {
                     Vector3 pos = panelObject.localPosition;
-                    panelObject.localPosition = new Vector3(pos.x, Mathf.Clamp(pos.y + scrollSpeed * Time.unscaledDeltaTime, positionStart.y, positionEnd.y), pos.z);
+                    panelObject.localPosition = new Vector3(pos.x, Mathf.Clamp(pos.y + scrollSpeed * Time.unscaledDeltaTime * Screen.dpi, positionStart.y, positionEnd.y), pos.z);
                 }
             }
             else // if (panelObject.transform.localPosition.y >= positionEnd.y)
