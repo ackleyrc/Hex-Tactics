@@ -13,7 +13,6 @@ public class MechHealth : MonoBehaviour
 
     public AudioData audioData;
     public AudioSource deathCollapseSoundEffect;
-    public float deathCollapseMaxVolume;
     public float deathCollapseDecayStart;
     public float deathCollapseDecayDuration;
     public AudioSource deathCrashSoundEffect;
@@ -57,11 +56,16 @@ public class MechHealth : MonoBehaviour
         Debug.Log($"MechHealth::HandleDeathCollapseSoundEffect()");
 
         deathCollapseSoundEffect.Stop();
-        deathCollapseSoundEffect.clip = audioData.GetRandomDeathCollapse();
+        Clip deathCollapse = audioData.GetRandomDeathCollapse();
+        deathCollapseSoundEffect.clip = deathCollapse.AudioClip;
+        deathCollapseSoundEffect.time = deathCollapse.StartTime;
+        deathCollapseSoundEffect.volume = deathCollapse.MaxVolume;
+        deathCollapseSoundEffect.pitch = deathCollapse.Pitch;
         deathCollapseSoundEffect.Play();
 
         yield return new WaitForSeconds(deathCollapseDecayStart);
 
+        deathCrashSoundEffect.Stop();
         Clip deathCrash = audioData.GetRandomDeathCrash();
         deathCrashSoundEffect.clip = deathCrash.AudioClip;
         deathCrashSoundEffect.time = deathCrash.StartTime;
@@ -77,7 +81,7 @@ public class MechHealth : MonoBehaviour
         {
             decayElapsed += Time.deltaTime;
             float decayNormalized = Mathf.Clamp01(decayElapsed / deathCollapseDecayDuration);
-            deathCollapseSoundEffect.volume = Mathf.Lerp(deathCollapseMaxVolume, 0.0f, decayNormalized);
+            deathCollapseSoundEffect.volume = Mathf.Lerp(deathCollapse.MaxVolume, 0.0f, decayNormalized);
             yield return null;
         }
 

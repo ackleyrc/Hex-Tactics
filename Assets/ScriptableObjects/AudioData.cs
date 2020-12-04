@@ -18,14 +18,22 @@ public class AudioData : ScriptableObject
     public AudioClip MissionFailedStinger { get { return missionFailedStinger; } }
 
     [SerializeField]
-    private AudioClip[] deathCollapse;
-    public AudioClip[] DeathCollapse { get { return deathCollapse; } }
+    private Clip[] deathCollapse;
+    public Clip[] DeathCollapse { get { return deathCollapse; } }
 
     [SerializeField]
     private Clip[] deathCrashes;
     public Clip[] DeathCrashes { get { return deathCrashes; } }
 
-    public AudioClip GetRandomDeathCollapse()
+    [SerializeField]
+    private Clip interactableUiHoverOver;
+    public Clip InteractableUiHoverOver { get { return interactableUiHoverOver; } }
+
+    [SerializeField]
+    private Clip interactableUiClick;
+    public Clip InteractableUiClick { get { return interactableUiClick; } }
+
+    public Clip GetRandomDeathCollapse()
     {
         return DeathCollapse[Random.Range(0, DeathCollapse.Length)];
     }

@@ -23,9 +23,18 @@ MonoBehaviour:
   missionFailedStinger: {fileID: 8300000, guid: 13f8ec85a462c884894022b2f5531ccb,
     type: 3}
   deathCollapse:
-  - {fileID: 8300000, guid: e14fdfbab8bf7444d8133841195962af, type: 3}
-  - {fileID: 8300000, guid: 7fde8844277f8d54fb80c86b73582887, type: 3}
-  - {fileID: 8300000, guid: 1cc67953af888ee498a33344006779b4, type: 3}
+  - audioClip: {fileID: 8300000, guid: e14fdfbab8bf7444d8133841195962af, type: 3}
+    startTime: 0
+    pitch: 0.7
+    maxVolume: 0.4
+  - audioClip: {fileID: 8300000, guid: 7fde8844277f8d54fb80c86b73582887, type: 3}
+    startTime: 0
+    pitch: 0.6
+    maxVolume: 0.4
+  - audioClip: {fileID: 8300000, guid: 1cc67953af888ee498a33344006779b4, type: 3}
+    startTime: 0
+    pitch: 0.9
+    maxVolume: 0.9
   deathCrashes:
   - audioClip: {fileID: 8300000, guid: 2ac5ce5cd182bfc45b0bd53bf8d40098, type: 3}
     startTime: 0.93
@@ -42,8 +51,18 @@ MonoBehaviour:
   - audioClip: {fileID: 8300000, guid: aa22cbbb26d3c5d408479306eec45cd8, type: 3}
     startTime: 0
     pitch: 0.4
-    maxVolume: 0.5
+    maxVolume: 0.4
   - audioClip: {fileID: 8300000, guid: aedb60466242e794c9357be4fb867b50, type: 3}
     startTime: 0.24
     pitch: 1
     maxVolume: 0.7
+  interactableUiHoverOver:
+    audioClip: {fileID: 8300000, guid: 6175f13e2d9e1804da411d236a5e4d53, type: 3}
+    startTime: 0
+    pitch: 1
+    maxVolume: 0.3
+  interactableUiClick:
+    audioClip: {fileID: 8300000, guid: 6d8fc9ebf76ae754dbebcbd7da3e92c5, type: 3}
+    startTime: 0
+    pitch: 1
+    maxVolume: 0.07

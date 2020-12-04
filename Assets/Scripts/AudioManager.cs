@@ -31,6 +31,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource hexToHexSfx;
     public AudioSource actionConfirmSfx;
     public AudioSource unitTurnSfx;
+    public AudioSource uiInteractableSfx;
 
     private enum MusicState { NONE, TITLE_SCREEN, INTRO, GAMEPLAY, OUTRO, CREDITS }
     private MusicState currentMusicState = MusicState.NONE;
@@ -67,6 +68,26 @@ public class AudioManager : MonoBehaviour
     {
         unitTurnSfx.Stop();
         unitTurnSfx.Play();
+    }
+
+    public void PlayHoverOver()
+    {
+        uiInteractableSfx.Stop();
+        uiInteractableSfx.clip = audioData.InteractableUiHoverOver.AudioClip;
+        uiInteractableSfx.time = audioData.InteractableUiHoverOver.StartTime;
+        uiInteractableSfx.volume = audioData.InteractableUiHoverOver.MaxVolume;
+        uiInteractableSfx.pitch = audioData.InteractableUiHoverOver.Pitch;
+        uiInteractableSfx.Play();
+    }
+
+    public void PlayClick()
+    {
+        uiInteractableSfx.Stop();
+        uiInteractableSfx.clip = audioData.InteractableUiClick.AudioClip;
+        uiInteractableSfx.time = audioData.InteractableUiClick.StartTime;
+        uiInteractableSfx.volume = audioData.InteractableUiClick.MaxVolume;
+        uiInteractableSfx.pitch = audioData.InteractableUiClick.Pitch;
+        uiInteractableSfx.Play();
     }
 
     private void HandleStartGameFromTitleScreen()
