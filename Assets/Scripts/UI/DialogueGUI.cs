@@ -114,7 +114,9 @@ public class DialogueGUI : MonoBehaviour
     {
         // Evaluate parameters for AI Dialogue logic
         float defenseMult = targetMech == null ? 0.0f : HexGridManager.Instance.GetDefenseMultiplier(targetMech.GetCurrentHexTile());
+        Debug.Log($"DialogueGUI :: Defense Multiplier: {defenseMult} for target {targetMech?.MechName} at {targetMech?.GetCurrentHexTile()}");
         int tentativeDmg = Mathf.RoundToInt(2.0f * defenseMult); // For now, this should be 2 or 1
+        Debug.Log($"DialogueGUI :: Tentative Damage: {tentativeDmg}");
 
         int currNumOpponentsExposedTo = 0;
         int newNumOpponentsExposedTo = 0;
@@ -143,7 +145,7 @@ public class DialogueGUI : MonoBehaviour
             DisplayAIDialogueLine(aiMech, AIContext.NO_TARGET, Difficulty.EASY);
         }
         else if (targetMech != null &&
-            targetMech.health.CurrentHealth - tentativeDmg <= 0.0f)
+                 targetMech.health.CurrentHealth - tentativeDmg <= 0.0f)
         {
             DisplayAIDialogueLine(aiMech, AIContext.KILL_SHOT, Difficulty.EASY);
         }

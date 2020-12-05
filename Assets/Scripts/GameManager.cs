@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public enum Allegiance { NONE, FRIENDLY, ENEMY }
 
@@ -59,6 +60,8 @@ public class GameManager : MonoBehaviour
     // We cache this for displaying a unit's movement range so we do not have to re-evaluate it every time the cursor moves between hexes
     private HashSet<Cube> currentUnitReachableRange = new HashSet<Cube>();
 
+    private enum MapQuadrant { LOWER_LEFT, LOWER_RIGHT, UPPER_LEFT, UPPER_RIGHT }
+
     private void Start()
     {
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
@@ -72,19 +75,28 @@ public class GameManager : MonoBehaviour
 
         // TODO: Refactor initialization for better extensibility (e.g. of different counts of mechs on each side)
 
+        HexGridManager.Instance.GenerateMap();
+
+        System.Random rnd = new System.Random();
+        List<MapQuadrant> quadrants = new List<MapQuadrant> { MapQuadrant.LOWER_LEFT, MapQuadrant.LOWER_RIGHT, MapQuadrant.UPPER_LEFT, MapQuadrant.UPPER_RIGHT };
+        List<MapQuadrant> selectedQuadrants = quadrants.OrderBy(q => rnd.Next()).Take(2).ToList();
+
+        List<Cube> team1StartHexes = GetStartHexesForQuadrant(selectedQuadrants[0], 2);
+        List<Cube> team2StartHexes = GetStartHexesForQuadrant(selectedQuadrants[1], 2);
+
         MechController mechFriendly_01 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
         MechController mechFriendly_02 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
         MechFriendlies.Add(mechFriendly_01);
         MechFriendlies.Add(mechFriendly_02);
-        mechFriendly_01.Initialize(new Cube(0, 6), 0, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 0));
-        mechFriendly_02.Initialize(new Cube(1, 7), 1, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 1));
+        mechFriendly_01.Initialize(team1StartHexes[0], 0, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 0));
+        mechFriendly_02.Initialize(team1StartHexes[1], 1, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 1));
 
         MechController mechEnemy_01 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         MechController mechEnemy_02 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         MechEnemies.Add(mechEnemy_01);
         MechEnemies.Add(mechEnemy_02);
-        mechEnemy_01.Initialize(new Cube(5, 4), 0, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 0));
-        mechEnemy_02.Initialize(new Cube(7, 3), 1, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 1));
+        mechEnemy_01.Initialize(team2StartHexes[0], 0, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 0));
+        mechEnemy_02.Initialize(team2StartHexes[1], 1, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 1));
 
         foreach (MechController friendlyMech in MechFriendlies)
         {
@@ -119,6 +131,116 @@ public class GameManager : MonoBehaviour
 
         CacheReachableRange();
         DisplayCurrentTurn();
+    }
+
+    private List<Cube> GetStartHexesForQuadrant(MapQuadrant quadrant, int numStartHexes)
+    {
+        Debug.Log($"GameManager::GetStartHexesForQuadrant( {quadrant} , {numStartHexes} )");
+
+        List<Cube> startHexes = new List<Cube>();
+
+        int width = HexGridManager.Instance.MapWidth;
+        int length = HexGridManager.Instance.MapLength;
+
+        OffsetCoord startCoord = new OffsetCoord(-1, -1);
+
+        // Get the approximate center of the quadrant
+        switch (quadrant)
+        {
+            case MapQuadrant.LOWER_LEFT:
+                int llCol = Mathf.FloorToInt(width * 0.25f);
+                int llRow = Mathf.FloorToInt(length * 0.25f);
+                startCoord = new OffsetCoord(llCol, llRow);
+                break;
+            case MapQuadrant.LOWER_RIGHT:
+                int lrCol = Mathf.FloorToInt(width * 0.75f);
+                int lrRow = Mathf.FloorToInt(length * 0.25f);
+                startCoord = new OffsetCoord(lrCol, lrRow);
+                break;
+            case MapQuadrant.UPPER_LEFT:
+                int ulCol = Mathf.FloorToInt(width * 0.25f);
+                int ulRow = Mathf.FloorToInt(length * 0.75f);
+                startCoord = new OffsetCoord(ulCol, ulRow);
+                break;
+            case MapQuadrant.UPPER_RIGHT:
+                int urCol = Mathf.FloorToInt(width * 0.75f);
+                int urRow = Mathf.FloorToInt(length * 0.75f);
+                startCoord = new OffsetCoord(urCol, urRow);
+                break;
+        }
+
+        if (startCoord.col != -1 && startCoord.row != -1)
+        {
+            Cube startCube = startCoord.ToCube();
+
+            // Find an initial traversible hex that has at least (numStartHexes - 1) other reachable hexes around it
+            int maxRadius = Mathf.FloorToInt(Mathf.Max(width, length) * 0.25f);
+            for (int i = 0; i < maxRadius; i++)
+            {
+                foreach (Cube cubeInStartingRing in HexGridManager.Instance.HexGrid.GetRing(startCube, i))
+                {
+                    if (HexGridManager.Instance.CanTravelOverHex(cubeInStartingRing) == false)
+                    {
+                        continue;
+                    }
+
+                    if (IsHexInQuadrant(cubeInStartingRing, quadrant, width, length) == false)
+                    {
+                        continue;
+                    }
+
+                    HashSet<Cube> reachable = HexGridManager.Instance.GetReachableHexes(cubeInStartingRing, maxRadius * 2); // 2x max radius accounts for terrain that is half movement
+                    List<Cube> reachableValid = reachable.Where(c => IsHexInQuadrant(c, quadrant, width, length) && IsHexInsideMapBorder(c, width, length)).ToList();
+
+                    if (reachableValid.Count > numStartHexes)
+                    {
+                        System.Random rnd = new System.Random();
+                        startHexes = reachableValid.OrderBy(c => rnd.Next()).Take(numStartHexes).ToList();
+
+                        Debug.Log($"GameManager :: Start Hexes: {string.Join(",", startHexes)}");
+
+                        return startHexes;
+                    }
+                }
+            }
+        }
+
+        return startHexes;
+    }
+
+    private bool IsHexInQuadrant(Cube cube, MapQuadrant quadrant, int width, int length)
+    {
+        OffsetCoord coord = cube.ToOffsetCoord();
+
+        if (coord.row < Mathf.FloorToInt(length * 0.5f))
+        {
+            if (coord.col < Mathf.FloorToInt(width * 0.5f))
+            {
+                return quadrant == MapQuadrant.LOWER_LEFT;
+            }
+            else
+            {
+                return quadrant == MapQuadrant.LOWER_RIGHT;
+            }
+        }
+        else
+        {
+            if (coord.col < Mathf.FloorToInt(width * 0.5f))
+            {
+                return quadrant == MapQuadrant.UPPER_LEFT;
+            }
+            else
+            {
+                return quadrant == MapQuadrant.UPPER_RIGHT;
+            }
+        }
+    }
+
+    private bool IsHexInsideMapBorder(Cube cube, int width, int length)
+    {
+        OffsetCoord coord = cube.ToOffsetCoord();
+
+        return coord.row > 0 && coord.row < length - 1 && coord.col > 0 && coord.col < width - 1;
     }
 
     private void ClearGameState()

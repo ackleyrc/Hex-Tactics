@@ -20,8 +20,8 @@ public class HexGridManager : MonoBehaviour
     private const float TILE_HEIGHT = 2.56f; // sprite is 3.84f total
     private const float TILE_UNDER_HEIGHT = 1.28f;
 
-    private int mapWidth;
-    private int mapLength;
+    public int MapWidth { get; private set; }
+    public int MapLength { get; private set; }
 
     private Transform hexTilesParent;
 
@@ -31,8 +31,6 @@ public class HexGridManager : MonoBehaviour
 
         hexTilesParent = GameObject.Instantiate(new GameObject(), Vector3.zero, Quaternion.identity, this.transform).transform;
         hexTilesParent.gameObject.name = "HexTilesParent";
-
-        Generate();
     }
 
     private void OnDestroy()
@@ -41,6 +39,17 @@ public class HexGridManager : MonoBehaviour
         {
             _Instance = null;
         }
+    }
+
+    public void GenerateMap()
+    {
+        for (int i = 0; i < hexTilesParent.childCount; i++)
+        {
+            GameObject.Destroy(hexTilesParent.GetChild(i).gameObject);
+        }
+
+        //GenerateFromMapData(mapData);
+        GenerateProcedurally(12, 12);
     }
 
     public IEnumerable<Cube> GetDefensiveHexTiles()
@@ -183,18 +192,22 @@ public class HexGridManager : MonoBehaviour
 
     public Vector2 GetMapCenter()
     {
-        float x = (mapWidth - 0.5f) * TILE_WIDTH * 0.5f;
-        float y = (mapLength - 1) * 0.75f * TILE_HEIGHT * 0.5f;
+        float x = (MapWidth - 0.5f) * TILE_WIDTH * 0.5f;
+        float y = (MapLength - 1) * 0.75f * TILE_HEIGHT * 0.5f;
         return new Vector2(x, y);
     }
 
-    private void Generate()
+    private void GenerateFromMapData(HexTileMapData mapData)
     {
         HexGrid = new HexGrid();
         HexGrid.GenerateRectangularGrid(HexGrid.Alignment.Horizontal, mapData.HexTileArrays[0].TerrainTypes.Length, mapData.HexTileArrays.Length);
 
-        mapWidth = mapData.HexTileArrays[0].TerrainTypes.Length;
-        mapLength = mapData.HexTileArrays.Length;
+        cubeToTerrainType.Clear();
+
+        MapWidth = mapData.HexTileArrays[0].TerrainTypes.Length;
+        MapLength = mapData.HexTileArrays.Length;
+
+        int seed = Random.Range(0, 10000);
 
         foreach (Cube cube in HexGrid.GetHexes())
         {
@@ -220,6 +233,91 @@ public class HexGridManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void GenerateProcedurally(int width, int length)
+    {
+        HexGrid = new HexGrid();
+        HexGrid.GenerateRectangularGrid(HexGrid.Alignment.Horizontal, width, length);
+
+        cubeToTerrainType.Clear();
+
+        MapWidth = width;
+        MapLength = length;
+
+        int seed = Random.Range(0, 10000);
+        float wetnessNoiseFrequency = 1.0f;
+        float wetnessBias = -0.02f;
+        float vegetationNoiseFrequency = 1.0f;
+        float vegetationBias = -0.03f;
+
+        foreach (Cube cube in HexGrid.GetHexes())
+        {
+            //Debug.Log($"Cube Coord ({cube.q} {cube.r}) [{cube.ToOffsetCoord().ToString()}]"); // Pos: ({hexGrid.CubeToPixel(cube, TILE_WIDTH)})");
+
+            OffsetCoord offsetCoord = cube.ToOffsetCoord();
+
+            int row = offsetCoord.row;
+            int col = offsetCoord.col;
+
+            if (row >= 0 && row < MapLength)
+            {
+                if (col >= 0 && col < MapWidth)
+                {
+                    Vector3 position = HexGrid.CubeToPixel(cube, TILE_WIDTH);
+
+                    float wetnessNoise = GetMultiOctaveNoise(position.x, position.y, wetnessNoiseFrequency, seed) + wetnessBias;
+                    float vegetationNoise = GetMultiOctaveNoise(position.x, position.y, vegetationNoiseFrequency, seed + 1000) + vegetationBias;
+
+                    HexTerrainType terrainType = GetTerrain(wetnessNoise, vegetationNoise);
+                    bool createUnderground = (row == 0) || (row == length - 1) || (col == 0) || (col == width - 1);
+                    HexTile hexTile = CreateHex(terrainType, -row, createUnderground, hexTilesParent);
+
+                    hexTile.transform.position = position;
+
+                    cubeToTerrainType.Add(cube, terrainType);
+                }
+            }
+        }
+    }
+
+    private HexTerrainType GetTerrain(float wetnessValue, float vegetationValue)
+    {
+        if (wetnessValue < 0.2f)
+        {
+            return vegetationValue < 0.5f ? HexTerrainType.SAND : HexTerrainType.SAND_PALMS;
+        }
+        else if (wetnessValue < 0.4f)
+        {
+            return vegetationValue < 0.5f ? HexTerrainType.GRASSY_SAND : HexTerrainType.GRASSY_SAND_PALMS;
+        }
+        else if (wetnessValue < 0.6f)
+        {
+            return vegetationValue < 0.5f ? HexTerrainType.TROPICAL_PLAINS : HexTerrainType.JUNGLE;
+        }
+        else if (wetnessValue < 0.8f)
+        {
+            return vegetationValue < 0.5f ? HexTerrainType.WETLANDS : HexTerrainType.SWAMP;
+        }
+        else
+        {
+            return HexTerrainType.BOG;
+        }
+    }
+
+    // Debug.Log($"HexGridManager :: Noise at [{cube.q} , {cube.r}]: {GetMultiOctaveNoise(position.x, position.y, 1.0f, seed):0.##}");
+
+    private float GetMultiOctaveNoise(float x, float y, float noiseFrequency, int seed)
+    {
+        float max = 0.0f;
+        float noise = 0.0f;
+        for (int i = 0; i < 3; i++)
+        {
+            float oct = Mathf.PerlinNoise(seed + x * Mathf.Pow(noiseFrequency, (float)i), seed + y * Mathf.Pow(noiseFrequency, (float)i));
+            noise += oct * Mathf.Pow(0.5f, (float)i);
+            max += Mathf.Pow(0.5f, (float)i);
+        }
+        return noise / max;
     }
 
     private HexTile CreateHex(HexTerrainType terrainType, int sortingOrder, bool createUnderground, Transform parent)
