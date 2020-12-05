@@ -47,7 +47,9 @@ public class WinConditionGUI : MonoBehaviour
     [Header("Panel")]
     public RectTransform panel;
     public CanvasGroup panelGroup;
-    public Button restartButton;
+    public Button resetButton;
+    public Button newStartButton;
+    public Button newMapButton;
     public Button exitButton;
     public float panelLerpPosSpeed;
     public float panelLerpAlphaSpeed;
@@ -69,7 +71,9 @@ public class WinConditionGUI : MonoBehaviour
         subHeader.localPosition = Vector3.right * subHeader.sizeDelta.x * 2.0f;
         panel.localPosition = Vector3.up * panel.sizeDelta.y;
         panelGroup.alpha = 0.0f;
-        restartButton.onClick.AddListener(OnClickRestartButton);
+        resetButton.onClick.AddListener(OnClickResetButton);
+        newStartButton.onClick.AddListener(OnClickNewStartButton);
+        newMapButton.onClick.AddListener(OnClickNewMapButton);
         exitButton.onClick.AddListener(OnClickExitButton);
         isDisplaying = false;
         isRevealingButtons = false;
@@ -162,9 +166,27 @@ public class WinConditionGUI : MonoBehaviour
         }
     }
 
-    private void OnClickRestartButton()
+    private void OnClickResetButton()
     {
         GameManager.Instance.ResetGame();
+        DifficultySelectionGUI.Instance.Display();
+        Initialize();
+
+        OnRestartGame?.Invoke();
+    }
+
+    private void OnClickNewStartButton()
+    {
+        GameManager.Instance.NewStart();
+        DifficultySelectionGUI.Instance.Display();
+        Initialize();
+
+        OnRestartGame?.Invoke();
+    }
+
+    private void OnClickNewMapButton()
+    {
+        GameManager.Instance.NewMap();
         DifficultySelectionGUI.Instance.Display();
         Initialize();
 
