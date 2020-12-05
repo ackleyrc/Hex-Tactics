@@ -12,6 +12,13 @@ public class HexGridManager : MonoBehaviour
     public HexTileMapData mapData; // Should only be used when initially generating the map (static data)
     public HexTile hexPrefab;
 
+    public float wetnessNoiseFrequency = 0.1f;
+    public float wetnessNoisePersistence = 0.5f;
+    public float wetnessBias = -0.02f;
+    public float vegetationNoiseFrequency = 0.1f;
+    public float vegetationNoisePersistence = 0.5f;
+    public float vegetationBias = -0.03f;
+
     public HexGrid HexGrid { get; private set; }
 
     private Dictionary<Cube, HexTerrainType> cubeToTerrainType = new Dictionary<Cube, HexTerrainType>(); // This should be used for evaluation at run-time (potentially dynamic data)
@@ -246,10 +253,13 @@ public class HexGridManager : MonoBehaviour
         MapLength = length;
 
         int seed = Random.Range(0, 10000);
-        float wetnessNoiseFrequency = 1.0f;
-        float wetnessBias = -0.02f;
-        float vegetationNoiseFrequency = 1.0f;
-        float vegetationBias = -0.03f;
+
+        //float wetnessNoiseFrequency = 0.1f;
+        //float wetnessNoisePersistence = 0.5f;
+        //float wetnessBias = -0.02f;
+        //float vegetationNoiseFrequency = 0.1f;
+        //float vegetationNoisePersistence = 0.5f;
+        //float vegetationBias = -0.03f;
 
         foreach (Cube cube in HexGrid.GetHexes())
         {
@@ -266,8 +276,8 @@ public class HexGridManager : MonoBehaviour
                 {
                     Vector3 position = HexGrid.CubeToPixel(cube, TILE_WIDTH);
 
-                    float wetnessNoise = GetMultiOctaveNoise(position.x, position.y, wetnessNoiseFrequency, seed) + wetnessBias;
-                    float vegetationNoise = GetMultiOctaveNoise(position.x, position.y, vegetationNoiseFrequency, seed + 1000) + vegetationBias;
+                    float wetnessNoise = GetMultiOctaveNoise(position.x, position.y, wetnessNoiseFrequency, wetnessNoisePersistence, seed) + wetnessBias;
+                    float vegetationNoise = GetMultiOctaveNoise(position.x, position.y, vegetationNoiseFrequency, vegetationNoisePersistence, seed + 1000) + vegetationBias;
 
                     HexTerrainType terrainType = GetTerrain(wetnessNoise, vegetationNoise);
                     bool createUnderground = (row == 0) || (row == length - 1) || (col == 0) || (col == width - 1);
@@ -307,15 +317,15 @@ public class HexGridManager : MonoBehaviour
 
     // Debug.Log($"HexGridManager :: Noise at [{cube.q} , {cube.r}]: {GetMultiOctaveNoise(position.x, position.y, 1.0f, seed):0.##}");
 
-    private float GetMultiOctaveNoise(float x, float y, float noiseFrequency, int seed)
+    private float GetMultiOctaveNoise(float x, float y, float noiseFrequency, float persistence, int seed)
     {
         float max = 0.0f;
         float noise = 0.0f;
         for (int i = 0; i < 3; i++)
         {
             float oct = Mathf.PerlinNoise(seed + x * Mathf.Pow(noiseFrequency, (float)i), seed + y * Mathf.Pow(noiseFrequency, (float)i));
-            noise += oct * Mathf.Pow(0.5f, (float)i);
-            max += Mathf.Pow(0.5f, (float)i);
+            noise += oct * Mathf.Pow(persistence, (float)i);
+            max += Mathf.Pow(persistence, (float)i);
         }
         return noise / max;
     }
