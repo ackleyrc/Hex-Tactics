@@ -28,7 +28,9 @@ public class PauseScreenGUI : MonoBehaviour
 
     public CanvasGroup canvasGroup;
     public Button resumeButton;
-    public Button restartButton;
+    public Button resetButton;
+    public Button newStartButton;
+    public Button newMapButton;
     public Button exitButton;
     public float fadeInDuration;
     public float fadeOutDuration;
@@ -38,7 +40,9 @@ public class PauseScreenGUI : MonoBehaviour
     private void Start()
     {
         resumeButton.onClick.AddListener(OnClickResumeButton);
-        restartButton.onClick.AddListener(OnClickRestartButton);
+        resetButton.onClick.AddListener(OnClickResetButton);
+        newStartButton.onClick.AddListener(OnClickNewStartButton);
+        newMapButton.onClick.AddListener(OnClickNewMapButton);
         exitButton.onClick.AddListener(OnClickExitButton);
     }
 
@@ -65,9 +69,43 @@ public class PauseScreenGUI : MonoBehaviour
         StartCoroutine(FadeOut());
     }
 
-    private void OnClickRestartButton()
+    private void OnClickResetButton()
     {
         GameManager.Instance.ResetGame();
+        DifficultySelectionGUI.Instance.Display();
+
+        IsDisplayed = false;
+
+        Time.timeScale = 1.0f;
+
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+
+        canvasGroup.alpha = 0.0f;
+
+        OnRestartGame?.Invoke();
+    }
+
+    private void OnClickNewStartButton()
+    {
+        GameManager.Instance.NewStart();
+        DifficultySelectionGUI.Instance.Display();
+
+        IsDisplayed = false;
+
+        Time.timeScale = 1.0f;
+
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+
+        canvasGroup.alpha = 0.0f;
+
+        OnRestartGame?.Invoke();
+    }
+
+    private void OnClickNewMapButton()
+    {
+        GameManager.Instance.NewMap();
         DifficultySelectionGUI.Instance.Display();
 
         IsDisplayed = false;

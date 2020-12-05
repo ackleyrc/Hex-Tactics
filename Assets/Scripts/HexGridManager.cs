@@ -48,7 +48,7 @@ public class HexGridManager : MonoBehaviour
         }
     }
 
-    public void GenerateMap()
+    public void GenerateMap(int seed)
     {
         for (int i = 0; i < hexTilesParent.childCount; i++)
         {
@@ -56,7 +56,7 @@ public class HexGridManager : MonoBehaviour
         }
 
         //GenerateFromMapData(mapData);
-        GenerateProcedurally(12, 12);
+        GenerateProcedurally(12, 12, seed);
     }
 
     public IEnumerable<Cube> GetDefensiveHexTiles()
@@ -242,7 +242,7 @@ public class HexGridManager : MonoBehaviour
         }
     }
 
-    private void GenerateProcedurally(int width, int length)
+    private void GenerateProcedurally(int width, int length, int seed = -1)
     {
         HexGrid = new HexGrid();
         HexGrid.GenerateRectangularGrid(HexGrid.Alignment.Horizontal, width, length);
@@ -252,7 +252,10 @@ public class HexGridManager : MonoBehaviour
         MapWidth = width;
         MapLength = length;
 
-        int seed = Random.Range(0, 10000);
+        if (seed == -1)
+        {
+            seed = Random.Range(0, 10000);
+        }
 
         //float wetnessNoiseFrequency = 0.1f;
         //float wetnessNoisePersistence = 0.5f;

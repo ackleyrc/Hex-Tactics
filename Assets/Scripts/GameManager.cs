@@ -62,6 +62,11 @@ public class GameManager : MonoBehaviour
 
     private enum MapQuadrant { LOWER_LEFT, LOWER_RIGHT, UPPER_LEFT, UPPER_RIGHT }
 
+    private List<Cube> team1StartHexes;
+    private List<Cube> team2StartHexes;
+
+    private int currentSeed = -1;
+
     private void Start()
     {
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
@@ -69,34 +74,43 @@ public class GameManager : MonoBehaviour
         Initialize();
     }
 
-    private void Initialize()
+    private void Initialize(int seed = -1, List<Cube> team1StartHexes = null, List<Cube> team2StartHexes = null)
     {
         Debug.Log($"GameManager::Initialize()");
 
         // TODO: Refactor initialization for better extensibility (e.g. of different counts of mechs on each side)
 
-        HexGridManager.Instance.GenerateMap();
+        if (seed == -1 || seed != currentSeed)
+        {
+            currentSeed = (seed == -1 ? Random.Range(0, 10000) : seed);
 
-        System.Random rnd = new System.Random();
-        List<MapQuadrant> quadrants = new List<MapQuadrant> { MapQuadrant.LOWER_LEFT, MapQuadrant.LOWER_RIGHT, MapQuadrant.UPPER_LEFT, MapQuadrant.UPPER_RIGHT };
-        List<MapQuadrant> selectedQuadrants = quadrants.OrderBy(q => rnd.Next()).Take(2).ToList();
+            HexGridManager.Instance.GenerateMap(currentSeed);
+        }
 
-        List<Cube> team1StartHexes = GetStartHexesForQuadrant(selectedQuadrants[0], 2);
-        List<Cube> team2StartHexes = GetStartHexesForQuadrant(selectedQuadrants[1], 2);
+        if (team1StartHexes == null || team1StartHexes.Count != 2 ||
+            team2StartHexes == null || team2StartHexes.Count != 2)
+        {
+            System.Random rnd = new System.Random();
+            List<MapQuadrant> quadrants = new List<MapQuadrant> { MapQuadrant.LOWER_LEFT, MapQuadrant.LOWER_RIGHT, MapQuadrant.UPPER_LEFT, MapQuadrant.UPPER_RIGHT };
+            List<MapQuadrant> selectedQuadrants = quadrants.OrderBy(q => rnd.Next()).Take(2).ToList();
+
+            this.team1StartHexes = GetStartHexesForQuadrant(selectedQuadrants[0], 2);
+            this.team2StartHexes = GetStartHexesForQuadrant(selectedQuadrants[1], 2);
+        }
 
         MechController mechFriendly_01 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
         MechController mechFriendly_02 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
         MechFriendlies.Add(mechFriendly_01);
         MechFriendlies.Add(mechFriendly_02);
-        mechFriendly_01.Initialize(team1StartHexes[0], 0, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 0));
-        mechFriendly_02.Initialize(team1StartHexes[1], 1, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 1));
+        mechFriendly_01.Initialize(this.team1StartHexes[0], 0, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 0));
+        mechFriendly_02.Initialize(this.team1StartHexes[1], 1, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 1));
 
         MechController mechEnemy_01 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         MechController mechEnemy_02 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
         MechEnemies.Add(mechEnemy_01);
         MechEnemies.Add(mechEnemy_02);
-        mechEnemy_01.Initialize(team2StartHexes[0], 0, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 0));
-        mechEnemy_02.Initialize(team2StartHexes[1], 1, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 1));
+        mechEnemy_01.Initialize(this.team2StartHexes[0], 0, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 0));
+        mechEnemy_02.Initialize(this.team2StartHexes[1], 1, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 1));
 
         foreach (MechController friendlyMech in MechFriendlies)
         {
@@ -275,6 +289,22 @@ public class GameManager : MonoBehaviour
     public void ResetGame()
     {
         Debug.Log($"GameManager::ResetGame()");
+
+        ClearGameState();
+        Initialize(currentSeed, team1StartHexes, team2StartHexes);
+    }
+
+    public void NewStart()
+    {
+        Debug.Log($"GameManager::NewStart()");
+
+        ClearGameState();
+        Initialize(currentSeed);
+    }
+
+    public void NewMap()
+    {
+        Debug.Log($"GameManager::NewMap()");
 
         ClearGameState();
         Initialize();
