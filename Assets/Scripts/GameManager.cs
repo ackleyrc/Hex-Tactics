@@ -98,53 +98,57 @@ public class GameManager : MonoBehaviour
             this.team2StartHexes = GetStartHexesForQuadrant(selectedQuadrants[1], 2);
         }
 
-        MechController mechFriendly_01 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
-        MechController mechFriendly_02 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
-        MechFriendlies.Add(mechFriendly_01);
-        MechFriendlies.Add(mechFriendly_02);
-        mechFriendly_01.Initialize(this.team1StartHexes[0], 0, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 0));
-        mechFriendly_02.Initialize(this.team1StartHexes[1], 1, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 1));
-
-        MechController mechEnemy_01 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
-        MechController mechEnemy_02 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
-        MechEnemies.Add(mechEnemy_01);
-        MechEnemies.Add(mechEnemy_02);
-        mechEnemy_01.Initialize(this.team2StartHexes[0], 0, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 0));
-        mechEnemy_02.Initialize(this.team2StartHexes[1], 1, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 1));
-
-        foreach (MechController friendlyMech in MechFriendlies)
+        if (this.team1StartHexes.Count >= 2 &&
+            this.team2StartHexes.Count >= 2)
         {
-            friendlyMech.OnMoveStarted += HandleMoveStarted;
-            friendlyMech.OnMoveStopped += HandleMoveStopped;
-            friendlyMech.OnAttackStarted += HandleAttackStarted;
-            friendlyMech.OnAttackStopped += HandleAttackStopped;
+            MechController mechFriendly_01 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
+            MechController mechFriendly_02 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
+            MechFriendlies.Add(mechFriendly_01);
+            MechFriendlies.Add(mechFriendly_02);
+            mechFriendly_01.Initialize(this.team1StartHexes[0], 0, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 0));
+            mechFriendly_02.Initialize(this.team1StartHexes[1], 1, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 1));
+
+            MechController mechEnemy_01 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
+            MechController mechEnemy_02 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
+            MechEnemies.Add(mechEnemy_01);
+            MechEnemies.Add(mechEnemy_02);
+            mechEnemy_01.Initialize(this.team2StartHexes[0], 0, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 0));
+            mechEnemy_02.Initialize(this.team2StartHexes[1], 1, Allegiance.ENEMY, mechDetails.GetName(Allegiance.ENEMY, 1));
+
+            foreach (MechController friendlyMech in MechFriendlies)
+            {
+                friendlyMech.OnMoveStarted += HandleMoveStarted;
+                friendlyMech.OnMoveStopped += HandleMoveStopped;
+                friendlyMech.OnAttackStarted += HandleAttackStarted;
+                friendlyMech.OnAttackStopped += HandleAttackStopped;
+            }
+
+            foreach (MechController enemyMech in MechEnemies)
+            {
+                enemyMech.OnMoveStarted += HandleMoveStarted;
+                enemyMech.OnMoveStopped += HandleMoveStopped;
+                enemyMech.OnAttackStarted += HandleAttackStarted;
+                enemyMech.OnAttackStopped += HandleAttackStopped;
+            }
+
+            CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
+            CurrentUnitIndex = 0;
+            CurrentActionPhase = ActionPhase.PRIMARY;
+
+            endTurnGroup.alpha = 1.0f;
+            endTurnGroup.interactable = true;
+            endTurnGroup.blocksRaycasts = true;
+
+            actionPanelGUI.DisplayMoveEnabled();
+            actionPanelGUI.DisplayAttackEnabled();
+
+            unitTurnGUI.Initialize(new string[] { mechDetails.GetName(Allegiance.FRIENDLY, 0), mechDetails.GetName(Allegiance.FRIENDLY, 1) },
+                                   new string[] { mechDetails.GetName(Allegiance.ENEMY, 0), mechDetails.GetName(Allegiance.ENEMY, 1) },
+                                   Allegiance.FRIENDLY);
+
+            CacheReachableRange();
+            DisplayCurrentTurn();
         }
-
-        foreach (MechController enemyMech in MechEnemies)
-        {
-            enemyMech.OnMoveStarted += HandleMoveStarted;
-            enemyMech.OnMoveStopped += HandleMoveStopped;
-            enemyMech.OnAttackStarted += HandleAttackStarted;
-            enemyMech.OnAttackStopped += HandleAttackStopped;
-        }
-
-        CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
-        CurrentUnitIndex = 0;
-        CurrentActionPhase = ActionPhase.PRIMARY;
-
-        endTurnGroup.alpha = 1.0f;
-        endTurnGroup.interactable = true;
-        endTurnGroup.blocksRaycasts = true;
-
-        actionPanelGUI.DisplayMoveEnabled();
-        actionPanelGUI.DisplayAttackEnabled();
-
-        unitTurnGUI.Initialize(new string[] { mechDetails.GetName(Allegiance.FRIENDLY, 0), mechDetails.GetName(Allegiance.FRIENDLY, 1) },
-                               new string[] { mechDetails.GetName(Allegiance.ENEMY, 0), mechDetails.GetName(Allegiance.ENEMY, 1) },
-                               Allegiance.FRIENDLY);
-
-        CacheReachableRange();
-        DisplayCurrentTurn();
     }
 
     private List<Cube> GetStartHexesForQuadrant(MapQuadrant quadrant, int numStartHexes)
