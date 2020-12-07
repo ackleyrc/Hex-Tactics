@@ -2104,7 +2104,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -260}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1200, y: 520}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &245122653
@@ -6473,9 +6473,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 660419862}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!1 &660605237
 GameObject:
@@ -18923,7 +18923,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -260}
-  m_SizeDelta: {x: 160, y: 8000}
+  m_SizeDelta: {x: 160, y: 12000}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1760102901
 MonoBehaviour:
@@ -19010,8 +19010,14 @@ MonoBehaviour:
     Layered 03 by JoshuaPomeroy\n<size=36>Link: https://freesound.org/people/JoshuaPomeroy/sounds/532242/\nLicense:
     https://creativecommons.org/publicdomain/zero/1.0/</size>\n\nMorse 30 Wps by
     evelazquez\n<size=36>Link: https://freesound.org/people/evelazquez/sounds/329882/\nLicense:
-    http://creativecommons.org/licenses/by-nc/3.0/</size>\n\n\n\n\n\n\n\n\n\n\n\n\n<size=80>Thanks
-    for playing!</size>"
+    http://creativecommons.org/licenses/by-nc/3.0/</size>\n\n\n\n\nwith Gratitude
+    for \nsome special sources of reseach and inspiration\n\nRed Blob Games | Amit
+    Patel\n<size=36>https://www.redblobgames.com/</size>\n\nSebastian Lague\n<size=36>https://www.youtube.com/c/SebastianLague</size>\n\n\n\n\n\nwith
+    Appreciation for\nthose providing testing, feedback, and suggestions\n\nAndrew
+    Hung\nAndrew McPherson\nBrad Kraeling\nCamden Cecrle\nColin Vandervort\nEd Lu\nGreg
+    Morton\nJacob Farny\nNotExplosive\nSteve Zapata\n\n\n\n\n\n\nwith Love for\nmy
+    wonderful wife and her enduring support\n\nMaria Xu\n\n\n\n\n\n\n\n\n\nfinally...\n\n\n\n\n\n\n\n\n\nmy
+    Thanks to\n\n<b>YOU</b>\n\n\n\n\n\n\n\n\n\n\n<size=80>Thanks for playing!</size>"
 --- !u!222 &1760102902
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -22805,7 +22811,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2054044423}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -22828,7 +22834,7 @@ MonoBehaviour:
   scrollDelay: 1.5
   scrollSpeed: 0.6
   positionStart: {x: 0, y: 0, z: 0}
-  positionEnd: {x: 0, y: 4200, z: 0}
+  positionEnd: {x: 0, y: 5840, z: 0}
   creditsLinger: 5
 --- !u!1 &2061981959
 GameObject:
