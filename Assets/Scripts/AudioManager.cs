@@ -48,6 +48,7 @@ public class AudioManager : MonoBehaviour
         TitleScreenGUI.Instance.OnOpenCredits += HandleOpenCreditsFromTitleScreen;
         CreditsScreenGUI.Instance.OnCloseCredits += HandleCloseCreditsScreen;
         PauseScreenGUI.Instance.OnRestartGame += HandleRestartGameFromPauseScreen;
+        CustomScenarioGUI.Instance.OnStartNewGame += HandleStartNewCustomScenario;
         WinConditionGUI.Instance.OnRestartGame += HandleRestartGameFromWinLoseScreen;
         GameManager.Instance.OnWinLoseConditionMet += HandleWinLoseConditionMet;
 
@@ -163,6 +164,11 @@ public class AudioManager : MonoBehaviour
     }
 
     private void HandleRestartGameFromPauseScreen()
+    {
+        SkipToNextGameplayTrack();
+    }
+
+    private void HandleStartNewCustomScenario()
     {
         SkipToNextGameplayTrack();
     }

@@ -55,6 +55,7 @@ public class InputHandler : MonoBehaviour
         if (TitleScreenGUI.Instance.IsDisplaying == true ||
             DifficultySelectionGUI.Instance.IsDisplaying == true ||
             PauseScreenGUI.Instance.IsDisplayed == true ||
+            CustomScenarioGUI.Instance.IsDisplayed == true ||
             GameManager.Instance.CurrentPlayerTurn != GameManager.PlayerTurn.HUMAN_PLAYER ||
             GameManager.Instance.CurrentActionPhase == GameManager.ActionPhase.NONE)
         {

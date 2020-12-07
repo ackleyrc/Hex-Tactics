@@ -41,6 +41,8 @@ public class GameManager : MonoBehaviour
     public CurrentTurnGUI currentTurnGUI;
     public ActionPanelGUI actionPanelGUI;
 
+    public Text mapIdText;
+
     public Button endTurnButton;
     public CanvasGroup endTurnGroup;
 
@@ -66,26 +68,52 @@ public class GameManager : MonoBehaviour
     private List<Cube> team2StartHexes;
 
     private int currentSeed = -1;
+    private float currentWetFreqNrml;
+    private float currentWetBiasNrml;
+    private float currentVegFreqNrml;
+    private float currentVegBiasNrml;
 
     private void Start()
     {
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
 
-        Initialize();
+        InitializeMap();
+        InitializeMechs();
     }
 
-    private void Initialize(int seed = -1, List<Cube> team1StartHexes = null, List<Cube> team2StartHexes = null)
+    private void InitializeMap()
     {
-        Debug.Log($"GameManager::Initialize()");
+        currentSeed = Random.Range(0, 4096);
+
+        currentWetFreqNrml = HexGridManager.Instance.defaultWetnessFrequency;
+        currentWetBiasNrml = HexGridManager.Instance.defaultWetnessBias;
+        currentVegFreqNrml = HexGridManager.Instance.defaultVegetationFrequency;
+        currentVegBiasNrml = HexGridManager.Instance.defaultVegetationBias;
+
+        HexGridManager.Instance.GenerateMap(currentSeed, currentWetFreqNrml, currentWetBiasNrml, currentVegFreqNrml, currentVegBiasNrml);
+
+        mapIdText.text = $"<b>Map ID:</b> {MapIdHelper.GetMapId(currentSeed, currentWetFreqNrml, currentWetBiasNrml, currentVegFreqNrml, currentVegBiasNrml)}";
+    }
+
+    private void InitializeMap(int seed, float wetFreqNrml, float wetBiasNrml, float vegFreqNrml, float vegBiasNrml)
+    {
+        currentSeed = (seed == -1 ? Random.Range(0, 4096) : seed);
+
+        currentWetFreqNrml = wetFreqNrml;
+        currentWetBiasNrml = wetBiasNrml;
+        currentVegFreqNrml = vegFreqNrml;
+        currentVegBiasNrml = vegBiasNrml;
+
+        HexGridManager.Instance.GenerateMap(currentSeed, wetFreqNrml, wetBiasNrml, vegFreqNrml, vegBiasNrml);
+
+        mapIdText.text = $"<b>Map ID:</b> {MapIdHelper.GetMapId(currentSeed, currentWetFreqNrml, currentWetBiasNrml, currentVegFreqNrml, currentVegBiasNrml)}";
+    }
+
+    private void InitializeMechs(List<Cube> team1StartHexes = null, List<Cube> team2StartHexes = null)
+    {
+        Debug.Log($"GameManager::InitializeMechs()");
 
         // TODO: Refactor initialization for better extensibility (e.g. of different counts of mechs on each side)
-
-        if (seed == -1 || seed != currentSeed)
-        {
-            currentSeed = (seed == -1 ? Random.Range(0, 10000) : seed);
-
-            HexGridManager.Instance.GenerateMap(currentSeed);
-        }
 
         if (team1StartHexes == null || team1StartHexes.Count != 2 ||
             team2StartHexes == null || team2StartHexes.Count != 2)
@@ -295,7 +323,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"GameManager::ResetGame()");
 
         ClearGameState();
-        Initialize(currentSeed, team1StartHexes, team2StartHexes);
+        InitializeMechs(team1StartHexes, team2StartHexes);
     }
 
     public void NewStart()
@@ -303,7 +331,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"GameManager::NewStart()");
 
         ClearGameState();
-        Initialize(currentSeed);
+        InitializeMechs();
     }
 
     public void NewMap()
@@ -311,7 +339,25 @@ public class GameManager : MonoBehaviour
         Debug.Log($"GameManager::NewMap()");
 
         ClearGameState();
-        Initialize();
+        InitializeMap();
+        InitializeMechs();
+    }
+
+    /// <summary>
+    /// Start a new custom scenario based on the given paramters
+    /// </summary>
+    /// <param name="baseSeed">A seed value from 0-4095</param>
+    /// <param name="wetFreqNrml">A normalized float value from ~0.0f to 1.0f</param>
+    /// <param name="wetBiasNrml">A normalized float value from -0.5f to +0.5f</param>
+    /// <param name="vegFreqNrml">A normalized float value from ~0.0f to 1.0f</param>
+    /// <param name="vegBiasNrml">A normalized float value from -0.5f to +0.5f</param>
+    public void NewCustomScenario(int baseSeed, float wetFreqNrml, float wetBiasNrml, float vegFreqNrml, float vegBiasNrml)
+    {
+        Debug.Log($"GameManager::NewCustomScenario( {baseSeed} , {wetFreqNrml} , {wetBiasNrml} , {vegFreqNrml} , {vegBiasNrml} )");
+
+        ClearGameState();
+        InitializeMap(baseSeed, wetFreqNrml, wetBiasNrml, vegFreqNrml, vegBiasNrml);
+        InitializeMechs();
     }
 
     public Cube CheckForLineOfSight(Cube fromHexTile, Cube toHexTile, MechController ignoreMech = null)

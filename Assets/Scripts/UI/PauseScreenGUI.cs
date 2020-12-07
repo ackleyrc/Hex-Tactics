@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class PauseScreenGUI : MonoBehaviour
 {
-#region SINGLETON_MGMT
+    #region SINGLETON_MGMT
     private static PauseScreenGUI _Instance;
     public static PauseScreenGUI Instance { get { return _Instance; } }
 
@@ -22,7 +22,7 @@ public class PauseScreenGUI : MonoBehaviour
             _Instance = null;
         }
     }
-#endregion SINGLETON_MGMT
+    #endregion SINGLETON_MGMT
 
     public event System.Action OnRestartGame = delegate { };
 
@@ -31,6 +31,7 @@ public class PauseScreenGUI : MonoBehaviour
     public Button resetButton;
     public Button newStartButton;
     public Button newMapButton;
+    public Button customizeButton;
     public Button exitButton;
     public float fadeInDuration;
     public float fadeOutDuration;
@@ -43,22 +44,25 @@ public class PauseScreenGUI : MonoBehaviour
         resetButton.onClick.AddListener(OnClickResetButton);
         newStartButton.onClick.AddListener(OnClickNewStartButton);
         newMapButton.onClick.AddListener(OnClickNewMapButton);
+        customizeButton.onClick.AddListener(OnClickCustomizeButton);
         exitButton.onClick.AddListener(OnClickExitButton);
     }
 
     private void Update()
     {
-        if (TitleScreenGUI.Instance.IsDisplaying == false)
+        if (TitleScreenGUI.Instance.IsDisplaying == false &&
+            DifficultySelectionGUI.Instance.IsDisplaying == false &&
+            CustomScenarioGUI.Instance.IsDisplayed == false)
         {
             if (Input.GetKeyUp(KeyCode.Escape))
             {
                 if (IsDisplayed == true)
                 {
-                    StartCoroutine(FadeOut());
+                    Hide();
                 }
                 else
                 {
-                    StartCoroutine(FadeIn());
+                    Display();
                 }
             }
         }
@@ -66,7 +70,7 @@ public class PauseScreenGUI : MonoBehaviour
 
     private void OnClickResumeButton()
     {
-        StartCoroutine(FadeOut());
+        Hide();
     }
 
     private void OnClickResetButton()
@@ -74,14 +78,7 @@ public class PauseScreenGUI : MonoBehaviour
         GameManager.Instance.ResetGame();
         DifficultySelectionGUI.Instance.Display();
 
-        IsDisplayed = false;
-
-        Time.timeScale = 1.0f;
-
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
-
-        canvasGroup.alpha = 0.0f;
+        Hide(immediate: true);
 
         OnRestartGame?.Invoke();
     }
@@ -91,14 +88,7 @@ public class PauseScreenGUI : MonoBehaviour
         GameManager.Instance.NewStart();
         DifficultySelectionGUI.Instance.Display();
 
-        IsDisplayed = false;
-
-        Time.timeScale = 1.0f;
-
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
-
-        canvasGroup.alpha = 0.0f;
+        Hide(immediate: true);
 
         OnRestartGame?.Invoke();
     }
@@ -108,21 +98,45 @@ public class PauseScreenGUI : MonoBehaviour
         GameManager.Instance.NewMap();
         DifficultySelectionGUI.Instance.Display();
 
-        IsDisplayed = false;
-
-        Time.timeScale = 1.0f;
-
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
-
-        canvasGroup.alpha = 0.0f;
+        Hide(immediate: true);
 
         OnRestartGame?.Invoke();
+    }
+
+    private void OnClickCustomizeButton()
+    {
+        CustomScenarioGUI.Instance.Display();
     }
 
     private void OnClickExitButton()
     {
         Application.Quit();
+    }
+
+    public void Display()
+    {
+        StopAllCoroutines();
+        StartCoroutine(FadeIn());
+    }
+
+    public void Hide(bool immediate = false)
+    {
+        if (immediate)
+        {
+            IsDisplayed = false;
+
+            Time.timeScale = 1.0f;
+
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+
+            canvasGroup.alpha = 0.0f;
+        }
+        else
+        {
+            StopAllCoroutines();
+            StartCoroutine(FadeOut());
+        }
     }
 
     private IEnumerator FadeIn()
