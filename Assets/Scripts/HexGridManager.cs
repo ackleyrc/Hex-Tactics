@@ -7,17 +7,11 @@ public class HexGridManager : MonoBehaviour
     private static HexGridManager _Instance;
     public static HexGridManager Instance { get { return _Instance; } }
 
+    public BiomeData tropicalBiomeData;
     public TerrainTypeData terrainData;
     public HexTileSpriteData spriteData;
     public HexTileMapData mapData; // Should only be used when initially generating the map (static data)
     public HexTile hexPrefab;
-
-    public float defaultWetnessFrequency = 0.5f;
-    public float defaultWetnessPersistence = 0.3f;
-    public float defaultWetnessBias = -0.06f;
-    public float defaultVegetationFrequency = 0.8f;
-    public float defaultVegetationPersistence = 0.5f;
-    public float defaultVegetationBias = -0.03f;
 
     public HexGrid HexGrid { get; private set; }
 
@@ -48,18 +42,22 @@ public class HexGridManager : MonoBehaviour
         }
     }
 
-    public void GenerateMap(int seed)
+    public MapSeedParameters GenerateMap()
     {
         for (int i = 0; i < hexTilesParent.childCount; i++)
         {
             GameObject.Destroy(hexTilesParent.GetChild(i).gameObject);
         }
 
+        MapSeedParameters mapParams = tropicalBiomeData.GetDefaultsWithRandomSeed();
+
         //GenerateFromMapData(mapData);
-        GenerateProcedurally(12, 12, seed, defaultWetnessFrequency, defaultWetnessBias, defaultVegetationFrequency, defaultVegetationBias);
+        GenerateProcedurally(12, 12, mapParams);
+
+        return mapParams;
     }
 
-    public void GenerateMap(int seed, float wetFreqNrml, float wetBiasNrml, float vegFreqNrml, float vegBiasNrml)
+    public void GenerateCustomMap(MapSeedParameters mapParams)
     {
         for (int i = 0; i < hexTilesParent.childCount; i++)
         {
@@ -67,7 +65,7 @@ public class HexGridManager : MonoBehaviour
         }
 
         //GenerateFromMapData(mapData);
-        GenerateProcedurally(12, 12, seed, wetFreqNrml, wetBiasNrml, vegFreqNrml, vegBiasNrml);
+        GenerateProcedurally(12, 12, mapParams);
     }
 
     public IEnumerable<Cube> GetDefensiveHexTiles()
@@ -253,7 +251,7 @@ public class HexGridManager : MonoBehaviour
         }
     }
 
-    private void GenerateProcedurally(int width, int length, int seed, float wetFreqNrml, float wetBiasNrml, float vegFreqNrml, float vegBiasNrml)
+    private void GenerateProcedurally(int width, int length, MapSeedParameters mapParams)
     {
         HexGrid = new HexGrid();
         HexGrid.GenerateRectangularGrid(HexGrid.Alignment.Horizontal, width, length);
@@ -264,13 +262,6 @@ public class HexGridManager : MonoBehaviour
         MapLength = length;
 
         float lacunarity = (MapWidth + MapLength) * 0.5f * 0.75f;
-
-        if (seed == -1)
-        {
-            seed = Random.Range(0, 4096);
-        }
-
-        seed *= 100;
 
         foreach (Cube cube in HexGrid.GetHexes())
         {
@@ -285,18 +276,11 @@ public class HexGridManager : MonoBehaviour
             {
                 if (col >= 0 && col < MapWidth)
                 {
-                    Vector3 position = HexGrid.CubeToPixel(cube, TILE_WIDTH);
-
-                    //float wetnessNoise = GetMultiOctaveNoise(position.x, position.y, wetnessNoiseFrequency, wetnessNoisePersistence, lacunarity, seed) + wetnessBias;
-                    //float vegetationNoise = GetMultiOctaveNoise(position.x, position.y, vegetationNoiseFrequency, vegetationNoisePersistence, lacunarity, seed + 1000) + vegetationBias;
-
-                    float wetnessNoise = GetMultiOctaveNoise(col, row, wetFreqNrml, defaultWetnessPersistence, lacunarity, seed) + wetBiasNrml;
-                    float vegetationNoise = GetMultiOctaveNoise(col, row, vegFreqNrml, defaultVegetationPersistence, lacunarity, seed + 1000) + vegBiasNrml;
-
-                    HexTerrainType terrainType = GetTerrain(wetnessNoise, vegetationNoise);
+                    HexTerrainType terrainType = tropicalBiomeData.GetTerrainType(MapWidth, MapLength, col, row, mapParams);
                     bool createUnderground = (row == 0) || (row == length - 1) || (col == 0) || (col == width - 1);
                     HexTile hexTile = CreateHex(terrainType, -row, createUnderground, hexTilesParent);
 
+                    Vector3 position = HexGrid.CubeToPixel(cube, TILE_WIDTH);
                     hexTile.transform.position = position;
 
                     cubeToTerrainType.Add(cube, terrainType);
@@ -304,66 +288,6 @@ public class HexGridManager : MonoBehaviour
             }
         }
     }
-
-    private HexTerrainType GetTerrain(float wetnessValue, float vegetationValue)
-    {
-        if (wetnessValue < 0.2f)
-        {
-            return vegetationValue < 0.5f ? HexTerrainType.SAND : HexTerrainType.SAND_PALMS;
-        }
-        else if (wetnessValue < 0.4f)
-        {
-            return vegetationValue < 0.5f ? HexTerrainType.GRASSY_SAND : HexTerrainType.GRASSY_SAND_PALMS;
-        }
-        else if (wetnessValue < 0.6f)
-        {
-            return vegetationValue < 0.5f ? HexTerrainType.TROPICAL_PLAINS : HexTerrainType.JUNGLE;
-        }
-        else if (wetnessValue < 0.8f)
-        {
-            return vegetationValue < 0.5f ? HexTerrainType.WETLANDS : HexTerrainType.SWAMP;
-        }
-        else
-        {
-            return HexTerrainType.BOG;
-        }
-    }
-
-    // Debug.Log($"HexGridManager :: Noise at [{cube.q} , {cube.r}]: {GetMultiOctaveNoise(position.x, position.y, 1.0f, seed):0.##}");
-
-    private float GetMultiOctaveNoise(float x, float y, float frequency, float persistence, float lacunarity, int seed)
-    {
-        float max = 0.0f;
-        float noise = 0.0f;
-        float floatOffset = 0.5f;
-        float freqExp = Mathf.Pow(frequency, 1.25f);
-        float lacExp = Mathf.Pow(lacunarity, 0.5f);
-        for (int i = 0; i < 3; i++)
-        {
-            //float oct = Mathf.PerlinNoise(Mathf.RoundToInt(seed + x * frequency * Mathf.Pow(lacunarity, (float)i)) + floatOffset, Mathf.RoundToInt(seed + y * frequency * Mathf.Pow(lacunarity, (float)i)) + floatOffset);
-            //float oct = Mathf.PerlinNoise(seed + x * frequency * Mathf.Pow(lacunarity, (float)i) + floatOffset, seed + y * frequency * Mathf.Pow(lacunarity, (float)i) + floatOffset);
-            //float oct = Mathf.PerlinNoise(seed + x * freqExp * Mathf.Pow(lacunarity, (float)i) + floatOffset, seed + y * freqExp * Mathf.Pow(lacunarity, (float)i) + floatOffset);
-            float oct = Mathf.PerlinNoise(seed + x * freqExp * Mathf.Pow(lacExp, (float)i) + floatOffset, seed + y * freqExp * Mathf.Pow(lacExp, (float)i) + floatOffset);
-            noise += oct * Mathf.Pow(persistence, (float)i);
-            max += Mathf.Pow(persistence, (float)i);
-        }
-        return noise / max;
-    }
-
-    /*
-    private float GetMultiOctaveNoise(float x, float y, float noiseFrequency, float persistence, int seed)
-    {
-        float max = 0.0f;
-        float noise = 0.0f;
-        for (int i = 0; i < 3; i++)
-        {
-            float oct = Mathf.PerlinNoise(seed + x * Mathf.Pow(noiseFrequency, (float)i), seed + y * Mathf.Pow(noiseFrequency, (float)i));
-            noise += oct * Mathf.Pow(persistence, (float)i);
-            max += Mathf.Pow(persistence, (float)i);
-        }
-        return noise / max;
-    }
-    */
 
     private HexTile CreateHex(HexTerrainType terrainType, int sortingOrder, bool createUnderground, Transform parent)
     {

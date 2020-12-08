@@ -92,12 +92,31 @@ public class CustomScenarioGUI : MonoBehaviour
 
     private void OnClickStartButton()
     {
-        float wetFreqNrml = 1.0f - (wetnessScaleSlider.value / 64.0f) * 1.0f;
-        float wetBiasNrml = (wetnessBiasSlider.value / 64.0f) * 0.5f;
-        float vegFreqNrml = 1.0f - (vegetationScaleSlider.value / 64.0f) * 1.0f;
-        float vegBiasNrml = (vegetationBiasSlider.value / 64.0f) * 0.5f;
+        //float wetFreqNrml = 1.0f - (wetnessScaleSlider.value / 64.0f) * 1.0f;
+        //float wetBiasNrml = (wetnessBiasSlider.value / 64.0f) * 0.5f;
+        //float vegFreqNrml = 1.0f - (vegetationScaleSlider.value / 64.0f) * 1.0f;
+        //float vegBiasNrml = (vegetationBiasSlider.value / 64.0f) * 0.5f;
 
-        GameManager.Instance.NewCustomScenario((int)baseSeedSlider.value, wetFreqNrml, wetBiasNrml, vegFreqNrml, vegBiasNrml);
+        MapSeedParameters mapParams = new MapSeedParameters
+        {
+            biome = Biome.TROPICAL,
+            baseSeed = (int)baseSeedSlider.value,
+            biomeDimensions = new BiomeDimension[]
+            {
+                new BiomeDimension()
+                {
+                    scale = (int)wetnessScaleSlider.value,
+                    bias = (int)wetnessBiasSlider.value,
+                },
+                new BiomeDimension()
+                {
+                    scale = (int)vegetationScaleSlider.value,
+                    bias = (int)vegetationBiasSlider.value,
+                }
+            }
+        };
+
+        GameManager.Instance.NewCustomScenario(mapParams);
         DifficultySelectionGUI.Instance.Display();
 
         IsDisplayed = false;

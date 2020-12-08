@@ -73,38 +73,28 @@ public class GameManager : MonoBehaviour
     private float currentVegFreqNrml;
     private float currentVegBiasNrml;
 
+    private MapSeedParameters currentMapParams;
+
     private void Start()
     {
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
 
-        InitializeMap();
+        InitializeNewMap();
         InitializeMechs();
     }
 
-    private void InitializeMap()
+    private void InitializeNewMap()
     {
-        currentSeed = Random.Range(0, 4096);
-
-        currentWetFreqNrml = HexGridManager.Instance.defaultWetnessFrequency;
-        currentWetBiasNrml = HexGridManager.Instance.defaultWetnessBias;
-        currentVegFreqNrml = HexGridManager.Instance.defaultVegetationFrequency;
-        currentVegBiasNrml = HexGridManager.Instance.defaultVegetationBias;
-
-        HexGridManager.Instance.GenerateMap(currentSeed, currentWetFreqNrml, currentWetBiasNrml, currentVegFreqNrml, currentVegBiasNrml);
+        currentMapParams = HexGridManager.Instance.GenerateMap();
 
         mapIdText.text = $"<b>Map ID:</b> {MapIdHelper.GetMapId(currentSeed, currentWetFreqNrml, currentWetBiasNrml, currentVegFreqNrml, currentVegBiasNrml)}";
     }
 
-    private void InitializeMap(int seed, float wetFreqNrml, float wetBiasNrml, float vegFreqNrml, float vegBiasNrml)
+    private void InitializeCustomMap(MapSeedParameters mapParams)
     {
-        currentSeed = (seed == -1 ? Random.Range(0, 4096) : seed);
+        currentMapParams = mapParams;
 
-        currentWetFreqNrml = wetFreqNrml;
-        currentWetBiasNrml = wetBiasNrml;
-        currentVegFreqNrml = vegFreqNrml;
-        currentVegBiasNrml = vegBiasNrml;
-
-        HexGridManager.Instance.GenerateMap(currentSeed, wetFreqNrml, wetBiasNrml, vegFreqNrml, vegBiasNrml);
+        HexGridManager.Instance.GenerateCustomMap(mapParams);
 
         mapIdText.text = $"<b>Map ID:</b> {MapIdHelper.GetMapId(currentSeed, currentWetFreqNrml, currentWetBiasNrml, currentVegFreqNrml, currentVegBiasNrml)}";
     }
@@ -339,24 +329,16 @@ public class GameManager : MonoBehaviour
         Debug.Log($"GameManager::NewMap()");
 
         ClearGameState();
-        InitializeMap();
+        InitializeNewMap();
         InitializeMechs();
     }
 
-    /// <summary>
-    /// Start a new custom scenario based on the given paramters
-    /// </summary>
-    /// <param name="baseSeed">A seed value from 0-4095</param>
-    /// <param name="wetFreqNrml">A normalized float value from ~0.0f to 1.0f</param>
-    /// <param name="wetBiasNrml">A normalized float value from -0.5f to +0.5f</param>
-    /// <param name="vegFreqNrml">A normalized float value from ~0.0f to 1.0f</param>
-    /// <param name="vegBiasNrml">A normalized float value from -0.5f to +0.5f</param>
-    public void NewCustomScenario(int baseSeed, float wetFreqNrml, float wetBiasNrml, float vegFreqNrml, float vegBiasNrml)
+    public void NewCustomScenario(MapSeedParameters mapParams)
     {
-        Debug.Log($"GameManager::NewCustomScenario( {baseSeed} , {wetFreqNrml} , {wetBiasNrml} , {vegFreqNrml} , {vegBiasNrml} )");
+        Debug.Log($"GameManager::NewCustomScenario()");
 
         ClearGameState();
-        InitializeMap(baseSeed, wetFreqNrml, wetBiasNrml, vegFreqNrml, vegBiasNrml);
+        InitializeCustomMap(mapParams);
         InitializeMechs();
     }
 
