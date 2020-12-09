@@ -36,25 +36,24 @@ public class CustomScenarioGUI : MonoBehaviour
     public Button startButton;
     public Button randomizeButton;
 
+    [Header("Biome Toggles")]
+    public Toggle tropicalToggle;
+    public Toggle desertToggle;
+    public Toggle shrublandToggle;
+
     [Header("Base Seed")]
     public Slider baseSeedSlider;
     public Text baseSeedReadout;
 
-    [Header("Wetness Scale")]
-    public Slider wetnessScaleSlider;
-    public Text wetnessScaleReadout;
-
-    [Header("Wetness Bias")]
-    public Slider wetnessBiasSlider;
-    public Text wetnessBiasReadout;
-
-    [Header("Vegetation Scale")]
-    public Slider vegetationScaleSlider;
-    public Text vegetationScaleReadout;
-
-    [Header("Vegetation Bias")]
-    public Slider vegetationBiasSlider;
-    public Text vegetationBiasReadout;
+    [Header("Dimensions")]
+    public GameObject[] scaleHandles;
+    public GameObject[] biasHandles;
+    public Slider[] scaleSliders;
+    public Slider[] biasSliders;
+    public Text[] scaleLabels;
+    public Text[] biasLabels;
+    public Text[] scaleReadouts;
+    public Text[] biasReadouts;
 
     [Header("Map ID")]
     public Text mapIdText;
@@ -64,11 +63,20 @@ public class CustomScenarioGUI : MonoBehaviour
         randomizeButton.onClick.AddListener(OnClickRandomizeButton);
         startButton.onClick.AddListener(OnClickStartButton);
 
+        tropicalToggle.onValueChanged.AddListener(OnClickTropicalToggle);
+        desertToggle.onValueChanged.AddListener(OnClickDesertToggle);
+        shrublandToggle.onValueChanged.AddListener(OnClickShrublandToggle);
+
         baseSeedSlider.onValueChanged.AddListener(OnBaseSeedSliderChanged);
-        wetnessScaleSlider.onValueChanged.AddListener(OnWetnessScaleSliderChanged);
-        wetnessBiasSlider.onValueChanged.AddListener(OnWetnessBiasSliderChanged);
-        vegetationScaleSlider.onValueChanged.AddListener(OnVegetationScaleSliderChanged);
-        vegetationBiasSlider.onValueChanged.AddListener(OnVegetationBiasSliderChanged);
+
+        scaleSliders[0].onValueChanged.AddListener((float newValue) => { OnScaleSliderChanged(0); });
+        biasSliders[0].onValueChanged.AddListener((float newValue) => { OnBiasSliderChanged(0); });
+
+        scaleSliders[1].onValueChanged.AddListener((float newValue) => { OnScaleSliderChanged(1); });
+        biasSliders[1].onValueChanged.AddListener((float newValue) => { OnBiasSliderChanged(1); });
+
+        scaleSliders[2].onValueChanged.AddListener((float newValue) => { OnScaleSliderChanged(2); });
+        biasSliders[2].onValueChanged.AddListener((float newValue) => { OnBiasSliderChanged(2); });
 
         canvasGroup.alpha = 0.0f;
         canvasGroup.interactable = false;
@@ -99,22 +107,20 @@ public class CustomScenarioGUI : MonoBehaviour
 
         MapSeedParameters mapParams = new MapSeedParameters
         {
-            biome = Biome.TROPICAL,
-            baseSeed = (int)baseSeedSlider.value,
-            biomeDimensions = new BiomeDimension[]
-            {
-                new BiomeDimension()
-                {
-                    scale = (int)wetnessScaleSlider.value,
-                    bias = (int)wetnessBiasSlider.value,
-                },
-                new BiomeDimension()
-                {
-                    scale = (int)vegetationScaleSlider.value,
-                    bias = (int)vegetationBiasSlider.value,
-                }
-            }
+            biome = GetCurrentSelectedBiome(),
+            baseSeed = (int)baseSeedSlider.value
         };
+
+        int numDimensions = BiomeData.GetNumDimensions(mapParams.biome);
+        mapParams.biomeDimensions = new BiomeDimension[numDimensions];
+        for (int i = 0; i < numDimensions; i++)
+        {
+            mapParams.biomeDimensions[i] = new BiomeDimension
+            {
+                scale = (int)scaleSliders[i].value,
+                bias = (int)biasSliders[i].value,
+            };
+        }
 
         GameManager.Instance.NewCustomScenario(mapParams);
         DifficultySelectionGUI.Instance.Display();
@@ -133,18 +139,75 @@ public class CustomScenarioGUI : MonoBehaviour
 
     private void OnClickRandomizeButton()
     {
+        switch ((Biome)Random.Range(0, 3))
+        {
+            case Biome.TROPICAL:
+                tropicalToggle.SetIsOnWithoutNotify(true);
+                desertToggle.SetIsOnWithoutNotify(false);
+                shrublandToggle.SetIsOnWithoutNotify(false);
+                break;
+            case Biome.DESERT:
+                tropicalToggle.SetIsOnWithoutNotify(false);
+                desertToggle.SetIsOnWithoutNotify(true);
+                shrublandToggle.SetIsOnWithoutNotify(false);
+                break;
+            case Biome.SHRUBLAND:
+                tropicalToggle.SetIsOnWithoutNotify(false);
+                desertToggle.SetIsOnWithoutNotify(false);
+                shrublandToggle.SetIsOnWithoutNotify(true);
+                break;
+        }
+
+        UpdateNumSliders();
+
         baseSeedSlider.SetValueWithoutNotify(Mathf.RoundToInt(Random.Range(baseSeedSlider.minValue, baseSeedSlider.maxValue)));
-        wetnessScaleSlider.SetValueWithoutNotify(Mathf.RoundToInt((Random.Range(wetnessScaleSlider.minValue, wetnessScaleSlider.maxValue) + Random.Range(wetnessScaleSlider.minValue, wetnessScaleSlider.maxValue)) * 0.5f));
-        wetnessBiasSlider.SetValueWithoutNotify(Mathf.RoundToInt((Random.Range(wetnessBiasSlider.minValue, wetnessBiasSlider.maxValue) + Random.Range(wetnessBiasSlider.minValue, wetnessBiasSlider.maxValue)) * 0.5f));
-        vegetationScaleSlider.SetValueWithoutNotify(Mathf.RoundToInt((Random.Range(vegetationScaleSlider.minValue, vegetationScaleSlider.maxValue) + Random.Range(vegetationScaleSlider.minValue, vegetationScaleSlider.maxValue)) * 0.5f));
-        vegetationBiasSlider.SetValueWithoutNotify(Mathf.RoundToInt((Random.Range(vegetationBiasSlider.minValue, vegetationBiasSlider.maxValue) + Random.Range(vegetationBiasSlider.minValue, vegetationBiasSlider.maxValue)) * 0.5f));
-
         UpdateBaseSeedReadout();
-        UpdateWetnessScaleReadout();
-        UpdateWetnessBiasReadout();
-        UpdateVegetationScaleReadout();
-        UpdateVegetationBiasReadout();
 
+        for (int i = 0; i < BiomeData.GetNumDimensions(GetCurrentSelectedBiome()); i++)
+        {
+            scaleSliders[i].SetValueWithoutNotify(Mathf.RoundToInt((Random.Range(scaleSliders[i].minValue, scaleSliders[i].maxValue) + Random.Range(scaleSliders[i].minValue, scaleSliders[i].maxValue)) * 0.5f));
+            biasSliders[i].SetValueWithoutNotify(Mathf.RoundToInt((Random.Range(biasSliders[i].minValue, biasSliders[i].maxValue) + Random.Range(biasSliders[i].minValue, biasSliders[i].maxValue)) * 0.5f));
+
+            UpdateScaleLabel(i);
+            UpdateScaleReadout(i);
+
+            UpdateBiasLabel(i);
+            UpdateBiasReadout(i);
+        }
+
+        UpdateMapId();
+    }
+
+    private void OnClickTropicalToggle(bool newValue)
+    {
+        //tropicalToggle.SetIsOnWithoutNotify(false);
+        desertToggle.SetIsOnWithoutNotify(false);
+        shrublandToggle.SetIsOnWithoutNotify(false);
+
+        UpdateNumSliders();
+        UpdateLabelsAndReadouts();
+        UpdateMapId();
+    }
+
+    private void OnClickDesertToggle(bool newValue)
+    {
+        tropicalToggle.SetIsOnWithoutNotify(false);
+        //desertToggle.SetIsOnWithoutNotify(false);
+        shrublandToggle.SetIsOnWithoutNotify(false);
+
+        UpdateNumSliders();
+        UpdateLabelsAndReadouts();
+        UpdateMapId();
+    }
+
+    private void OnClickShrublandToggle(bool newValue)
+    {
+        tropicalToggle.SetIsOnWithoutNotify(false);
+        desertToggle.SetIsOnWithoutNotify(false);
+        //shrublandToggle.SetIsOnWithoutNotify(false);
+
+        UpdateNumSliders();
+        UpdateLabelsAndReadouts();
         UpdateMapId();
     }
 
@@ -159,107 +222,259 @@ public class CustomScenarioGUI : MonoBehaviour
         baseSeedReadout.text = $"{(int)baseSeedSlider.value}";
     }
 
-    private void OnWetnessScaleSliderChanged(float newValue)
+    private void UpdateLabelsAndReadouts()
     {
-        UpdateWetnessScaleReadout();
+        for (int i = 0; i < scaleHandles.Length; i++)
+        {
+            UpdateScaleLabel(i);
+            UpdateScaleReadout(i);
+
+            UpdateBiasLabel(i);
+            UpdateBiasReadout(i);
+        }
+    }
+
+    private void UpdateScaleLabel(int index)
+    {
+        switch (GetCurrentSelectedBiome())
+        {
+            case Biome.TROPICAL:
+                scaleLabels[index].text = $"{(TropicalDimensions)index} SCALE";
+                break;
+            case Biome.DESERT:
+                scaleLabels[index].text = $"{(DesertDimensions)index} SCALE";
+                break;
+            case Biome.SHRUBLAND:
+                scaleLabels[index].text = $"{(ShrublandDimensions)index} SCALE";
+                break;
+            default:
+                scaleLabels[index].text = $"DIMENSION [{index}] SCALE";
+                break;
+        }
+    }
+
+    private void OnScaleSliderChanged(int index)
+    {
+        UpdateScaleReadout(index);
         UpdateMapId();
     }
 
-    private void UpdateWetnessScaleReadout()
+    private void UpdateScaleReadout(int index)
     {
-        wetnessScaleReadout.text = $"{Mathf.RoundToInt(100 * (wetnessScaleSlider.value + 1) / 64.0f)}%";
+        scaleReadouts[index].text = $"{Mathf.RoundToInt(100 * (scaleSliders[index].value + 1) / 64.0f)}%";
     }
 
-    private void OnWetnessBiasSliderChanged(float newValue)
+    private void UpdateBiasLabel(int index)
     {
-        UpdateWetnessBiasReadout();
+        switch (GetCurrentSelectedBiome())
+        {
+            case Biome.TROPICAL:
+                biasLabels[index].text = $"{(TropicalDimensions)index} BIAS";
+                break;
+            case Biome.DESERT:
+                biasLabels[index].text = $"{(DesertDimensions)index} BIAS";
+                break;
+            case Biome.SHRUBLAND:
+                biasLabels[index].text = $"{(ShrublandDimensions)index} BIAS";
+                break;
+            default:
+                biasLabels[index].text = $"DIMENSION [{index}] BIAS";
+                break;
+        }
+    }
+
+    private void OnBiasSliderChanged(int index)
+    {
+        UpdateBiasReadout(index);
         UpdateMapId();
     }
 
-    private void UpdateWetnessBiasReadout()
+    private void UpdateBiasReadout(int index)
     {
-        if (wetnessBiasSlider.value + 31 < 9)
+        Biome biome = GetCurrentSelectedBiome();
+
+        if (biome == Biome.TROPICAL &&
+            (TropicalDimensions)index == TropicalDimensions.WETNESS)
         {
-            wetnessBiasReadout.text = "Very Dry";
+            if (biasSliders[index].value + 31 < 9)
+            {
+                biasReadouts[index].text = "Very Dry";
+            }
+            else if (biasSliders[index].value + 31 < 18)
+            {
+                biasReadouts[index].text = "Dry";
+            }
+            else if (biasSliders[index].value + 31 < 27)
+            {
+                biasReadouts[index].text = "Somewhat Dry";
+            }
+            else if (biasSliders[index].value + 31 < 36)
+            {
+                biasReadouts[index].text = "Moderate";
+            }
+            else if (biasSliders[index].value + 31 < 45)
+            {
+                biasReadouts[index].text = "Somewhat Wet";
+            }
+            else if (biasSliders[index].value + 31 < 54)
+            {
+                biasReadouts[index].text = "Wet";
+            }
+            else // if (newValue + 31 < 63)
+            {
+                biasReadouts[index].text = "Very Wet";
+            }
         }
-        else if (wetnessBiasSlider.value + 31 < 18)
+        else if (biome == Biome.TROPICAL &&
+                 (TropicalDimensions)index == TropicalDimensions.VEGETATION)
         {
-            wetnessBiasReadout.text = "Dry";
+            if (biasSliders[index].value + 31 < 9)
+            {
+                biasReadouts[index].text = "Barren";
+            }
+            else if (biasSliders[index].value + 31 < 18)
+            {
+                biasReadouts[index].text = "Sparse";
+            }
+            else if (biasSliders[index].value + 31 < 27)
+            {
+                biasReadouts[index].text = "Somewhat Sparse";
+            }
+            else if (biasSliders[index].value + 31 < 36)
+            {
+                biasReadouts[index].text = "Moderate";
+            }
+            else if (biasSliders[index].value + 31 < 45)
+            {
+                biasReadouts[index].text = "Somewhat Forested";
+            }
+            else if (biasSliders[index].value + 31 < 54)
+            {
+                biasReadouts[index].text = "Forested";
+            }
+            else // if (newValue + 31 < 63)
+            {
+                biasReadouts[index].text = "Heavily Forested";
+            }
         }
-        else if (wetnessBiasSlider.value + 31 < 27)
+        else if ((biome == Biome.DESERT || biome == Biome.SHRUBLAND) &&
+                 ((DesertDimensions)index == DesertDimensions.ELEVATION) || (ShrublandDimensions)index == ShrublandDimensions.ELEVATION)
         {
-            wetnessBiasReadout.text = "Somewhat Dry";
+            if (biasSliders[index].value + 31 < 9)
+            {
+                biasReadouts[index].text = "Very Low";
+            }
+            else if (biasSliders[index].value + 31 < 18)
+            {
+                biasReadouts[index].text = "Low";
+            }
+            else if (biasSliders[index].value + 31 < 27)
+            {
+                biasReadouts[index].text = "Somewhat Low";
+            }
+            else if (biasSliders[index].value + 31 < 36)
+            {
+                biasReadouts[index].text = "Moderate";
+            }
+            else if (biasSliders[index].value + 31 < 45)
+            {
+                biasReadouts[index].text = "Somewhat High";
+            }
+            else if (biasSliders[index].value + 31 < 54)
+            {
+                biasReadouts[index].text = "High";
+            }
+            else // if (newValue + 31 < 63)
+            {
+                biasReadouts[index].text = "Very High";
+            }
         }
-        else if (wetnessBiasSlider.value + 31 < 36)
+        else if ((biome == Biome.DESERT || biome == Biome.SHRUBLAND) &&
+                 ((DesertDimensions)index == DesertDimensions.VEGETATION) || (ShrublandDimensions)index == ShrublandDimensions.VEGETATION)
         {
-            wetnessBiasReadout.text = "Moderate";
+            if (biasSliders[index].value + 31 < 9)
+            {
+                biasReadouts[index].text = "Barren";
+            }
+            else if (biasSliders[index].value + 31 < 18)
+            {
+                biasReadouts[index].text = "Sparse";
+            }
+            else if (biasSliders[index].value + 31 < 27)
+            {
+                biasReadouts[index].text = "Somewhat Sparse";
+            }
+            else if (biasSliders[index].value + 31 < 36)
+            {
+                biasReadouts[index].text = "Moderate";
+            }
+            else if (biasSliders[index].value + 31 < 45)
+            {
+                biasReadouts[index].text = "Somewhat Lush";
+            }
+            else if (biasSliders[index].value + 31 < 54)
+            {
+                biasReadouts[index].text = "Lush";
+            }
+            else // if (newValue + 31 < 63)
+            {
+                biasReadouts[index].text = "Very Lush";
+            }
         }
-        else if (wetnessBiasSlider.value + 31 < 45)
+        else
         {
-            wetnessBiasReadout.text = "Somewhat Wet";
-        }
-        else if (wetnessBiasSlider.value + 31 < 54)
-        {
-            wetnessBiasReadout.text = "Wet";
-        }
-        else // if (newValue + 31 < 63)
-        {
-            wetnessBiasReadout.text = "Very Wet";
+            if (biasSliders[index].value + 31 < 9)
+            {
+                biasReadouts[index].text = "Very Low";
+            }
+            else if (biasSliders[index].value + 31 < 18)
+            {
+                biasReadouts[index].text = "Low";
+            }
+            else if (biasSliders[index].value + 31 < 27)
+            {
+                biasReadouts[index].text = "Somewhat Low";
+            }
+            else if (biasSliders[index].value + 31 < 36)
+            {
+                biasReadouts[index].text = "Moderate";
+            }
+            else if (biasSliders[index].value + 31 < 45)
+            {
+                biasReadouts[index].text = "Somewhat High";
+            }
+            else if (biasSliders[index].value + 31 < 54)
+            {
+                biasReadouts[index].text = "High";
+            }
+            else // if (newValue + 31 < 63)
+            {
+                biasReadouts[index].text = "Very High";
+            }
         }
     }
 
-    private void OnVegetationScaleSliderChanged(float newValue)
+    private void UpdateNumSliders()
     {
-        UpdateVegetationScaleReadout();
-        UpdateMapId();
-    }
+        int numDimensions = BiomeData.GetNumDimensions(Biome.TROPICAL);
 
-    private void UpdateVegetationScaleReadout()
-    {
-        vegetationScaleReadout.text = $"{Mathf.RoundToInt(100 * (vegetationScaleSlider.value + 1) / 64.0f)}%";
-    }
-
-    private void OnVegetationBiasSliderChanged(float newValue)
-    {
-        UpdateVegetationBiasReadout();
-        UpdateMapId();
-    }
-
-    private void UpdateVegetationBiasReadout()
-    {
-        if (vegetationBiasSlider.value + 31 < 9)
+        for (int i = 0; i < scaleHandles.Length; i++)
         {
-            vegetationBiasReadout.text = "Barren";
-        }
-        else if (vegetationBiasSlider.value + 31 < 18)
-        {
-            vegetationBiasReadout.text = "Sparse";
-        }
-        else if (vegetationBiasSlider.value + 31 < 27)
-        {
-            vegetationBiasReadout.text = "Somewhat Sparse";
-        }
-        else if (vegetationBiasSlider.value + 31 < 36)
-        {
-            vegetationBiasReadout.text = "Moderate";
-        }
-        else if (vegetationBiasSlider.value + 31 < 45)
-        {
-            vegetationBiasReadout.text = "Somewhat Forested";
-        }
-        else if (vegetationBiasSlider.value + 31 < 54)
-        {
-            vegetationBiasReadout.text = "Forested";
-        }
-        else // if (newValue + 31 < 63)
-        {
-            vegetationBiasReadout.text = "Heavily Forested";
+            scaleHandles[i].SetActive(i < numDimensions);
+            biasHandles[i].SetActive(i < numDimensions);
         }
     }
 
     private void UpdateMapId()
     {
-        mapIdText.text = $"MAP ID: {MapIdHelper.GetMapId((int)baseSeedSlider.value, (int)wetnessScaleSlider.value, (int)wetnessBiasSlider.value, (int)vegetationScaleSlider.value, (int)vegetationBiasSlider.value)}";
+        Biome currentBiome = GetCurrentSelectedBiome();
+
+        mapIdText.text = $"MAP ID: {MapIdHelper.GetMapId(currentBiome, (int)baseSeedSlider.value, (int)scaleSliders[0].value, (int)biasSliders[0].value, (int)scaleSliders[1].value, (int)biasSliders[1].value, (int)scaleSliders[2].value, (int)biasSliders[2].value)}";
+    }
+
+    private Biome GetCurrentSelectedBiome()
+    {
+        return tropicalToggle.isOn ? Biome.TROPICAL : desertToggle.isOn ? Biome.DESERT : Biome.SHRUBLAND;
     }
 
     #region MAIN_CANVAS_GROUP

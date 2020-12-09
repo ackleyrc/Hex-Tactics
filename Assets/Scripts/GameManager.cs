@@ -67,12 +67,6 @@ public class GameManager : MonoBehaviour
     private List<Cube> team1StartHexes;
     private List<Cube> team2StartHexes;
 
-    private int currentSeed = -1;
-    private float currentWetFreqNrml;
-    private float currentWetBiasNrml;
-    private float currentVegFreqNrml;
-    private float currentVegBiasNrml;
-
     private MapSeedParameters currentMapParams;
 
     private void Start()
@@ -87,7 +81,7 @@ public class GameManager : MonoBehaviour
     {
         currentMapParams = HexGridManager.Instance.GenerateMap();
 
-        mapIdText.text = $"<b>Map ID:</b> {MapIdHelper.GetMapId(currentSeed, currentWetFreqNrml, currentWetBiasNrml, currentVegFreqNrml, currentVegBiasNrml)}";
+        mapIdText.text = $"<b>Map ID:</b> {MapIdHelper.GetMapId(currentMapParams)}";
     }
 
     private void InitializeCustomMap(MapSeedParameters mapParams)
@@ -96,7 +90,7 @@ public class GameManager : MonoBehaviour
 
         HexGridManager.Instance.GenerateCustomMap(mapParams);
 
-        mapIdText.text = $"<b>Map ID:</b> {MapIdHelper.GetMapId(currentSeed, currentWetFreqNrml, currentWetBiasNrml, currentVegFreqNrml, currentVegBiasNrml)}";
+        mapIdText.text = $"<b>Map ID:</b> {MapIdHelper.GetMapId(currentMapParams)}";
     }
 
     private void InitializeMechs(List<Cube> team1StartHexes = null, List<Cube> team2StartHexes = null)

@@ -4,16 +4,22 @@ using UnityEngine;
 
 public enum Biome
 {
-    NONE,
-    TROPICAL,
-    YELLOW_DESERT,
-    RED_DESERT,
+    NONE = -1,
+    TROPICAL = 0,
+    DESERT = 1,
+    SHRUBLAND = 2,
+    TEMPERATE = 3,
+    TAIGA = 4,
+    TUNDRA = 5,
+    VOLCANIC = 6,
 }
 
-public enum TropicalDimensions { WETNESS = 0, VEGETATION = 1 }
+public enum TropicalDimensions { WETNESS = 0, VEGETATION = 1, COUNT = 2 }
+public enum DesertDimensions { ELEVATION = 0, VEGETATION = 1, COUNT = 2 }
+public enum ShrublandDimensions { ELEVATION = 0, VEGETATION = 1, COUNT = 2 }
 
 [System.Serializable]
-public struct MapSeedParameters
+public class MapSeedParameters
 {
     public Biome biome;
     /// <summary> Expected values from 0-4095 inclusive </summary>
@@ -22,7 +28,7 @@ public struct MapSeedParameters
 }
 
 [System.Serializable]
-public struct BiomeDimension
+public class BiomeDimension
 {
     /// <summary> Expected values from 0-63 inclusive </summary>
     public int scale;
@@ -43,6 +49,21 @@ public class BiomeData : ScriptableObject
     private MapSeedParameters defaultMapParams;
     public MapSeedParameters DefaultMapParams { get { return defaultMapParams; } }
 
+    public static int GetNumDimensions(Biome biome)
+    {
+        switch (biome)
+        {
+            case Biome.TROPICAL:
+                return (int)TropicalDimensions.COUNT;
+            case Biome.DESERT:
+                return (int)DesertDimensions.COUNT;
+            case Biome.SHRUBLAND:
+                return (int)ShrublandDimensions.COUNT;
+            default:
+                return 0;
+        }
+    }
+
     public MapSeedParameters GetDefaultsWithRandomSeed()
     {
         return new MapSeedParameters()
@@ -56,9 +77,17 @@ public class BiomeData : ScriptableObject
     /// <summary> Obtain a terrain type provided the specified parameters </summary>
     public HexTerrainType GetTerrainType(int mapWidth, int mapLength, int col, int row, MapSeedParameters mapParams)
     {
-        if (biomeType == Biome.TROPICAL)
+        if (BiomeType == Biome.TROPICAL)
         {
             return GetTropicalTerrain(mapWidth, mapLength, col, row, mapParams);
+        }
+        else if (BiomeType == Biome.DESERT)
+        {
+            return GetDesertTerrain(mapWidth, mapLength, col, row, mapParams);
+        }
+        else if (BiomeType == Biome.SHRUBLAND)
+        {
+            return GetShrublandTerrain(mapWidth, mapLength, col, row, mapParams);
         }
 
         return HexTerrainType.NONE;
@@ -98,6 +127,88 @@ public class BiomeData : ScriptableObject
         else
         {
             return HexTerrainType.BOG;
+        }
+    }
+
+    private HexTerrainType GetDesertTerrain(int mapWidth, int mapLength, int col, int row, MapSeedParameters mapParams)
+    {
+        float lacunarity = (mapWidth + mapLength) * 0.5f * 0.75f;
+
+        float elevFreqNrml = 1.0f - (mapParams.biomeDimensions[(int)DesertDimensions.ELEVATION].scale / 64.0f) * 1.0f;
+        float elevBiasNrml = (mapParams.biomeDimensions[(int)DesertDimensions.ELEVATION].bias / 64.0f) * 0.5f;
+        float elevPersNrml = ((DefaultMapParams.biomeDimensions[(int)DesertDimensions.ELEVATION].persistence + 1) / 64.0f) * 0.5f;
+
+        float vegFreqNrml = 1.0f - (mapParams.biomeDimensions[(int)DesertDimensions.VEGETATION].scale / 64.0f) * 1.0f;
+        float vegBiasNrml = (mapParams.biomeDimensions[(int)DesertDimensions.VEGETATION].bias / 64.0f) * 0.5f;
+        float vegPersNrml = ((DefaultMapParams.biomeDimensions[(int)DesertDimensions.VEGETATION].persistence + 1) / 64.0f) * 0.5f;
+
+        float elevationNoise = GetMultiOctaveNoise(col, row, elevFreqNrml, elevPersNrml, lacunarity, mapParams.baseSeed * 100) + elevBiasNrml;
+        float vegetationNoise = GetMultiOctaveNoise(col, row, vegFreqNrml, vegPersNrml, lacunarity, mapParams.baseSeed * 100 + 1000) + vegBiasNrml;
+
+        if (elevationNoise < 0.444f)
+        {
+            return vegetationNoise < 0.5f ? HexTerrainType.DESERT_YELLOW_DIRT : HexTerrainType.DESERT_YELLOW_CACTI;
+        }
+        else if (elevationNoise < 0.555f)
+        {
+            return HexTerrainType.DESERT_YELLOW_DIRT_DUNES;
+        }
+        else if (elevationNoise < 0.777f)
+        {
+            return HexTerrainType.DESERT_YELLOW_HILLS;
+        }
+        else if (elevationNoise < 0.889f)
+        {
+            return HexTerrainType.DESERT_YELLOW_MESAS;
+        }
+        else
+        {
+            return HexTerrainType.DESERT_YELLOW_MESA_LARGE;
+        }
+    }
+
+    private HexTerrainType GetShrublandTerrain(int mapWidth, int mapLength, int col, int row, MapSeedParameters mapParams)
+    {
+        float lacunarity = (mapWidth + mapLength) * 0.5f * 0.75f;
+
+        float elevFreqNrml = 1.0f - (mapParams.biomeDimensions[(int)ShrublandDimensions.ELEVATION].scale / 64.0f) * 1.0f;
+        float elevBiasNrml = (mapParams.biomeDimensions[(int)ShrublandDimensions.ELEVATION].bias / 64.0f) * 0.5f;
+        float elevPersNrml = ((DefaultMapParams.biomeDimensions[(int)ShrublandDimensions.ELEVATION].persistence + 1) / 64.0f) * 0.5f;
+
+        float vegFreqNrml = 1.0f - (mapParams.biomeDimensions[(int)ShrublandDimensions.VEGETATION].scale / 64.0f) * 1.0f;
+        float vegBiasNrml = (mapParams.biomeDimensions[(int)ShrublandDimensions.VEGETATION].bias / 64.0f) * 0.5f;
+        float vegPersNrml = ((DefaultMapParams.biomeDimensions[(int)ShrublandDimensions.VEGETATION].persistence + 1) / 64.0f) * 0.5f;
+
+        float elevationNoise = GetMultiOctaveNoise(col, row, elevFreqNrml, elevPersNrml, lacunarity, mapParams.baseSeed * 100) + elevBiasNrml;
+        float vegetationNoise = GetMultiOctaveNoise(col, row, vegFreqNrml, vegPersNrml, lacunarity, mapParams.baseSeed * 100 + 1000) + vegBiasNrml;
+
+        if (elevationNoise < 0.16f)
+        {
+            return HexTerrainType.DESERT_RED_BASE;
+        }
+        else if (elevationNoise < 0.32f)
+        {
+            return HexTerrainType.DESERT_RED_DIRT;
+        }
+        else if (elevationNoise < 0.48f)
+        {
+            return vegetationNoise < 0.5f ? HexTerrainType.DESERT_RED_GRASS : HexTerrainType.DESERT_RED_FOREST;
+        }
+        else if (elevationNoise < 0.64f)
+        {
+            return HexTerrainType.DESERT_RED_GRASS_DUNES;
+        }
+        else if (elevationNoise < 0.80f)
+        {
+            return HexTerrainType.DESERT_RED_HILLS;
+        }
+        else if (elevationNoise < 0.96f)
+        {
+            return HexTerrainType.DESERT_RED_MOUNTAINS;
+        }
+        else
+        {
+            return HexTerrainType.DESERT_RED_MESA_LARGE;
         }
     }
 

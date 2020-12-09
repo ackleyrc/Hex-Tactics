@@ -67,3 +67,159 @@ MonoBehaviour:
     movementCost: 2
     allowsLOS: 1
     defenseMultiplier: 1
+  - terrainType: 10
+    displayName: Flats
+    traversible: 1
+    movementCost: 1
+    allowsLOS: 1
+    defenseMultiplier: 1
+  - terrainType: 11
+    displayName: Dirt
+    traversible: 1
+    movementCost: 1
+    allowsLOS: 1
+    defenseMultiplier: 1
+  - terrainType: 12
+    displayName: Shrubland
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+    defenseMultiplier: 0.5
+  - terrainType: 13
+    displayName: Shrubland Oasis
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+    defenseMultiplier: 0.5
+  - terrainType: 14
+    displayName: Plains
+    traversible: 1
+    movementCost: 1
+    allowsLOS: 1
+    defenseMultiplier: 1
+  - terrainType: 15
+    displayName: Dunes
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+    defenseMultiplier: 1
+  - terrainType: 16
+    displayName: Plains Oasis
+    traversible: 1
+    movementCost: 1
+    allowsLOS: 1
+    defenseMultiplier: 1
+  - terrainType: 17
+    displayName: Hills
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+    defenseMultiplier: 0.5
+  - terrainType: 18
+    displayName: Hills Oasis
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+    defenseMultiplier: 0.5
+  - terrainType: 19
+    displayName: Large Mesa
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+    defenseMultiplier: 0
+  - terrainType: 20
+    displayName: Large Mesa
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+    defenseMultiplier: 0
+  - terrainType: 21
+    displayName: Mountains
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+    defenseMultiplier: 0
+  - terrainType: 22
+    displayName: Mountains
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+    defenseMultiplier: 0
+  - terrainType: 23
+    displayName: Flats
+    traversible: 1
+    movementCost: 1
+    allowsLOS: 1
+    defenseMultiplier: 1
+  - terrainType: 24
+    displayName: Cacti
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+    defenseMultiplier: 0.5
+  - terrainType: 25
+    displayName: Crater
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+    defenseMultiplier: 0.5
+  - terrainType: 26
+    displayName: Dirt
+    traversible: 1
+    movementCost: 1
+    allowsLOS: 1
+    defenseMultiplier: 1
+  - terrainType: 27
+    displayName: Dunes
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+    defenseMultiplier: 1
+  - terrainType: 28
+    displayName: Hills
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+    defenseMultiplier: 0.5
+  - terrainType: 29
+    displayName: Hills Oasis
+    traversible: 1
+    movementCost: 2
+    allowsLOS: 1
+    defenseMultiplier: 0.5
+  - terrainType: 30
+    displayName: Large Mesa
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+    defenseMultiplier: 0
+  - terrainType: 31
+    displayName: Large Mesa
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+    defenseMultiplier: 0
+  - terrainType: 32
+    displayName: Large Mesa
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+    defenseMultiplier: 0
+  - terrainType: 33
+    displayName: Mesas
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+    defenseMultiplier: 0
+  - terrainType: 34
+    displayName: Mesas
+    traversible: 0
+    movementCost: 1000
+    allowsLOS: 0
+    defenseMultiplier: 0
+  - terrainType: 35
+    displayName: Salt Flat
+    traversible: 1
+    movementCost: 1
+    allowsLOS: 1
+    defenseMultiplier: 1

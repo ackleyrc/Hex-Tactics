@@ -8,6 +8,9 @@ public class HexGridManager : MonoBehaviour
     public static HexGridManager Instance { get { return _Instance; } }
 
     public BiomeData tropicalBiomeData;
+    public BiomeData desertBiomeData;
+    public BiomeData shrublandBiomeData;
+
     public TerrainTypeData terrainData;
     public HexTileSpriteData spriteData;
     public HexTileMapData mapData; // Should only be used when initially generating the map (static data)
@@ -49,7 +52,23 @@ public class HexGridManager : MonoBehaviour
             GameObject.Destroy(hexTilesParent.GetChild(i).gameObject);
         }
 
-        MapSeedParameters mapParams = tropicalBiomeData.GetDefaultsWithRandomSeed();
+        MapSeedParameters mapParams = new MapSeedParameters();
+
+        switch ((Biome)Random.Range(0, 3))
+        {
+            case Biome.TROPICAL:
+                Debug.Log("HexGridManager :: Generate TROPICAL Map from defaults");
+                mapParams = tropicalBiomeData.GetDefaultsWithRandomSeed();
+                break;
+            case Biome.DESERT:
+                Debug.Log("HexGridManager :: Generate DESERT Map from defaults");
+                mapParams = desertBiomeData.GetDefaultsWithRandomSeed();
+                break;
+            case Biome.SHRUBLAND:
+                Debug.Log("HexGridManager :: Generate SHRUBLAND Map from defaults");
+                mapParams = shrublandBiomeData.GetDefaultsWithRandomSeed();
+                break;
+        }
 
         //GenerateFromMapData(mapData);
         GenerateProcedurally(12, 12, mapParams);
@@ -253,6 +272,8 @@ public class HexGridManager : MonoBehaviour
 
     private void GenerateProcedurally(int width, int length, MapSeedParameters mapParams)
     {
+        Debug.Log($"HexGridManager::GenerateProcedurally( {width} , {length} , {mapParams.biome} )");
+
         HexGrid = new HexGrid();
         HexGrid.GenerateRectangularGrid(HexGrid.Alignment.Horizontal, width, length);
 
@@ -276,7 +297,21 @@ public class HexGridManager : MonoBehaviour
             {
                 if (col >= 0 && col < MapWidth)
                 {
-                    HexTerrainType terrainType = tropicalBiomeData.GetTerrainType(MapWidth, MapLength, col, row, mapParams);
+                    HexTerrainType terrainType = HexTerrainType.NONE;
+
+                    switch (mapParams.biome)
+                    {
+                        case Biome.TROPICAL:
+                            terrainType = tropicalBiomeData.GetTerrainType(MapWidth, MapLength, col, row, mapParams);
+                            break;
+                        case Biome.DESERT:
+                            terrainType = desertBiomeData.GetTerrainType(MapWidth, MapLength, col, row, mapParams);
+                            break;
+                        case Biome.SHRUBLAND:
+                            terrainType = shrublandBiomeData.GetTerrainType(MapWidth, MapLength, col, row, mapParams);
+                            break;
+                    }
+
                     bool createUnderground = (row == 0) || (row == length - 1) || (col == 0) || (col == width - 1);
                     HexTile hexTile = CreateHex(terrainType, -row, createUnderground, hexTilesParent);
 
