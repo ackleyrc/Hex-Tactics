@@ -17,9 +17,9 @@ MonoBehaviour:
     biome: 0
     baseSeed: 0
     biomeDimensions:
-    - scale: 32
+    - scale: 35
       persistence: 37
       bias: -8
-    - scale: 12
+    - scale: 20
       persistence: 63
-      bias: -4
+      bias: -5

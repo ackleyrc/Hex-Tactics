@@ -112,7 +112,7 @@ public class DifficultySelectionGUI : MonoBehaviour
 
     private IEnumerator RevealButtonsPanel()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.25f);
 
         while (panel.localPosition.y > 0.1f ||
                panelGroup.alpha < 0.99f)

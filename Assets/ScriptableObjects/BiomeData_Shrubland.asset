@@ -19,7 +19,7 @@ MonoBehaviour:
     biomeDimensions:
     - scale: 34
       persistence: 37
-      bias: 8
-    - scale: 34
+      bias: 16
+    - scale: 40
       persistence: 63
-      bias: 6
+      bias: -5

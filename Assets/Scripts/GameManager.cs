@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
     {
         currentMapParams = HexGridManager.Instance.GenerateMap();
 
-        mapIdText.text = $"<b>Map ID:</b> {MapIdHelper.GetMapId(currentMapParams)}";
+        mapIdText.text = $"<b>MAP ID:</b> {MapIdHelper.GetMapId(currentMapParams)}";
     }
 
     private void InitializeCustomMap(MapSeedParameters mapParams)
@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
 
         HexGridManager.Instance.GenerateCustomMap(mapParams);
 
-        mapIdText.text = $"<b>Map ID:</b> {MapIdHelper.GetMapId(currentMapParams)}";
+        mapIdText.text = $"<b>MAP ID:</b> {MapIdHelper.GetMapId(currentMapParams)}";
     }
 
     private void InitializeMechs(List<Cube> team1StartHexes = null, List<Cube> team2StartHexes = null)

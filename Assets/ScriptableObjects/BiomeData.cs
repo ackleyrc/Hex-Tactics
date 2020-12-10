@@ -145,19 +145,19 @@ public class BiomeData : ScriptableObject
         float elevationNoise = GetMultiOctaveNoise(col, row, elevFreqNrml, elevPersNrml, lacunarity, mapParams.baseSeed * 100) + elevBiasNrml;
         float vegetationNoise = GetMultiOctaveNoise(col, row, vegFreqNrml, vegPersNrml, lacunarity, mapParams.baseSeed * 100 + 1000) + vegBiasNrml;
 
-        if (elevationNoise < 0.444f)
+        if (elevationNoise < 0.500f) //0.500f) //0.500f) //0.444f)
         {
             return vegetationNoise < 0.5f ? HexTerrainType.DESERT_YELLOW_DIRT : HexTerrainType.DESERT_YELLOW_CACTI;
         }
-        else if (elevationNoise < 0.555f)
+        else if (elevationNoise < 0.6875f) //0.625f) //0.625f) //0.555f)
         {
             return HexTerrainType.DESERT_YELLOW_DIRT_DUNES;
         }
-        else if (elevationNoise < 0.777f)
+        else if (elevationNoise < 0.75f) //0.6875f) //0.750f) //0.777f)
         {
             return HexTerrainType.DESERT_YELLOW_HILLS;
         }
-        else if (elevationNoise < 0.889f)
+        else if (elevationNoise < 0.9375f) //0.9375f) //0.875f) //0.889f)
         {
             return HexTerrainType.DESERT_YELLOW_MESAS;
         }
@@ -182,27 +182,27 @@ public class BiomeData : ScriptableObject
         float elevationNoise = GetMultiOctaveNoise(col, row, elevFreqNrml, elevPersNrml, lacunarity, mapParams.baseSeed * 100) + elevBiasNrml;
         float vegetationNoise = GetMultiOctaveNoise(col, row, vegFreqNrml, vegPersNrml, lacunarity, mapParams.baseSeed * 100 + 1000) + vegBiasNrml;
 
-        if (elevationNoise < 0.16f)
+        if (elevationNoise < 0.20f) //0.20f) //0.20f) //0.16f)
         {
             return HexTerrainType.DESERT_RED_BASE;
         }
-        else if (elevationNoise < 0.32f)
+        else if (elevationNoise < 0.45f) //0.45f) //0.40f) //0.32f)
         {
             return HexTerrainType.DESERT_RED_DIRT;
         }
-        else if (elevationNoise < 0.48f)
+        else if (elevationNoise < 0.60f) //0.65f) //0.65f) //0.48f)
         {
             return vegetationNoise < 0.5f ? HexTerrainType.DESERT_RED_GRASS : HexTerrainType.DESERT_RED_FOREST;
         }
-        else if (elevationNoise < 0.64f)
+        else if (elevationNoise < 0.70f) //0.70f) //0.70f) //0.64f)
         {
             return HexTerrainType.DESERT_RED_GRASS_DUNES;
         }
-        else if (elevationNoise < 0.80f)
+        else if (elevationNoise < 0.80f) //0.80f) //0.80f) //0.80f)
         {
             return HexTerrainType.DESERT_RED_HILLS;
         }
-        else if (elevationNoise < 0.96f)
+        else if (elevationNoise < 0.95f) //0.95f) //0.95f) //0.96f)
         {
             return HexTerrainType.DESERT_RED_MOUNTAINS;
         }

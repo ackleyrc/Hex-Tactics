@@ -2552,7 +2552,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 22, y: 22}
+  m_AnchoredPosition: {x: 22, y: 67}
   m_SizeDelta: {x: 200, y: 150}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &255009817
@@ -4391,7 +4391,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &435573311
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4410,7 +4410,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 22, y: 82}
+  m_AnchoredPosition: {x: 22, y: 22}
   m_SizeDelta: {x: 200, y: 150}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &450758152
@@ -14401,7 +14401,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 22, y: 82}
+  m_AnchoredPosition: {x: 22, y: 127}
   m_SizeDelta: {x: 200, y: 170}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1252110884
@@ -21070,7 +21070,7 @@ MonoBehaviour:
     for \nsome special sources of reseach and inspiration\n\nRed Blob Games | Amit
     Patel\n<size=36>https://www.redblobgames.com/</size>\n\nSebastian Lague\n<size=36>https://www.youtube.com/c/SebastianLague</size>\n\n\n\n\n\nwith
     Appreciation for\nthose providing testing, feedback, and suggestions\n\nAndrew
-    Hung\nAndrew McPherson\nBrad Kraeling\nCamden Cecrle\nColin Vandervort\nEd Lu\nGreg
+    Hung\nAndrew Goodenough\nBrad Kraeling\nCamden Cecrle\nColin Vandervort\nEd Lu\nGreg
     Morton\nJacob Farny\nNotExplosive\nSteve Zapata\n\n\n\n\n\n\nwith Love for\nmy
     wonderful wife and her enduring support\n\nMaria Xu\n\n\n\n\n\n\n\n\n\nfinally...\n\n\n\n\n\n\n\n\n\nmy
     Thanks to\n\n<b>YOU</b>\n\n\n\n\n\n\n\n\n\n\n<size=80>Thanks for playing!</size>"
@@ -25206,7 +25206,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: <b>Map ID:</b> 066Qtcxvv
+  m_Text: <b>MAP ID:</b> 066QctG4D_2
 --- !u!222 &2031611939
 CanvasRenderer:
   m_ObjectHideFlags: 0
