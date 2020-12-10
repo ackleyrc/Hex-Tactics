@@ -59,6 +59,11 @@ public class WinConditionGUI : MonoBehaviour
 
     private void Start()
     {
+        resetButton.onClick.AddListener(OnClickResetButton);
+        newStartButton.onClick.AddListener(OnClickNewStartButton);
+        newMapButton.onClick.AddListener(OnClickNewMapButton);
+        exitButton.onClick.AddListener(OnClickExitButton);
+
         Initialize();
     }
 
@@ -71,10 +76,6 @@ public class WinConditionGUI : MonoBehaviour
         subHeader.localPosition = Vector3.right * subHeader.sizeDelta.x * 2.0f;
         panel.localPosition = Vector3.up * panel.sizeDelta.y;
         panelGroup.alpha = 0.0f;
-        resetButton.onClick.AddListener(OnClickResetButton);
-        newStartButton.onClick.AddListener(OnClickNewStartButton);
-        newMapButton.onClick.AddListener(OnClickNewMapButton);
-        exitButton.onClick.AddListener(OnClickExitButton);
         isDisplaying = false;
         isRevealingButtons = false;
     }
