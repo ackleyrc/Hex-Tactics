@@ -45,7 +45,7 @@ public class HexGridManager : MonoBehaviour
         }
     }
 
-    public MapSeedParameters GenerateMap()
+    public MapSeedParameters GenerateMap(Biome ignoreBiome)
     {
         for (int i = 0; i < hexTilesParent.childCount; i++)
         {
@@ -54,7 +54,14 @@ public class HexGridManager : MonoBehaviour
 
         MapSeedParameters mapParams = new MapSeedParameters();
 
-        switch ((Biome)Random.Range(0, 3))
+        Biome nextBiome = ignoreBiome;
+
+        while (nextBiome == ignoreBiome)
+        {
+            nextBiome = (Biome)Random.Range(0, 3);
+        }
+
+        switch (nextBiome)
         {
             case Biome.TROPICAL:
                 Debug.Log("HexGridManager :: Generate TROPICAL Map from defaults");

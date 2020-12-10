@@ -139,6 +139,16 @@ public class CustomScenarioGUI : MonoBehaviour
 
     private void OnClickRandomizeButton()
     {
+        /*
+        Biome currentBiome = GetCurrentSelectedBiome();
+        Biome nextBiome = currentBiome;
+
+        while (nextBiome == currentBiome)
+        {
+            nextBiome = (Biome)Random.Range(0, 3);
+        }
+        */
+
         switch ((Biome)Random.Range(0, 3))
         {
             case Biome.TROPICAL:

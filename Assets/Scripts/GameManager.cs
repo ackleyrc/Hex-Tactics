@@ -73,13 +73,13 @@ public class GameManager : MonoBehaviour
     {
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
 
-        InitializeNewMap();
+        InitializeCustomMap(HexGridManager.Instance.tropicalBiomeData.GetDefaultsWithRandomSeed());
         InitializeMechs();
     }
 
     private void InitializeNewMap()
     {
-        currentMapParams = HexGridManager.Instance.GenerateMap();
+        currentMapParams = HexGridManager.Instance.GenerateMap(ignoreBiome: currentMapParams.biome);
 
         mapIdText.text = $"<b>MAP ID:</b> {MapIdHelper.GetMapId(currentMapParams)}";
     }
