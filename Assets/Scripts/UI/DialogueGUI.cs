@@ -21,16 +21,23 @@ public class DialogueGUI : MonoBehaviour
             _Instance = null;
         }
     }
-#endregion SINGLETON_MGMT
+    #endregion SINGLETON_MGMT
 
+    public HUDColorPalette colorPalette;
     public MechEntityDetailsData mechDetails;
+    public DialogueHumanData humanDialogueData;
     public AIDialogueData aiEasyDialogueData;
     public AIDialogueData aiModerateDialogueData;
 
     public CanvasGroup panelGroup;
 
-    public float autoTypeSpeed;
-    public float dialogueDuration;
+    public float humanAutoTypeSpeed;
+    public float humanDialogueLingerDuration;
+    public float humanDialogueMaxDuration;
+
+    public float aiAutoTypeSpeed;
+    public float aiDialogueLingerDuration;
+    public float aiDialogueMaxDuration;
 
     [Header("Portrait")]
     public Image portraitBorder;
@@ -40,6 +47,105 @@ public class DialogueGUI : MonoBehaviour
     [Header("Speech")]
     public Image speechBG;
     public Text speechText;
+
+    private bool isPlayingDialogue = false;
+
+    private void Start()
+    {
+        panelGroup.alpha = 0.0f;
+    }
+
+    public bool HandleHumanMechMoveDialogue(MechController humanMech, Cube currHexPos, Cube newHexPos)
+    {
+        // Take Cover
+        // Approach Enemy
+        // Generic Move
+        return false;
+    }
+
+    public bool HandleHumanMechAttackDialogue(MechController humanMech, MechController targetMech)
+    {
+        // Kill Shot
+        // Vulnerable Target
+        // Generic Attack
+        return false;
+    }
+
+    public CustomYieldInstruction HandleHumanMechEndTurnDialogue(MechController humanMech)
+    {
+        DisplayHumanDialogueLine(humanMech, DialogueContext.STAY_PUT);
+
+        return new WaitWhile(() => isPlayingDialogue);
+    }
+
+    public bool HandleHumanMechFallenTeammateDialogue(MechController fallenMech, Cube currHexPos, Cube newHexPos)
+    {
+        // Teammate Down
+        return false;
+    }
+
+    private void DisplayHumanDialogueLine(MechController humanMech, DialogueContext context)
+    {
+        Debug.Log($"DialogueGUI::DisplayHumanDialogueLine( {humanMech} , {context} )");
+
+        characterNameText.text = humanMech.MechName;
+        portraitImage.sprite = mechDetails.GetPortrait(Allegiance.FRIENDLY, humanMech.UnitIndex);
+        portraitBorder.color = colorPalette.FriendlyUnitColor;
+        speechBG.color = colorPalette.FriendlyUnitColor;
+
+        AudioManager.Instance.StopAIDialogue();
+
+        StopAllCoroutines();
+        StartCoroutine(RenderHumanDialogue(humanDialogueData.GetLine(context)));
+
+        Debug.Log($"DialogueGUI :: Human Dialogue Line: {speechText.text}");
+    }
+
+    private IEnumerator RenderHumanDialogue(string line)
+    {
+        isPlayingDialogue = true;
+
+        float startTime = Time.time;
+        speechText.text = "";
+        panelGroup.alpha = 1.0f;
+
+        int maxChars = 0;
+
+        while (Time.time < startTime + humanDialogueMaxDuration && maxChars <= line.Length + 2)
+        {
+            yield return new WaitForSeconds(0.06f);
+
+            maxChars = Mathf.FloorToInt((Time.time - startTime) * humanAutoTypeSpeed);
+
+            string lineSubstring = maxChars > 2 ? line.Substring(0, Mathf.Clamp(maxChars - 2, 0, line.Length)) : "";
+            string postFixA = (maxChars > 4 && lineSubstring.Length < line.Length - 1 - 3) ? $"{(Random.Range(0, 5) < 1 ? "_" : "")}" : "";
+            string postFixB = (maxChars > 3 && lineSubstring.Length < line.Length - 2 - 3) ? $"{(Random.Range(0, 4) < 1 ? "_" : "")}" : "";
+            string postFixC = (maxChars > 2 && lineSubstring.Length < line.Length - 3 - 3) ? $"{(Random.Range(0, 3) < 1 ? "_" : "")}" : "";
+            string postFixD = (maxChars > 1 && lineSubstring.Length < line.Length - 4 - 3) ? $"{(Random.Range(0, 2) < 1 ? "_" : "")}" : "";
+
+            if (maxChars > 0)
+            {
+                speechText.text = $"{lineSubstring}{postFixA}{postFixB}{postFixC}{postFixD}";
+            }
+
+            if (maxChars > 1 && maxChars < line.Length)
+            {
+                AudioManager.Instance.PlayAIDialogue();
+            }
+            else if (maxChars >= line.Length)
+            {
+                AudioManager.Instance.StopAIDialogue();
+            }
+        }
+
+        AudioManager.Instance.StopAIDialogue();
+
+        yield return new WaitForSeconds(humanDialogueLingerDuration);
+
+        panelGroup.alpha = 0.0f;
+
+        isPlayingDialogue = false;
+    }
 
     public void HandleModerateAIDialogue(MechController aiMech, MechController targetMech, Cube currHexPos, Cube newHexPos)
     {
@@ -114,9 +220,9 @@ public class DialogueGUI : MonoBehaviour
     {
         // Evaluate parameters for AI Dialogue logic
         float defenseMult = targetMech == null ? 0.0f : HexGridManager.Instance.GetDefenseMultiplier(targetMech.GetCurrentHexTile());
-        Debug.Log($"DialogueGUI :: Defense Multiplier: {defenseMult} for target {targetMech?.MechName} at {targetMech?.GetCurrentHexTile()}");
+        //Debug.Log($"DialogueGUI :: Defense Multiplier: {defenseMult} for target {targetMech?.MechName} at {targetMech?.GetCurrentHexTile()}");
         int tentativeDmg = Mathf.RoundToInt(2.0f * defenseMult); // For now, this should be 2 or 1
-        Debug.Log($"DialogueGUI :: Tentative Damage: {tentativeDmg}");
+        //Debug.Log($"DialogueGUI :: Tentative Damage: {tentativeDmg}");
 
         int currNumOpponentsExposedTo = 0;
         int newNumOpponentsExposedTo = 0;
@@ -177,32 +283,36 @@ public class DialogueGUI : MonoBehaviour
         }
     }
 
-    public void DisplayAIDialogueLine(MechController aiMech, AIContext context, Difficulty difficulty)
+    private void DisplayAIDialogueLine(MechController aiMech, AIContext context, Difficulty difficulty)
     {
         Debug.Log($"DialogueGUI::DisplayAIDialogueLine( {aiMech} , {context} )");
 
-        portraitImage.sprite = mechDetails.GetPortrait(Allegiance.ENEMY, aiMech.UnitIndex);
         characterNameText.text = aiMech.MechName;
+        portraitImage.sprite = mechDetails.GetPortrait(Allegiance.ENEMY, aiMech.UnitIndex);
+        portraitBorder.color = colorPalette.EnemyUnitColor;
+        speechBG.color = colorPalette.EnemyUnitColor;
 
         AudioManager.Instance.StopAIDialogue();
 
         StopAllCoroutines();
-        StartCoroutine(RenderDialogue(difficulty == Difficulty.MODERATE ? aiModerateDialogueData.GetLine(context) : aiEasyDialogueData.GetLine(context)));
+        StartCoroutine(RenderAIDialogue(difficulty == Difficulty.MODERATE ? aiModerateDialogueData.GetLine(context) : aiEasyDialogueData.GetLine(context)));
 
-        Debug.Log($"DialogueGUI :: Dialogue Line: {speechText.text}");
+        Debug.Log($"DialogueGUI :: AI Dialogue Line: {speechText.text}");
     }
 
-    private IEnumerator RenderDialogue(string line)
+    private IEnumerator RenderAIDialogue(string line)
     {
         float startTime = Time.time;
-
+        speechText.text = "";
         panelGroup.alpha = 1.0f;
 
-        while (Time.time < startTime + dialogueDuration)
+        int maxChars = 0;
+
+        while (Time.time < startTime + aiDialogueMaxDuration && maxChars <= line.Length + 2)
         {
             yield return new WaitForSeconds(0.06f);
 
-            int maxChars = Mathf.FloorToInt((Time.time - startTime) * autoTypeSpeed);
+            maxChars = Mathf.FloorToInt((Time.time - startTime) * aiAutoTypeSpeed);
 
             string lineSubstring = maxChars > 2 ? line.Substring(0, Mathf.Clamp(maxChars - 2, 0, line.Length)) : "";
             string postFixA = (maxChars > 4 && lineSubstring.Length < line.Length - 1 - 3) ? $"{(Random.Range(0, 2) < 1 ? 0 : 1)}" : "";
@@ -226,6 +336,8 @@ public class DialogueGUI : MonoBehaviour
         }
 
         AudioManager.Instance.StopAIDialogue();
+
+        yield return new WaitForSeconds(aiDialogueLingerDuration);
 
         panelGroup.alpha = 0.0f;
     }

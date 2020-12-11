@@ -10936,13 +10936,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 894110b09dfdbd34fbaad9c89a70de44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colorPalette: {fileID: 11400000, guid: fc0c87870a0b99b40ab93cdaa48d944c, type: 2}
   mechDetails: {fileID: 11400000, guid: a47545ae504fd384697e9510f619cd97, type: 2}
+  humanDialogueData: {fileID: 11400000, guid: e6c9aa0f3a4ae754a9f86c6038dadf01, type: 2}
   aiEasyDialogueData: {fileID: 11400000, guid: c9d5965fc1bf2774c8a92ed1d8df00d0, type: 2}
   aiModerateDialogueData: {fileID: 11400000, guid: 5bdf8de1744a22c45bac411373e46f76,
     type: 2}
   panelGroup: {fileID: 1820273719}
-  autoTypeSpeed: 16
-  dialogueDuration: 5
+  humanAutoTypeSpeed: 20
+  humanDialogueLingerDuration: 1.5
+  humanDialogueMaxDuration: 5
+  aiAutoTypeSpeed: 20
+  aiDialogueLingerDuration: 1.5
+  aiDialogueMaxDuration: 5
   portraitBorder: {fileID: 1404734749}
   portraitImage: {fileID: 2016733926}
   characterNameText: {fileID: 1142767690}

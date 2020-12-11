@@ -123,8 +123,9 @@ public class InputHandler : MonoBehaviour
                             if (blockingHex == null)
                             {
                                 Debug.Log($"InputHandler :: Click to Attack enemy mech at {hexCubeUnderMouse}");
-                                selectedMech.AttackTarget(enemyMechClicked);
 
+                                StopAllCoroutines();
+                                StartCoroutine(ConductAttack(selectedMech, enemyMechClicked));
                                 AudioManager.Instance.PlayActionConfirm();
                             }
                         }
@@ -145,8 +146,8 @@ public class InputHandler : MonoBehaviour
                                 float pathCost = HexGridManager.Instance.GetPathCost(path);
                                 if (pathCost <= selectedMech.weightedDistanceRange)
                                 {
-                                    selectedMech.TravelPath(path);
-
+                                    StopAllCoroutines();
+                                    StartCoroutine(ConductMove(selectedMech, path));
                                     AudioManager.Instance.PlayActionConfirm();
                                 }
                             }
@@ -161,6 +162,26 @@ public class InputHandler : MonoBehaviour
                 }
             }
         }
+    }
+
+    private IEnumerator ConductMove(MechController selectedMech, List<Cube> path)
+    {
+        if (DialogueGUI.Instance.HandleHumanMechMoveDialogue(selectedMech, selectedMech.GetCurrentHexTile(), path[path.Count - 1]) == true)
+        {
+            yield return new WaitForSeconds(1.5f);
+        }
+
+        selectedMech.TravelPath(path);
+    }
+
+    private IEnumerator ConductAttack(MechController selectedMech, MechController targetMech)
+    {
+        if (DialogueGUI.Instance.HandleHumanMechAttackDialogue(selectedMech, targetMech) == true)
+        {
+            yield return new WaitForSeconds(1.5f);
+        }
+
+        selectedMech.AttackTarget(targetMech);
     }
 
     private void HandleInteractionUI(Cube hexCubeUnderMouse)

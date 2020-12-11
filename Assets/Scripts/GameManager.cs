@@ -46,6 +46,8 @@ public class GameManager : MonoBehaviour
     public Button endTurnButton;
     public CanvasGroup endTurnGroup;
 
+    public int CurrentRoundIndex { get; private set; }
+
     public enum PlayerTurn { NONE, HUMAN_PLAYER, COMPUTER_PLAYER }
     public PlayerTurn CurrentPlayerTurn { get; private set; }
 
@@ -164,6 +166,7 @@ public class GameManager : MonoBehaviour
                 enemyMech.OnAttackStopped += HandleAttackStopped;
             }
 
+            CurrentRoundIndex = 0;
             CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
             CurrentUnitIndex = 0;
             CurrentActionPhase = ActionPhase.PRIMARY;
@@ -171,6 +174,8 @@ public class GameManager : MonoBehaviour
             endTurnGroup.alpha = 1.0f;
             endTurnGroup.interactable = true;
             endTurnGroup.blocksRaycasts = true;
+
+            actionPanelGUI.gameObject.SetActive(true);
 
             actionPanelGUI.DisplayMoveEnabled();
             actionPanelGUI.DisplayAttackEnabled();
@@ -538,6 +543,19 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log($"GameManager::HandleEndTurnButtonClicked()");
 
+        StartCoroutine(EndPlayerTurn());
+    }
+
+    private IEnumerator EndPlayerTurn()
+    {
+        endTurnGroup.alpha = 0.0f;
+        endTurnGroup.interactable = false;
+        endTurnGroup.blocksRaycasts = false;
+
+        actionPanelGUI.gameObject.SetActive(false);
+
+        yield return DialogueGUI.Instance.HandleHumanMechEndTurnDialogue(MechFriendlies[CurrentUnitIndex]);
+
         ConcludeCurrentTurn();
     }
 
@@ -567,20 +585,13 @@ public class GameManager : MonoBehaviour
         {
             CurrentUnitIndex = 0;
             CurrentPlayerTurn = PlayerTurn.COMPUTER_PLAYER;
-
-            endTurnGroup.alpha = 0.0f;
-            endTurnGroup.interactable = false;
-            endTurnGroup.blocksRaycasts = false;
         }
         else if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER &&
                  CurrentUnitIndex >= MechEnemies.Count)
         {
             CurrentUnitIndex = 0;
             CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
-
-            endTurnGroup.alpha = 1.0f;
-            endTurnGroup.interactable = true;
-            endTurnGroup.blocksRaycasts = true;
+            CurrentRoundIndex++;
         }
 
         Debug.Log($"GameManager :: New Unit Index: {CurrentUnitIndex}");
@@ -593,12 +604,20 @@ public class GameManager : MonoBehaviour
 
         if (CurrentPlayerTurn == PlayerTurn.COMPUTER_PLAYER)
         {
+            endTurnGroup.alpha = 0.0f;
+            endTurnGroup.interactable = false;
+            endTurnGroup.blocksRaycasts = false;
+
             actionPanelGUI.gameObject.SetActive(false);
 
             StartCoroutine(ConductEnemyTurn());
         }
         else if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER)
         {
+            endTurnGroup.alpha = 1.0f;
+            endTurnGroup.interactable = true;
+            endTurnGroup.blocksRaycasts = true;
+
             actionPanelGUI.gameObject.SetActive(true);
 
             if (MechFriendlies[CurrentUnitIndex].health.CurrentHealth <= 0)
@@ -686,6 +705,10 @@ public class GameManager : MonoBehaviour
 
         CurrentPlayerTurn = PlayerTurn.NONE;
         CurrentActionPhase = ActionPhase.NONE;
+
+        endTurnGroup.alpha = 0.0f;
+        endTurnGroup.interactable = false;
+        endTurnGroup.blocksRaycasts = false;
     }
 
     private void HandleMoveStopped(MechController mechStoppingMove)
@@ -703,6 +726,10 @@ public class GameManager : MonoBehaviour
         {
             actionPanelGUI.DisplayMoveDisabled();
             actionPanelGUI.DisplayAttackEnabled();
+
+            endTurnGroup.alpha = 1.0f;
+            endTurnGroup.interactable = true;
+            endTurnGroup.blocksRaycasts = true;
         }
     }
 
@@ -712,6 +739,10 @@ public class GameManager : MonoBehaviour
 
         CurrentPlayerTurn = PlayerTurn.NONE;
         CurrentActionPhase = ActionPhase.NONE;
+
+        endTurnGroup.alpha = 0.0f;
+        endTurnGroup.interactable = false;
+        endTurnGroup.blocksRaycasts = false;
     }
 
     private void HandleAttackStopped(MechController mechStoppingAttack)
@@ -725,6 +756,10 @@ public class GameManager : MonoBehaviour
         {
             actionPanelGUI.DisplayMoveEnabled();
             actionPanelGUI.DisplayAttackEnabled();
+
+            endTurnGroup.alpha = 1.0f;
+            endTurnGroup.interactable = true;
+            endTurnGroup.blocksRaycasts = true;
         }
     }
 }
