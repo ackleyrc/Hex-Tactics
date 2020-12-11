@@ -77,6 +77,27 @@ public class GameManager : MonoBehaviour
         InitializeMechs();
     }
 
+    private void Update()
+    {
+        if (CurrentPlayerTurn == PlayerTurn.HUMAN_PLAYER &&
+            CurrentActionPhase != ActionPhase.NONE)
+        {
+            if (Input.GetKey(KeyCode.R) &&
+                Input.GetKey(KeyCode.B))
+            {
+                if (Input.GetKeyUp(KeyCode.O))
+                {
+                    foreach (MechController enemyMech in MechEnemies)
+                    {
+                        enemyMech.health.InflictDamage(1000);
+                    }
+
+                    ConcludeCurrentTurn();
+                }
+            }
+        }
+    }
+
     private void InitializeNewMap()
     {
         currentMapParams = HexGridManager.Instance.GenerateMap(ignoreBiome: currentMapParams.biome);
