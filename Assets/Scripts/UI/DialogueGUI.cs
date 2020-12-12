@@ -306,6 +306,39 @@ public class DialogueGUI : MonoBehaviour
             }
         }
 
+        int liveOpponents = 0;
+        bool targetIsClosest = targetMech != null;
+        Vector3 targetWorldPos = HexGridManager.Instance.HexGrid.CubeToPixel(targetMech.GetCurrentHexTile(), HexGridManager.TILE_WIDTH);
+        Vector3 currWorldPos = HexGridManager.Instance.HexGrid.CubeToPixel(aiMech.GetCurrentHexTile(), HexGridManager.TILE_WIDTH);
+        float distanceToTarget = Vector3.Distance(currWorldPos, targetWorldPos);
+
+        if (targetMech != null)
+        {
+            foreach (MechController humanMech in GameManager.Instance.MechFriendlies)
+            {
+                if (humanMech.health.CurrentHealth <= 0)
+                {
+                    continue;
+                }
+
+                liveOpponents++;
+
+                if (humanMech == targetMech)
+                {
+                    continue;
+                }
+
+                Vector3 otherWorldPos = HexGridManager.Instance.HexGrid.CubeToPixel(humanMech.GetCurrentHexTile(), HexGridManager.TILE_WIDTH);
+                float distanceToOther = Vector3.Distance(currWorldPos, otherWorldPos);
+
+                if (distanceToOther > distanceToTarget)
+                {
+                    targetIsClosest = false;
+                    break;
+                }
+            }
+        }
+
         // Determine AI Dialogue Line
         if (targetMech == null &&
             newHexPos == currHexPos)
@@ -329,12 +362,11 @@ public class DialogueGUI : MonoBehaviour
             DisplayAIDialogueLine(aiMech, AIContext.VULNERABLE_TARGET, Difficulty.EASY);
         }
         else if (targetMech != null &&
-                 (currNumOpponentsExposedTo >= 2 || newNumOpponentsExposedTo >= 2))
+                 (liveOpponents >= 2 || targetIsClosest == true))
         {
             DisplayAIDialogueLine(aiMech, AIContext.ATTACK_NEARBY_TARGET, Difficulty.EASY);
         }
-        else if (targetMech != null &&
-                 Random.Range(0, 2) >= 1)
+        else if (targetMech != null)
         {
             DisplayAIDialogueLine(aiMech, AIContext.GENERIC_ATTACK, Difficulty.EASY);
         }
