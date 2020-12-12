@@ -73,6 +73,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        InputHandler.Instance.OnConductMove += HandleConductMove;
+        InputHandler.Instance.OnConductAttack += HandleConductAttack;
+
         endTurnButton.onClick.AddListener(HandleEndTurnButtonClicked);
 
         InitializeCustomMap(HexGridManager.Instance.tropicalBiomeData.GetDefaultsWithRandomSeed());
@@ -697,6 +700,26 @@ public class GameManager : MonoBehaviour
 
             ConcludeCurrentTurn();
         }
+    }
+
+    private void HandleConductMove()
+    {
+        CurrentPlayerTurn = PlayerTurn.NONE;
+        CurrentActionPhase = ActionPhase.NONE;
+
+        endTurnGroup.alpha = 0.0f;
+        endTurnGroup.interactable = false;
+        endTurnGroup.blocksRaycasts = false;
+    }
+
+    private void HandleConductAttack()
+    {
+        CurrentPlayerTurn = PlayerTurn.NONE;
+        CurrentActionPhase = ActionPhase.NONE;
+
+        endTurnGroup.alpha = 0.0f;
+        endTurnGroup.interactable = false;
+        endTurnGroup.blocksRaycasts = false;
     }
 
     private void HandleMoveStarted(MechController mechStartingMove)

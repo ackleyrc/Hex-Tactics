@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
+    private static InputHandler _Instance;
+    public static InputHandler Instance { get { return _Instance; } }
+
+    public event System.Action OnConductMove = delegate { };
+    public event System.Action OnConductAttack = delegate { };
+
     public HighlightIndicator selectionHighlight;
     public HighlightIndicator actionHighlight;
     public HighlightIndicator warningHighlight;
@@ -20,6 +26,8 @@ public class InputHandler : MonoBehaviour
 
     private void Awake()
     {
+        _Instance = this;
+
         highlightsParent = GameObject.Instantiate(new GameObject(), Vector3.zero, Quaternion.identity, this.transform).transform;
         highlightsParent.gameObject.name = "HighlightsParent";
 
@@ -48,6 +56,14 @@ public class InputHandler : MonoBehaviour
         selectionHighlight.gameObject.SetActive(false);
         actionHighlight.gameObject.SetActive(false);
         warningHighlight.gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        if (_Instance == this)
+        {
+            _Instance = null;
+        }
     }
 
     private void Update()
@@ -166,6 +182,8 @@ public class InputHandler : MonoBehaviour
 
     private IEnumerator ConductMove(MechController selectedMech, List<Cube> path)
     {
+        OnConductMove?.Invoke();
+
         if (DialogueGUI.Instance.HandleHumanMechMoveDialogue(selectedMech, selectedMech.GetCurrentHexTile(), path[path.Count - 1]) == true)
         {
             yield return new WaitForSeconds(1.5f);
@@ -176,10 +194,11 @@ public class InputHandler : MonoBehaviour
 
     private IEnumerator ConductAttack(MechController selectedMech, MechController targetMech)
     {
-        if (DialogueGUI.Instance.HandleHumanMechAttackDialogue(selectedMech, targetMech) == true)
-        {
-            yield return new WaitForSeconds(1.5f);
-        }
+        OnConductAttack?.Invoke();
+
+        DialogueGUI.Instance.HandleHumanMechAttackDialogue(selectedMech, targetMech);
+
+        yield return new WaitForSeconds(1.5f);
 
         selectedMech.AttackTarget(targetMech);
     }

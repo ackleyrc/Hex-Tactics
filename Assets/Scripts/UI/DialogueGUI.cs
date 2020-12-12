@@ -63,12 +63,32 @@ public class DialogueGUI : MonoBehaviour
         return false;
     }
 
-    public bool HandleHumanMechAttackDialogue(MechController humanMech, MechController targetMech)
+    public CustomYieldInstruction HandleHumanMechAttackDialogue(MechController humanMech, MechController targetMech)
     {
+        float defenseMult = targetMech == null ? 0.0f : HexGridManager.Instance.GetDefenseMultiplier(targetMech.GetCurrentHexTile());
+        int tentativeDmg = Mathf.RoundToInt(2.0f * defenseMult); // For now, this should be 2 or 1
+
         // Kill Shot
-        // Vulnerable Target
-        // Generic Attack
-        return false;
+        if (targetMech != null)
+        {
+            // Kill Shot
+            if (targetMech.health.CurrentHealth - tentativeDmg <= 0)
+            {
+                DisplayHumanDialogueLine(humanMech, DialogueContext.KILL_SHOT);
+            }
+            // Vulnerable Target
+            else if (targetMech.health.CurrentHealth <= targetMech.health.initialHealth * 0.5f)
+            {
+                DisplayHumanDialogueLine(humanMech, DialogueContext.VULNERABLE_TARGET);
+            }
+            // Generic Attack
+            else
+            {
+                DisplayHumanDialogueLine(humanMech, DialogueContext.GENERIC_ATTACK);
+            }
+        }
+
+        return new WaitWhile(() => isPlayingDialogue);
     }
 
     public CustomYieldInstruction HandleHumanMechEndTurnDialogue(MechController humanMech)
