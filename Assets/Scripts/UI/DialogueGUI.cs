@@ -76,7 +76,7 @@ public class DialogueGUI : MonoBehaviour
             float currDistanceToEnemy = Vector3.Distance(currWorldPos, enemyWorldPos);
             float newDistanceToEnemy = Vector3.Distance(newWorldPos, enemyWorldPos);
 
-            if (newDistanceToEnemy >= currDistanceToEnemy)
+            if (currDistanceToEnemy - newDistanceToEnemy < HexGridManager.TILE_WIDTH)
             {
                 newHexCloserToAllEnemies = false;
                 break;
@@ -140,10 +140,11 @@ public class DialogueGUI : MonoBehaviour
         return new WaitWhile(() => isPlayingDialogue);
     }
 
-    public bool HandleHumanMechFallenTeammateDialogue(MechController fallenMech, Cube currHexPos, Cube newHexPos)
+    public CustomYieldInstruction HandleHumanMechFallenTeammateDialogue(MechController aliveMech)
     {
-        // Teammate Down
-        return false;
+        DisplayHumanDialogueLine(aliveMech, DialogueContext.TEAMMATE_DOWN);
+
+        return new WaitWhile(() => isPlayingDialogue);
     }
 
     private void DisplayHumanDialogueLine(MechController humanMech, DialogueContext context)

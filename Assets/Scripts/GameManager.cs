@@ -71,6 +71,8 @@ public class GameManager : MonoBehaviour
 
     private MapSeedParameters currentMapParams;
 
+    private int numFriendliesAlivePrev;
+
     private void Start()
     {
         InputHandler.Instance.OnConductMove += HandleConductMove;
@@ -168,6 +170,8 @@ public class GameManager : MonoBehaviour
                 enemyMech.OnAttackStarted += HandleAttackStarted;
                 enemyMech.OnAttackStopped += HandleAttackStopped;
             }
+
+            numFriendliesAlivePrev = MechFriendlies.Count;
 
             CurrentRoundIndex = 0;
             CurrentPlayerTurn = PlayerTurn.HUMAN_PLAYER;
@@ -771,6 +775,34 @@ public class GameManager : MonoBehaviour
     private void HandleAttackStopped(MechController mechStoppingAttack)
     {
         Debug.Log($"GameManager::HandleAttackStopped()");
+        
+        StartCoroutine(CompleteRemainderOfTurn(mechStoppingAttack));
+    }
+
+    private IEnumerator CompleteRemainderOfTurn(MechController mechStoppingAttack)
+    {
+        int numFriendliesAliveNow = 0;
+        MechController liveHumanMech = null;
+        foreach (MechController humanMech in MechFriendlies)
+        {
+            if (humanMech.health.CurrentHealth <= 0)
+            {
+                continue;
+            }
+
+            numFriendliesAliveNow++;
+
+            liveHumanMech = liveHumanMech == null ? humanMech : Random.Range(0, numFriendliesAliveNow) < 1 ? humanMech : liveHumanMech;
+        }
+
+        if (numFriendliesAliveNow < numFriendliesAlivePrev &&
+            numFriendliesAliveNow > 0 &&
+            liveHumanMech != null)
+        {
+            yield return DialogueGUI.Instance.HandleHumanMechFallenTeammateDialogue(liveHumanMech);
+        }
+
+        numFriendliesAlivePrev = numFriendliesAliveNow;
 
         CurrentPlayerTurn = mechStoppingAttack.MechAllegiance == Allegiance.FRIENDLY ? PlayerTurn.HUMAN_PLAYER : PlayerTurn.COMPUTER_PLAYER;
         ConcludeCurrentTurn();
