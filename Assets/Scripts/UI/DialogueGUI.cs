@@ -152,7 +152,7 @@ public class DialogueGUI : MonoBehaviour
         Debug.Log($"DialogueGUI::DisplayHumanDialogueLine( {humanMech} , {context} )");
 
         characterNameText.text = humanMech.MechName;
-        portraitImage.sprite = mechDetails.GetPortrait(Allegiance.FRIENDLY, humanMech.UnitIndex);
+        portraitImage.sprite = GameManager.Instance.GetHumanPilotSprite(humanMech.UnitIndex);
         portraitBorder.color = colorPalette.FriendlyUnitColor;
         speechBG.color = colorPalette.FriendlyUnitColor;
 

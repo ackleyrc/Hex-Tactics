@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     /// <summary> Boolean parameter indicates whether the human player has won </summary>
     public event System.Action<bool> OnWinLoseConditionMet = delegate { };
 
+    public HumanPilotNamesData pilotNamesData;
     public MechEntityDetailsData mechDetails;
 
     public MechController mechFriendlyPrefab;
@@ -72,6 +73,10 @@ public class GameManager : MonoBehaviour
     private MapSeedParameters currentMapParams;
 
     private int numFriendliesAlivePrev;
+
+    // TODO: Store character details in a dedicated class
+    private string[] humanMechNames;
+    private Sprite[] humanMechSprites;
 
     private void Start()
     {
@@ -145,8 +150,14 @@ public class GameManager : MonoBehaviour
             MechController mechFriendly_02 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
             MechFriendlies.Add(mechFriendly_01);
             MechFriendlies.Add(mechFriendly_02);
-            mechFriendly_01.Initialize(this.team1StartHexes[0], 0, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 0));
-            mechFriendly_02.Initialize(this.team1StartHexes[1], 1, Allegiance.FRIENDLY, mechDetails.GetName(Allegiance.FRIENDLY, 1));
+            humanMechNames = new string[2];
+            humanMechNames[0] = pilotNamesData.GetRandomMaleName();
+            humanMechNames[1] = pilotNamesData.GetRandomFemaleName();
+            humanMechSprites = new Sprite[2];
+            humanMechSprites[0] = mechDetails.GetPortrait(Allegiance.FRIENDLY, 0); // TODO: Randomize Character avatars
+            humanMechSprites[1] = mechDetails.GetPortrait(Allegiance.FRIENDLY, 1); // TODO: Randomize Character avatars
+            mechFriendly_01.Initialize(this.team1StartHexes[0], 0, Allegiance.FRIENDLY, humanMechNames[0]);
+            mechFriendly_02.Initialize(this.team1StartHexes[1], 1, Allegiance.FRIENDLY, humanMechNames[1]);
 
             MechController mechEnemy_01 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
             MechController mechEnemy_02 = GameObject.Instantiate(mechEnemyPrefab) as MechController;
@@ -187,7 +198,7 @@ public class GameManager : MonoBehaviour
             actionPanelGUI.DisplayMoveEnabled();
             actionPanelGUI.DisplayAttackEnabled();
 
-            unitTurnGUI.Initialize(new string[] { mechDetails.GetName(Allegiance.FRIENDLY, 0), mechDetails.GetName(Allegiance.FRIENDLY, 1) },
+            unitTurnGUI.Initialize(new string[] { humanMechNames[0], humanMechNames[1] },
                                    new string[] { mechDetails.GetName(Allegiance.ENEMY, 0), mechDetails.GetName(Allegiance.ENEMY, 1) },
                                    Allegiance.FRIENDLY);
 
@@ -431,6 +442,16 @@ public class GameManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    public string GetHumanPilotName(int unitIndex)
+    {
+        return humanMechNames[unitIndex];
+    }
+
+    public Sprite GetHumanPilotSprite(int unitIndex)
+    {
+        return humanMechSprites[unitIndex];
     }
 
     /// <summary>

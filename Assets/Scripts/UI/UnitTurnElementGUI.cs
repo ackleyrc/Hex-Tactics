@@ -15,7 +15,7 @@ public class UnitTurnElementGUI : MonoBehaviour
 
     public void SetName(Allegiance allegiance, string name)
     {
-        unitName.text = $"{allegiance} {name}".ToUpper();
+        unitName.text = allegiance == Allegiance.FRIENDLY ? name.ToUpper() : $"ENEMY {name.ToUpper()}";
         unitNameBG.color = allegiance == Allegiance.FRIENDLY ? colorPalette.FriendlyUnitColor : colorPalette.EnemyUnitColor;
     }
 

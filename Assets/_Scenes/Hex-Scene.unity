@@ -1978,6 +1978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c989b8564e6d141a0815b34a66e6c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pilotNamesData: {fileID: 11400000, guid: 7abc209a028b2284aa88f8bb0f48ebef, type: 2}
   mechDetails: {fileID: 11400000, guid: a47545ae504fd384697e9510f619cd97, type: 2}
   mechFriendlyPrefab: {fileID: 6297726420525607512, guid: e8b67441a5f624543b689c48aa95b549,
     type: 3}
@@ -25368,7 +25369,7 @@ MonoBehaviour:
   scrollDelay: 1.5
   scrollSpeed: 0.6
   positionStart: {x: 0, y: 0, z: 0}
-  positionEnd: {x: 0, y: 5990, z: 0}
+  positionEnd: {x: 0, y: 6080, z: 0}
   creditsLinger: 5
 --- !u!1 &2055925165
 GameObject:

@@ -12,7 +12,7 @@ public class MechNameGUI : MonoBehaviour
 
     public void SetName(string name, Allegiance allegiance)
     {
-        nameText.text = $"{allegiance} {name}".ToUpper();
+        nameText.text = allegiance == Allegiance.FRIENDLY ? name.ToUpper() : $"ENEMY {name.ToUpper()}";
     }
 
     public void DisplayAsCurrentUnit(bool isCurrentUnit)
