@@ -184,10 +184,9 @@ public class InputHandler : MonoBehaviour
     {
         OnConductMove?.Invoke();
 
-        if (DialogueGUI.Instance.HandleHumanMechMoveDialogue(selectedMech, selectedMech.GetCurrentHexTile(), path[path.Count - 1]) == true)
-        {
-            yield return new WaitForSeconds(1.5f);
-        }
+        DialogueGUI.Instance.HandleHumanMechMoveDialogue(selectedMech, selectedMech.GetCurrentHexTile(), path[path.Count - 1]);
+
+        yield return new WaitForSeconds(1.0f);
 
         selectedMech.TravelPath(path);
     }
@@ -198,7 +197,7 @@ public class InputHandler : MonoBehaviour
 
         DialogueGUI.Instance.HandleHumanMechAttackDialogue(selectedMech, targetMech);
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
 
         selectedMech.AttackTarget(targetMech);
     }

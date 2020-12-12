@@ -66,3 +66,13 @@ MonoBehaviour:
     startTime: 0
     pitch: 1
     maxVolume: 0.07
+  dialogueAI:
+    audioClip: {fileID: 8300000, guid: 1adab01eed87d0845b7ffa2141977a23, type: 3}
+    startTime: 0
+    pitch: 1
+    maxVolume: 0.06
+  dialogueHuman:
+    audioClip: {fileID: 8300000, guid: f8c396612a3883f41a395eb084c0e70d, type: 3}
+    startTime: 0
+    pitch: 0.7
+    maxVolume: 1

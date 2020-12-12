@@ -20,9 +20,9 @@ public class HexGridManager : MonoBehaviour
 
     private Dictionary<Cube, HexTerrainType> cubeToTerrainType = new Dictionary<Cube, HexTerrainType>(); // This should be used for evaluation at run-time (potentially dynamic data)
 
-    private const float TILE_WIDTH = 2.56f;
-    private const float TILE_HEIGHT = 2.56f; // sprite is 3.84f total
-    private const float TILE_UNDER_HEIGHT = 1.28f;
+    public const float TILE_WIDTH = 2.56f;
+    public const float TILE_HEIGHT = 2.56f; // sprite is 3.84f total
+    public const float TILE_UNDER_HEIGHT = 1.28f;
 
     public int MapWidth { get; private set; }
     public int MapLength { get; private set; }

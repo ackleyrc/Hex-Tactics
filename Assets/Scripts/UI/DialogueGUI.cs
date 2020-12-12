@@ -55,12 +55,54 @@ public class DialogueGUI : MonoBehaviour
         panelGroup.alpha = 0.0f;
     }
 
-    public bool HandleHumanMechMoveDialogue(MechController humanMech, Cube currHexPos, Cube newHexPos)
+    public CustomYieldInstruction HandleHumanMechMoveDialogue(MechController humanMech, Cube currHexPos, Cube newHexPos)
     {
-        // Take Cover
-        // Approach Enemy
-        // Generic Move
-        return false;
+        float currDefenseMult = HexGridManager.Instance.GetDefenseMultiplier(currHexPos);
+        float newDefenseMult = HexGridManager.Instance.GetDefenseMultiplier(newHexPos);
+
+        Vector3 currWorldPos = HexGridManager.Instance.HexGrid.CubeToPixel(currHexPos, HexGridManager.TILE_WIDTH);
+        Vector3 newWorldPos = HexGridManager.Instance.HexGrid.CubeToPixel(newHexPos, HexGridManager.TILE_WIDTH);
+
+        bool newHexCloserToAllEnemies = true;
+        foreach (MechController enemyMech in GameManager.Instance.MechEnemies)
+        {
+            if (enemyMech.health.CurrentHealth <= 0)
+            {
+                continue;
+            }
+
+            Vector3 enemyWorldPos = HexGridManager.Instance.HexGrid.CubeToPixel(enemyMech.GetCurrentHexTile(), HexGridManager.TILE_WIDTH);
+
+            float currDistanceToEnemy = Vector3.Distance(currWorldPos, enemyWorldPos);
+            float newDistanceToEnemy = Vector3.Distance(newWorldPos, enemyWorldPos);
+
+            if (newDistanceToEnemy >= currDistanceToEnemy)
+            {
+                newHexCloserToAllEnemies = false;
+                break;
+            }
+        }
+
+        if (humanMech != null)
+        {
+            // Take Cover
+            if (currDefenseMult == 1.0f && newDefenseMult != 1.0f)
+            {
+                DisplayHumanDialogueLine(humanMech, DialogueContext.TAKE_COVER);
+            }
+            // Approach Enemy
+            else if (newHexCloserToAllEnemies == true)
+            {
+                DisplayHumanDialogueLine(humanMech, DialogueContext.APPROACH_ENEMY);
+            }
+            // Generic Move
+            else
+            {
+                DisplayHumanDialogueLine(humanMech, DialogueContext.GENERIC_MOVE);
+            }
+        }
+
+        return new WaitWhile(() => isPlayingDialogue);
     }
 
     public CustomYieldInstruction HandleHumanMechAttackDialogue(MechController humanMech, MechController targetMech)
@@ -113,7 +155,7 @@ public class DialogueGUI : MonoBehaviour
         portraitBorder.color = colorPalette.FriendlyUnitColor;
         speechBG.color = colorPalette.FriendlyUnitColor;
 
-        AudioManager.Instance.StopAIDialogue();
+        AudioManager.Instance.StopDialogue();
 
         StopAllCoroutines();
         StartCoroutine(RenderHumanDialogue(humanDialogueData.GetLine(context)));
@@ -150,15 +192,15 @@ public class DialogueGUI : MonoBehaviour
 
             if (maxChars > 1 && maxChars < line.Length)
             {
-                AudioManager.Instance.PlayAIDialogue();
+                AudioManager.Instance.PlayHumanDialogue();
             }
             else if (maxChars >= line.Length)
             {
-                AudioManager.Instance.StopAIDialogue();
+                AudioManager.Instance.StopDialogue();
             }
         }
 
-        AudioManager.Instance.StopAIDialogue();
+        AudioManager.Instance.StopDialogue();
 
         yield return new WaitForSeconds(humanDialogueLingerDuration);
 
@@ -312,7 +354,7 @@ public class DialogueGUI : MonoBehaviour
         portraitBorder.color = colorPalette.EnemyUnitColor;
         speechBG.color = colorPalette.EnemyUnitColor;
 
-        AudioManager.Instance.StopAIDialogue();
+        AudioManager.Instance.StopDialogue();
 
         StopAllCoroutines();
         StartCoroutine(RenderAIDialogue(difficulty == Difficulty.MODERATE ? aiModerateDialogueData.GetLine(context) : aiEasyDialogueData.GetLine(context)));
@@ -351,11 +393,11 @@ public class DialogueGUI : MonoBehaviour
             }
             else if (maxChars >= line.Length)
             {
-                AudioManager.Instance.StopAIDialogue();
+                AudioManager.Instance.StopDialogue();
             }
         }
 
-        AudioManager.Instance.StopAIDialogue();
+        AudioManager.Instance.StopDialogue();
 
         yield return new WaitForSeconds(aiDialogueLingerDuration);
 

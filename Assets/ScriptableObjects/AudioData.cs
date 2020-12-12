@@ -33,6 +33,14 @@ public class AudioData : ScriptableObject
     private Clip interactableUiClick;
     public Clip InteractableUiClick { get { return interactableUiClick; } }
 
+    [SerializeField]
+    private Clip dialogueAI;
+    public Clip DialogueAI { get { return dialogueAI; } }
+
+    [SerializeField]
+    private Clip dialogueHuman;
+    public Clip DialogueHuman { get { return dialogueHuman; } }
+
     public Clip GetRandomDeathCollapse()
     {
         return DeathCollapse[Random.Range(0, DeathCollapse.Length)];

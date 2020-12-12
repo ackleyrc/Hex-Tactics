@@ -100,12 +100,28 @@ public class AudioManager : MonoBehaviour
         if (dialogueSfx.isPlaying == false)
         {
             dialogueSfx.Stop();
+            dialogueSfx.clip = audioData.DialogueAI.AudioClip;
+            dialogueSfx.volume = audioData.DialogueAI.MaxVolume;
+            dialogueSfx.pitch = audioData.DialogueAI.Pitch;
             dialogueSfx.time = Random.Range(0.0f, Mathf.Clamp(dialogueSfx.clip.length - 8.0f, 0.0f, dialogueSfx.clip.length));
             dialogueSfx.Play();
         }
     }
 
-    public void StopAIDialogue()
+    public void PlayHumanDialogue()
+    {
+        if (dialogueSfx.isPlaying == false)
+        {
+            dialogueSfx.Stop();
+            dialogueSfx.clip = audioData.DialogueHuman.AudioClip;
+            dialogueSfx.volume = audioData.DialogueHuman.MaxVolume;
+            dialogueSfx.pitch = audioData.DialogueHuman.Pitch;
+            dialogueSfx.time = Random.Range(0.0f, Mathf.Clamp(dialogueSfx.clip.length - 12.0f, 0.0f, dialogueSfx.clip.length));
+            dialogueSfx.Play();
+        }
+    }
+
+    public void StopDialogue()
     {
         if (dialogueSfx.isPlaying == true)
         {
