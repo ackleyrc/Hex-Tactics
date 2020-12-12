@@ -21022,7 +21022,8 @@ MonoBehaviour:
   m_Text: "<size=70>Created and Developed by\nRobert Ackley</size>\n\n\n\nAll code
     was written by Robert Ackley.\nVisual and audio assets were sourced \nfrom various
     online marketplaces and repositories.\n\n\n\nArt sourced from the Unity Asset
-    Store\n\nPainted 2D Terrain Hexes: Tropics and Wetlands by David Beumgart\n<size=36>https://assetstore.unity.com/packages/2d/environments/painted-2d-terrain-hexes-tropics-and-wetlands-107153</size>\n\nMedium
+    Store\n\nPainted 2D Terrain Hexes: Tropics and Wetlands by David Beumgart\n<size=36>https://assetstore.unity.com/packages/2d/environments/painted-2d-terrain-hexes-tropics-and-wetlands-107153</size>\n\nPainted
+    2D Terrain Hexes: Deserts by David Beumgart\n<size=36>https://assetstore.unity.com/packages/2d/environments/painted-2d-terrain-hexes-deserts-84020</size>\n\nMedium
     Mech Striker by MSGDI\n<size=36>https://assetstore.unity.com/packages/3d/characters/robots/medium-mech-striker-124342</size>\n\n3D
     Lasers Pack by Hovl Studio\n<size=36>https://assetstore.unity.com/packages/vfx/particles/3d-lasers-pack-131685</size>\n\n3D
     Fire and Explosions by Hovl Studio\n<size=36>https://assetstore.unity.com/packages/vfx/particles/fire-explosions/3d-fire-and-explosions-176981</size>\n\n\n\nMusic
@@ -21072,13 +21073,15 @@ MonoBehaviour:
     Layered 03 by JoshuaPomeroy\n<size=36>Link: https://freesound.org/people/JoshuaPomeroy/sounds/532242/\nLicense:
     https://creativecommons.org/publicdomain/zero/1.0/</size>\n\nMorse 30 Wps by
     evelazquez\n<size=36>Link: https://freesound.org/people/evelazquez/sounds/329882/\nLicense:
-    http://creativecommons.org/licenses/by-nc/3.0/</size>\n\n\n\n\nwith Gratitude
+    http://creativecommons.org/licenses/by-nc/3.0/</size>\n\nMechanical Keyboard
+    Typing (Bass Version) by stu556\n<size=36>https://freesound.org/people/stu556/sounds/450281/\nLicense:
+    https://creativecommons.org/publicdomain/zero/1.0/</size>\n\n\n\n\nwith Gratitude
     for \nsome special sources of reseach and inspiration\n\nRed Blob Games | Amit
     Patel\n<size=36>https://www.redblobgames.com/</size>\n\nSebastian Lague\n<size=36>https://www.youtube.com/c/SebastianLague</size>\n\n\n\n\n\nwith
-    Appreciation for\nthose providing testing, feedback, and suggestions\n\nAndrew
-    Hung\nAndrew Goodenough\nBrad Kraeling\nCamden Cecrle\nColin Vandervort\nEd Lu\nGreg
-    Morton\nJacob Farny\nNotExplosive\nSteve Zapata\n\n\n\n\n\n\nwith Love for\nmy
-    wonderful wife and her enduring support\n\nMaria Xu\n\n\n\n\n\n\n\n\n\nfinally...\n\n\n\n\n\n\n\n\n\nmy
+    Appreciation for\nthose providing testing, feedback, and suggestions\n\nAndrewGoodenough\nAndrew
+    Hung\nBrad Kraeling\nCamden Cecrle\nColin Vandervort\nEd Lu\nGreg Morton\nJacob
+    Farny\nNotExplosive\nSteve Zapata\n\n\n\n\n\n\nwith Love for\nmy wonderful wife
+    and her enduring support\n\nMaria Xu\n\n\n\n\n\n\n\n\n\nfinally...\n\n\n\n\n\n\n\n\n\nmy
     Thanks to\n\n<b>YOU</b>\n\n\n\n\n\n\n\n\n\n\n<size=80>Thanks for playing!</size>"
 --- !u!222 &1760102902
 CanvasRenderer:
@@ -25365,7 +25368,7 @@ MonoBehaviour:
   scrollDelay: 1.5
   scrollSpeed: 0.6
   positionStart: {x: 0, y: 0, z: 0}
-  positionEnd: {x: 0, y: 5840, z: 0}
+  positionEnd: {x: 0, y: 5990, z: 0}
   creditsLinger: 5
 --- !u!1 &2055925165
 GameObject:
