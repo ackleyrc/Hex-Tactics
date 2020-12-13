@@ -21084,8 +21084,8 @@ MonoBehaviour:
     Patel\n<size=36>https://www.redblobgames.com/</size>\n\nSebastian Lague\n<size=36>https://www.youtube.com/c/SebastianLague</size>\n\n\n\n\n\nwith
     Appreciation for\nthose providing testing, feedback, and suggestions\n\nAndrewGoodenough\nAndrew
     Hung\nBrad Kraeling\nCamden Cecrle\nColin Vandervort\nEd Lu\nGreg Morton\nJacob
-    Farny\nNotExplosive\nSteve Zapata\n\n\n\n\n\n\nwith Love for\nmy wonderful wife
-    and her enduring support\n\nMaria Xu\n\n\n\n\n\n\n\n\n\nfinally...\n\n\n\n\n\n\n\n\n\nmy
+    Farny\nNick Amlag\nNotExplosive\nSteve Zapata\nWilliam Hodge\n\n\n\n\n\n\nwith
+    Love for\nmy wonderful wife and her enduring support\n\nMaria Xu\n\n\n\n\n\n\n\n\n\nfinally...\n\n\n\n\n\n\n\n\n\nmy
     Thanks to\n\n<b>YOU</b>\n\n\n\n\n\n\n\n\n\n\n<size=80>Thanks for playing!</size>"
 --- !u!222 &1760102902
 CanvasRenderer:
@@ -25372,7 +25372,7 @@ MonoBehaviour:
   scrollDelay: 1.5
   scrollSpeed: 0.6
   positionStart: {x: 0, y: 0, z: 0}
-  positionEnd: {x: 0, y: 6280, z: 0}
+  positionEnd: {x: 0, y: 6340, z: 0}
   creditsLinger: 5
 --- !u!1 &2055925165
 GameObject:
