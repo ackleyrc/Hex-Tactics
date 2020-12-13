@@ -1979,6 +1979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pilotNamesData: {fileID: 11400000, guid: 7abc209a028b2284aa88f8bb0f48ebef, type: 2}
+  pilotAvatarsData: {fileID: 11400000, guid: 0c48708b43f75d54fb070c47f1686eb7, type: 2}
   mechDetails: {fileID: 11400000, guid: a47545ae504fd384697e9510f619cd97, type: 2}
   mechFriendlyPrefab: {fileID: 6297726420525607512, guid: e8b67441a5f624543b689c48aa95b549,
     type: 3}
@@ -20986,7 +20987,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -260}
-  m_SizeDelta: {x: 160, y: 12000}
+  m_SizeDelta: {x: 160, y: 14000}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1760102901
 MonoBehaviour:
@@ -21027,7 +21028,9 @@ MonoBehaviour:
     2D Terrain Hexes: Deserts by David Beumgart\n<size=36>https://assetstore.unity.com/packages/2d/environments/painted-2d-terrain-hexes-deserts-84020</size>\n\nMedium
     Mech Striker by MSGDI\n<size=36>https://assetstore.unity.com/packages/3d/characters/robots/medium-mech-striker-124342</size>\n\n3D
     Lasers Pack by Hovl Studio\n<size=36>https://assetstore.unity.com/packages/vfx/particles/3d-lasers-pack-131685</size>\n\n3D
-    Fire and Explosions by Hovl Studio\n<size=36>https://assetstore.unity.com/packages/vfx/particles/fire-explosions/3d-fire-and-explosions-176981</size>\n\n\n\nMusic
+    Fire and Explosions by Hovl Studio\n<size=36>https://assetstore.unity.com/packages/vfx/particles/fire-explosions/3d-fire-and-explosions-176981</size>\n\n\n\nArt
+    sourced from Graphic River\n\nCyberpunk Avatars by a-ravlik\n<size=36>Link: https://graphicriver.net/item/cyberpunk-avatars/24203210</size>\n<size=36>License:
+    https://graphicriver.net/licenses/terms/regular/2.2%20(fixed%20link)</size>\n\n\n\nMusic
     sourced from Incompetech\n\nNeo Western by Kevin MacLeod\n<size=36>Link: https://incompetech.filmmusic.io/song/4114-neo-western\r\nLicense:
     http://creativecommons.org/licenses/by/4.0/</size>\n\nJet Fueled Vixen by Kevin
     MacLeod\n<size=36>Link: https://incompetech.filmmusic.io/song/3941-jet-fueled-vixen\r\nLicense:
@@ -25369,7 +25372,7 @@ MonoBehaviour:
   scrollDelay: 1.5
   scrollSpeed: 0.6
   positionStart: {x: 0, y: 0, z: 0}
-  positionEnd: {x: 0, y: 6080, z: 0}
+  positionEnd: {x: 0, y: 6280, z: 0}
   creditsLinger: 5
 --- !u!1 &2055925165
 GameObject:

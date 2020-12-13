@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     public event System.Action<bool> OnWinLoseConditionMet = delegate { };
 
     public HumanPilotNamesData pilotNamesData;
+    public HumanPilotAvatarsData pilotAvatarsData;
     public MechEntityDetailsData mechDetails;
 
     public MechController mechFriendlyPrefab;
@@ -76,7 +77,7 @@ public class GameManager : MonoBehaviour
 
     // TODO: Store character details in a dedicated class
     private string[] humanMechNames;
-    private Sprite[] humanMechSprites;
+    private Avatar[] humanMechAvatars;
 
     private void Start()
     {
@@ -150,12 +151,10 @@ public class GameManager : MonoBehaviour
             MechController mechFriendly_02 = GameObject.Instantiate(mechFriendlyPrefab) as MechController;
             MechFriendlies.Add(mechFriendly_01);
             MechFriendlies.Add(mechFriendly_02);
+            humanMechAvatars = new Avatar[2];
+            humanMechAvatars = pilotAvatarsData.GetRandomAvatarSprites(2).ToArray();
             humanMechNames = new string[2];
-            humanMechNames[0] = pilotNamesData.GetRandomMaleName();
-            humanMechNames[1] = pilotNamesData.GetRandomFemaleName();
-            humanMechSprites = new Sprite[2];
-            humanMechSprites[0] = mechDetails.GetPortrait(Allegiance.FRIENDLY, 0); // TODO: Randomize Character avatars
-            humanMechSprites[1] = mechDetails.GetPortrait(Allegiance.FRIENDLY, 1); // TODO: Randomize Character avatars
+            humanMechNames = pilotNamesData.GetNamesForAvatars(humanMechAvatars).ToArray();
             mechFriendly_01.Initialize(this.team1StartHexes[0], 0, Allegiance.FRIENDLY, humanMechNames[0]);
             mechFriendly_02.Initialize(this.team1StartHexes[1], 1, Allegiance.FRIENDLY, humanMechNames[1]);
 
@@ -451,7 +450,7 @@ public class GameManager : MonoBehaviour
 
     public Sprite GetHumanPilotSprite(int unitIndex)
     {
-        return humanMechSprites[unitIndex];
+        return humanMechAvatars[unitIndex].Sprite;
     }
 
     /// <summary>

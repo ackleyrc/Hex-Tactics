@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [CreateAssetMenu(fileName = "HumanPilotNamesData", menuName = "ScriptableObjects/HumanPilotNamesData", order = 0)]
 public class HumanPilotNamesData : ScriptableObject
@@ -12,6 +13,32 @@ public class HumanPilotNamesData : ScriptableObject
     [SerializeField]
     private string[] femaleNames;
     public string[] FemaleNames { get { return femaleNames; } }
+
+    public List<string> GetNamesForAvatars(IEnumerable<Avatar> avatars)
+    {
+        List<string> selectedNames = new List<string>();
+
+        foreach (Avatar avatar in avatars)
+        {
+            if (selectedNames.Count == 0)
+            {
+                selectedNames.Add(avatar.Gender == Gender.MALE ? GetRandomMaleName() : GetRandomFemaleName());
+            }
+            else
+            {
+                string nextName = avatar.Gender == Gender.MALE ? GetRandomMaleName() : GetRandomFemaleName();
+
+                while (selectedNames.Contains(nextName))
+                {
+                    nextName = avatar.Gender == Gender.MALE ? GetRandomMaleName() : GetRandomFemaleName();
+                }
+
+                selectedNames.Add(nextName);
+            }
+        }
+
+        return selectedNames;
+    }
 
     public string GetRandomMaleName()
     {

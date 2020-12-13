@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02ae10f417e8b154496377d3c539f871, type: 3}
+  m_Name: HumanPilotAvatarsData
+  m_EditorClassIdentifier: 
+  pilotAvatars:
+  - sprite: {fileID: 21300000, guid: 3c28ff77133cd2f4987e34aceb84b75c, type: 3}
+    gender: 0
+    ethnicity: 0
+  - sprite: {fileID: 21300000, guid: 055c0f96d6edf03438173206db6074ec, type: 3}
+    gender: 1
+    ethnicity: 0
+  - sprite: {fileID: 21300000, guid: 9e30c5c4b0eb3c34bb7d9dea25eabd23, type: 3}
+    gender: 1
+    ethnicity: 0
+  - sprite: {fileID: 21300000, guid: 336ca07e0efb4064ca31a13e5ad68c36, type: 3}
+    gender: 1
+    ethnicity: 0
+  - sprite: {fileID: 21300000, guid: 17cd243a19a9cdd4280500a8f31c703d, type: 3}
+    gender: 0
+    ethnicity: 0
+  - sprite: {fileID: 21300000, guid: 244373cada0e0ce4291a998887ebb8ee, type: 3}
+    gender: 0
+    ethnicity: 0
+  - sprite: {fileID: 21300000, guid: 1b37bb58a605ed2458e604de68d80294, type: 3}
+    gender: 0
+    ethnicity: 0
+  - sprite: {fileID: 21300000, guid: abaaa468c87cd8747912e72ea702b228, type: 3}
+    gender: 1
+    ethnicity: 0
+  - sprite: {fileID: 21300000, guid: be7b3963b44066e4ca5f6c9c3511063e, type: 3}
+    gender: 0
+    ethnicity: 1
+  - sprite: {fileID: 21300000, guid: 648b2fc15b537534e935a3fd66a4695b, type: 3}
+    gender: 1
+    ethnicity: 0
+  - sprite: {fileID: 21300000, guid: 91e73f157fd8024419ed3810d7b1203e, type: 3}
+    gender: 1
+    ethnicity: 1
+  - sprite: {fileID: 21300000, guid: ce3a17e81fdfbec4a82a4fcf288f4ef8, type: 3}
+    gender: 0
+    ethnicity: 2
+  - sprite: {fileID: 21300000, guid: bd8cf17359923a44fb9d87f7964c852f, type: 3}
+    gender: 1
+    ethnicity: 2
+  - sprite: {fileID: 21300000, guid: 4390764a4d697e146996bab59abe3178, type: 3}
+    gender: 1
+    ethnicity: 2
+  - sprite: {fileID: 21300000, guid: 4f759b1aaa05cb04b954279bebdd341b, type: 3}
+    gender: 1
+    ethnicity: 0
+  - sprite: {fileID: 21300000, guid: e01384792ae329243bec8789b0595686, type: 3}
+    gender: 0
+    ethnicity: 0
