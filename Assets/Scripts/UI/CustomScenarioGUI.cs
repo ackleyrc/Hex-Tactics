@@ -152,19 +152,39 @@ public class CustomScenarioGUI : MonoBehaviour
         switch ((Biome)Random.Range(0, 3))
         {
             case Biome.TROPICAL:
+
                 tropicalToggle.SetIsOnWithoutNotify(true);
                 desertToggle.SetIsOnWithoutNotify(false);
                 shrublandToggle.SetIsOnWithoutNotify(false);
+
+                tropicalToggle.interactable = false;
+                desertToggle.interactable = true;
+                shrublandToggle.interactable = true;
+
                 break;
+
             case Biome.DESERT:
+
                 tropicalToggle.SetIsOnWithoutNotify(false);
                 desertToggle.SetIsOnWithoutNotify(true);
                 shrublandToggle.SetIsOnWithoutNotify(false);
+
+                tropicalToggle.interactable = true;
+                desertToggle.interactable = false;
+                shrublandToggle.interactable = true;
+
                 break;
+
             case Biome.SHRUBLAND:
+
                 tropicalToggle.SetIsOnWithoutNotify(false);
                 desertToggle.SetIsOnWithoutNotify(false);
                 shrublandToggle.SetIsOnWithoutNotify(true);
+
+                tropicalToggle.interactable = true;
+                desertToggle.interactable = true;
+                shrublandToggle.interactable = false;
+
                 break;
         }
 
@@ -194,6 +214,10 @@ public class CustomScenarioGUI : MonoBehaviour
         desertToggle.SetIsOnWithoutNotify(false);
         shrublandToggle.SetIsOnWithoutNotify(false);
 
+        tropicalToggle.interactable = false;
+        desertToggle.interactable = true;
+        shrublandToggle.interactable = true;
+
         UpdateNumSliders();
         UpdateLabelsAndReadouts();
         UpdateMapId();
@@ -205,6 +229,10 @@ public class CustomScenarioGUI : MonoBehaviour
         //desertToggle.SetIsOnWithoutNotify(false);
         shrublandToggle.SetIsOnWithoutNotify(false);
 
+        tropicalToggle.interactable = true;
+        desertToggle.interactable = false;
+        shrublandToggle.interactable = true;
+
         UpdateNumSliders();
         UpdateLabelsAndReadouts();
         UpdateMapId();
@@ -215,6 +243,10 @@ public class CustomScenarioGUI : MonoBehaviour
         tropicalToggle.SetIsOnWithoutNotify(false);
         desertToggle.SetIsOnWithoutNotify(false);
         //shrublandToggle.SetIsOnWithoutNotify(false);
+
+        tropicalToggle.interactable = true;
+        desertToggle.interactable = true;
+        shrublandToggle.interactable = false;
 
         UpdateNumSliders();
         UpdateLabelsAndReadouts();
