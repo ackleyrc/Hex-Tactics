@@ -247,6 +247,15 @@ public class InputHandler : MonoBehaviour
                     {
                         selectionHighlight.DisplayAsGenericHighlight();
                     }
+
+                    if (friendlyMechUnderMouse != null)
+                    {
+                        CharacterInfoGUI.Instance.PopulateHumanPilotInfo(friendlyMechUnderMouse, currentHexTileUnderMouse);
+                    }
+                    else
+                    {
+                        CharacterInfoGUI.Instance.Hide();
+                    }
                 }
                 else
                 {
@@ -303,6 +312,8 @@ public class InputHandler : MonoBehaviour
                             HideMovementRange();
                             movementHighlightsHidden = true;
                         }
+
+                        CharacterInfoGUI.Instance.PopulateHumanPilotInfo(friendlyMechUnderMouse, currentHexTileUnderMouse);
 
                         LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
                         MovePathGUI.Instance.HidePath();
@@ -380,6 +391,8 @@ public class InputHandler : MonoBehaviour
                             movementHighlightsHidden = true;
                         }
 
+                        CharacterInfoGUI.Instance.Hide();
+
                         LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
                         MovePathGUI.Instance.HidePath();
                     }
@@ -447,6 +460,8 @@ public class InputHandler : MonoBehaviour
                             LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
                             MovePathGUI.Instance.HidePath();
                         }
+
+                        CharacterInfoGUI.Instance.Hide();
                     }
                 }
                 else // if (HexGridManager.Instance.IsHexCubeOnMap(currentHexTileUnderMouse) == false)
@@ -463,6 +478,8 @@ public class InputHandler : MonoBehaviour
                         GameManager.Instance.actionPanelGUI.DisplayMoveDisabled();
                         GameManager.Instance.actionPanelGUI.DisplayAttackEnabled();
                     }
+
+                    CharacterInfoGUI.Instance.Hide();
 
                     LineOfSightGUI.Instance.DisplayLinesOfSight(selectedMech.GetCurrentHexTile(), selectedMech);
                     MovePathGUI.Instance.HidePath();

@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab49c3ab2d9bdbc4798bedec36989a54, type: 3}
+  m_Name: HumanPilotCharacterData
+  m_EditorClassIdentifier: 
+  potentialProfiles:
+  - traits: 1
+    description: "#Name# keeps #pronoun-possessive# cool in the most tense of situations.
+      It\u2019s the singular trait that makes #pronoun-object# so effective at #pronoun-possessive#
+      job."
+  - traits: 2
+    description: "#Name# is often in a sour mood. #Pronoun-subject#\u2019ll follow
+      orders, but #pronoun-subject# will probably make a stink about it."
+  - traits: 4
+    description: '#Name# is a light-hearted individual with a tendency to inject
+      a bit of humor into most situations. #Pronoun-possessive# addition to the team
+      often keeps others grounded and relieves tensions.'
+  - traits: 36
+    description: "#Name# is playful with language. If #pronoun-subject# isn\u2019t
+      cracking a joke, #pronoun-subject#\u2019s likely to be making some colorful
+      remark."
+  - traits: 16
+    description: You can always count on #Name# to be straight up. #Pronoun-subject#
+      tells it like it is, no fluff.
+  - traits: 24
+    description: '#Name# says what #pronoun-subject# means and means what #pronoun-subject#
+      says. Executing the mission is #pronoun-possessive# sole focus.'
+  - traits: 32
+    description: "#Name# has a way with words. If there\u2019s an opportunity to
+      add a bit of flourish to #pronoun-possessive# remarks, #pronoun-subject#\u2019ll
+      often take it."
+  - traits: 64
+    description: '#Name# has a knack for seeing the bright side of things. Hope can
+      be so precious in such dire times.'
+  - traits: 128
+    description: '#Name# often maintains a rather dour outlook. It may kill the mood
+      sometimes, but anticipating the worst is what has kept #pronoun-object# alive
+      this long.'
+  - traits: 8
+    description: '#Name# understands the seriousness of the mission. These infected
+      mechs may be limited to fringe planets for now, but #pronoun-subject# knows
+      how bad things can get if they make their way to more populous sectors.'
+  - traits: 512
+    description: For #Name#, this mission is personal. #Pronoun-subject# has lost
+      friends and family to these hacked bots, and #pronoun-subject# is willing to
+      do whatever it takes to stop them.

@@ -28,7 +28,6 @@ public class HexInfoGUI : MonoBehaviour
     public Text detailsText;
     public float lerpPosSpeed;
     public float lerpAlphaSpeed;
-    public float repopulateOffset;
 
     private bool isDisplaying;
 

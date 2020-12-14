@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
 
     public HumanPilotNamesData pilotNamesData;
     public HumanPilotAvatarsData pilotAvatarsData;
+    public HumanPilotCharacterData pilotCharacterData;
     public MechEntityDetailsData mechDetails;
 
     public MechController mechFriendlyPrefab;
@@ -78,6 +79,7 @@ public class GameManager : MonoBehaviour
     // TODO: Store character details in a dedicated class
     private string[] humanMechNames;
     private Avatar[] humanMechAvatars;
+    private CharacterProfile[] humanMechCharacters;
 
     private void Start()
     {
@@ -155,6 +157,8 @@ public class GameManager : MonoBehaviour
             humanMechAvatars = pilotAvatarsData.GetRandomAvatarSprites(2).ToArray();
             humanMechNames = new string[2];
             humanMechNames = pilotNamesData.GetNamesForAvatars(humanMechAvatars).ToArray();
+            humanMechCharacters = new CharacterProfile[2];
+            humanMechCharacters = pilotCharacterData.GetRandomCharacterProfiles(2).ToArray();
             mechFriendly_01.Initialize(this.team1StartHexes[0], 0, Allegiance.FRIENDLY, humanMechNames[0]);
             mechFriendly_02.Initialize(this.team1StartHexes[1], 1, Allegiance.FRIENDLY, humanMechNames[1]);
 
@@ -451,6 +455,11 @@ public class GameManager : MonoBehaviour
     public Sprite GetHumanPilotSprite(int unitIndex)
     {
         return humanMechAvatars[unitIndex].Sprite;
+    }
+
+    public string GetHumanPilotProfileDescription(int unitIndex)
+    {
+        return humanMechCharacters[unitIndex].GetFullyRenderedDescription(humanMechNames[unitIndex], humanMechAvatars[unitIndex].Gender);
     }
 
     /// <summary>
