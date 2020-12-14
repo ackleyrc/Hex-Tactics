@@ -159,7 +159,8 @@ public class DialogueGUI : MonoBehaviour
         AudioManager.Instance.StopDialogue();
 
         StopAllCoroutines();
-        StartCoroutine(RenderHumanDialogue(humanDialogueData.GetLine(context)));
+        CharacterTrait traitFlags = GameManager.Instance.GetHumanPilotTraits(humanMech.UnitIndex);
+        StartCoroutine(RenderHumanDialogue(humanDialogueData.GetLine(context, traitFlags)));
 
         Debug.Log($"DialogueGUI :: Human Dialogue Line: {speechText.text}");
     }
@@ -309,12 +310,13 @@ public class DialogueGUI : MonoBehaviour
 
         int liveOpponents = 0;
         bool targetIsClosest = targetMech != null;
-        Vector3 targetWorldPos = HexGridManager.Instance.HexGrid.CubeToPixel(targetMech.GetCurrentHexTile(), HexGridManager.TILE_WIDTH);
-        Vector3 currWorldPos = HexGridManager.Instance.HexGrid.CubeToPixel(aiMech.GetCurrentHexTile(), HexGridManager.TILE_WIDTH);
-        float distanceToTarget = Vector3.Distance(currWorldPos, targetWorldPos);
 
         if (targetMech != null)
         {
+            Vector3 targetWorldPos = HexGridManager.Instance.HexGrid.CubeToPixel(targetMech.GetCurrentHexTile(), HexGridManager.TILE_WIDTH);
+            Vector3 currWorldPos = HexGridManager.Instance.HexGrid.CubeToPixel(aiMech.GetCurrentHexTile(), HexGridManager.TILE_WIDTH);
+            float distanceToTarget = Vector3.Distance(currWorldPos, targetWorldPos);
+
             foreach (MechController humanMech in GameManager.Instance.MechFriendlies)
             {
                 if (humanMech.health.CurrentHealth <= 0)

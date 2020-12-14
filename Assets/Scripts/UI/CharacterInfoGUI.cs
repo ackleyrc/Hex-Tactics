@@ -35,10 +35,7 @@ public class CharacterInfoGUI : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log($"CharacterInfoGUI :: Start()");
-        Debug.Log($"CharacterInfoGUI :: Target: {Vector3.right * infoPanelRect.sizeDelta.x}");
         infoPanelRect.localPosition = Vector3.right * infoPanelRect.sizeDelta.x;
-        Debug.Log($"CharacterInfoGUI :: Position: {infoPanelRect.localPosition}");
         infoPanelGroup.alpha = 0.0f;
         isDisplaying = false;
     }

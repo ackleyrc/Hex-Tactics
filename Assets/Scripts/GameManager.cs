@@ -462,6 +462,11 @@ public class GameManager : MonoBehaviour
         return humanMechCharacters[unitIndex].GetFullyRenderedDescription(humanMechNames[unitIndex], humanMechAvatars[unitIndex].Gender);
     }
 
+    public CharacterTrait GetHumanPilotTraits(int unitIndex)
+    {
+        return humanMechCharacters[unitIndex].Traits;
+    }
+
     /// <summary>
     /// (If a is a point on the line, p is the query point, and n is a normalized vector for the line, 
     /// the distance to the line is given by the length of (a - p) - ((a - p) dot n) * n)

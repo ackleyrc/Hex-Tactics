@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public enum DialogueContext
 {
@@ -21,17 +22,16 @@ public enum DialogueContext
 public class DialogueHumanData : ScriptableObject
 {
     [SerializeField]
-    private HumanDialogue[] humanDialogue;
-    public HumanDialogue[] HumanDialogue { get { return humanDialogue; } }
+    private ContextBasedDialogue[] dialogueContexts;
+    public ContextBasedDialogue[] DialogueContexts { get { return dialogueContexts; } }
 
-    public string GetLine(DialogueContext context)
+    public string GetLine(DialogueContext context, CharacterTrait traitFlags)
     {
-        foreach (HumanDialogue dialogue in HumanDialogue)
+        foreach (ContextBasedDialogue contextualDialogue in DialogueContexts)
         {
-            if (dialogue.Context == context)
+            if (contextualDialogue.DialogueContext == context)
             {
-                int randIndex = Random.Range(0, dialogue.PossibleLines.Length);
-                return dialogue.PossibleLines[randIndex];
+                return contextualDialogue.GetLine(traitFlags);
             }
         }
 
@@ -40,13 +40,42 @@ public class DialogueHumanData : ScriptableObject
 }
 
 [System.Serializable]
-public class HumanDialogue
+public class ContextBasedDialogue
 {
     [SerializeField]
-    private DialogueContext context;
-    public DialogueContext Context { get { return context; } }
+    private DialogueContext dialogueContext;
+    public DialogueContext DialogueContext { get { return dialogueContext; } }
 
     [SerializeField]
-    private string[] possibleLines;
-    public string[] PossibleLines { get { return possibleLines; } }
+    private TraitBasedLines[] traitBasedLines;
+    public TraitBasedLines[] TraitBasedLines { get { return traitBasedLines; } }
+
+    public string GetLine(CharacterTrait traitFlags)
+    {
+        List<int> validIndices = new List<int>();
+
+        for (int i = 0; i < traitBasedLines.Length; i++)
+        {
+            if ((traitBasedLines[i].MatchingTraits & traitFlags) != 0)
+            {
+                validIndices.Add(i);
+            }
+        }
+
+        int randIndex = validIndices[Random.Range(0, validIndices.Count)];
+
+        return TraitBasedLines[randIndex].Line;
+    }
+}
+
+[System.Serializable]
+public class TraitBasedLines
+{
+    [SerializeField]
+    private CharacterTrait matchingTraits;
+    public CharacterTrait MatchingTraits { get { return matchingTraits; } }
+
+    [SerializeField]
+    private string line;
+    public string Line { get { return line; } }
 }

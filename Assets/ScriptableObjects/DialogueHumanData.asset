@@ -12,99 +12,308 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7afe93acff04f7545882292ef0349287, type: 3}
   m_Name: DialogueHumanData
   m_EditorClassIdentifier: 
-  humanDialogue:
-  - context: 1
-    possibleLines:
-    - I'm on my way...
-    - Headed on over...
-    - Here we go...
-    - Let's get a move on...
-    - Moving on out...
-    - Headed there now...
-    - Making my way there...
-    - On the way...
-    - On the move...
-    - Making moves...
-    - Taking up a new position...
-    - Let's go!
-  - context: 2
-    possibleLines:
-    - Get a load of this!
-    - Opening fire!
-    - Weapons live!
-    - Laying down fire...
-    - I'm taking the shot...
-    - Taking the offensive...
-    - Commencing attack...
-    - Striking target...
-    - Blast 'em!
-    - Eat this!
-    - Try this on for size!
-    - It's about to get toasty!
-    - I got you in my sights...
-    - This might sting for you a little...
-    - Let's take them down a notch...
-  - context: 5
-    possibleLines:
-    - Getting up close and personal...
-    - Now let's take a closer look...
-    - Bearing down on the enemy...
-    - They'll soon be within reach...
-    - Not about to let them get away...
-    - I'm approaching the enemy...
-    - Closing in on the threat...
-    - Closing the distance here...
-  - context: 6
-    possibleLines:
-    - This should help...
-    - Feeling safer already...
-    - About to take on cover...
-    - This should lessen the sting a bit...
-    - I do prefer a more protected position...
-    - Don't have to tell me twice...
-    - Exploiting the terrain, good thinking...
-    - This terrain should provide a defensive screen...
-  - context: 7
-    possibleLines:
-    - We attack them while they're weak...
-    - This one's nearly down...
-    - We almost got 'em!
-    - We've got them on the ropes!
-    - Just gotta hold out a little longer...
-    - The end is near for this one...
-    - This one's on it's last legs...
-  - context: 8
-    possibleLines:
-    - Taking the killing shot!
-    - Aaand, here they go...
-    - I'm turning you to scrap, you piece of junk!
-    - How you like me now??
-    - Aww yeah, take it to the grave!
-    - It's about to be a knockout!
-    - And they all come tumbling down...
-    - Goodbye!
-    - Good riddance!
-  - context: 9
-    possibleLines:
-    - I'll just chill here then...
-    - Awaiting further instructions...
-    - On standby...
-    - My chance is coming...
-    - Just biding my time...
-    - Soon...
-    - Just waiting on my time to shine...
-    - I'll get 'em next time...
-    - They do say patience is a virtue...
-    - I guess I can sit tight...
-    - Don't let me miss out on the action!
-    - That's alright, I'm paid by the hour...
-  - context: 12
-    possibleLines:
-    - Nooooo!!
-    - God damnit!
-    - You bastards!
-    - You take out one of us, you gotta deal with me!
-    - Arrrgh, I've had enough!
-    - Pilot down! Pilot down!
-    - No! Just hang in there, help is on the way!
-    - You stinkin bots are gonna pay!
+  dialogueContexts:
+  - dialogueContext: 6
+    traitBasedLines:
+    - matchingTraits: 877
+      line: "This should help\u2026"
+    - matchingTraits: 921
+      line: "About to take on cover\u2026"
+    - matchingTraits: 2
+      line: "Don\u2019t have to tell me twice\u2026"
+    - matchingTraits: 130
+      line: "Can\u2019t be worse than where I\u2019m at now\u2026"
+    - matchingTraits: 514
+      line: What do you take me for, a coward? Fine, whatever you say...
+    - matchingTraits: 4
+      line: "I love it when you leap to my defense\u2026"
+    - matchingTraits: 4
+      line: No shame in a bit of self-preservation now and again, right?
+    - matchingTraits: 25
+      line: "This terrain should provide a defensive screen\u2026"
+    - matchingTraits: 80
+      line: "I do prefer a more defended position\u2026"
+    - matchingTraits: 32
+      line: "Even the lion must defend itself against the flies\u2026"
+    - matchingTraits: 32
+      line: "This should lessen the sting a bit\u2026"
+    - matchingTraits: 64
+      line: "Exploiting the terrain, good thinking\u2026"
+    - matchingTraits: 64
+      line: "Feeling safer already\u2026"
+    - matchingTraits: 130
+      line: This oughtta help...
+    - matchingTraits: 128
+      line: This terrain is sure to take a toll on my mech...
+  - dialogueContext: 5
+    traitBasedLines:
+    - matchingTraits: 943
+      line: "Bearing down on the enemy\u2026"
+    - matchingTraits: 345
+      line: "They\u2019ll soon be within reach\u2026"
+    - matchingTraits: 475
+      line: "Closing the distance here\u2026"
+    - matchingTraits: 4
+      line: "This bot and I are about to get a bit more familiar\u2026"
+    - matchingTraits: 36
+      line: "Now let\u2019s take a closer look\u2026"
+    - matchingTraits: 36
+      line: "Getting up close and personal\u2026"
+    - matchingTraits: 744
+      line: "Closing in on the threat\u2026"
+    - matchingTraits: 25
+      line: "I\u2019m approaching the enemy\u2026"
+    - matchingTraits: 512
+      line: "Not about to let them get away\u2026"
+    - matchingTraits: 512
+      line: They'll soon be within my grasp...
+    - matchingTraits: 128
+      line: Sure, I'll get closer to the danger...
+  - dialogueContext: 1
+    traitBasedLines:
+    - matchingTraits: 793
+      line: "I\u2019m on my way\u2026"
+    - matchingTraits: 345
+      line: "Headed on over\u2026"
+    - matchingTraits: 337
+      line: "Here we go\u2026"
+    - matchingTraits: 778
+      line: "Let\u2019s get a move on\u2026"
+    - matchingTraits: 793
+      line: "Moving on out\u2026"
+    - matchingTraits: 889
+      line: "Making my way there\u2026"
+    - matchingTraits: 793
+      line: "On the way\u2026"
+    - matchingTraits: 793
+      line: "On the move\u2026"
+    - matchingTraits: 773
+      line: "Making moves\u2026"
+    - matchingTraits: 4
+      line: "Let\u2019s bust a move!"
+    - matchingTraits: 36
+      line: "Just a hop, skip, and a jump away\u2026"
+    - matchingTraits: 36
+      line: "Sure, I\u2019m down for a change of scenery\u2026"
+    - matchingTraits: 2
+      line: "Yeah, I\u2019m on it..."
+    - matchingTraits: 2
+      line: "Yeah yeah, I\u2019m moving..."
+    - matchingTraits: 2
+      line: "Alright, I\u2019m going..."
+    - matchingTraits: 130
+      line: "Okay, if that\u2019s where you want me\u2026"
+    - matchingTraits: 130
+      line: "Sure, I can go there\u2026"
+    - matchingTraits: 130
+      line: You wanted me here, now you want me there...
+    - matchingTraits: 32
+      line: "I\u2019ll set your plan in motion\u2026"
+    - matchingTraits: 24
+      line: "Taking up a new position\u2026"
+    - matchingTraits: 64
+      line: "Let\u2019s go!"
+    - matchingTraits: 64
+      line: "I\u2019m there!"
+    - matchingTraits: 128
+      line: "Here goes nothing\u2026"
+    - matchingTraits: 128
+      line: "There\u2019s as good as anywhere I guess\u2026"
+    - matchingTraits: 4
+      line: Alright, I'll budge...
+    - matchingTraits: 4
+      line: Move along folks, move along...
+    - matchingTraits: 96
+      line: Nothing like feeling the earth move beneath your feet...
+    - matchingTraits: 32
+      line: Shifting into gear...
+    - matchingTraits: 4
+      line: Welcome to life in the fast lane...
+    - matchingTraits: 4
+      line: I move a mile a minute, don't you know?
+    - matchingTraits: 128
+      line: That's a bold move...
+    - matchingTraits: 96
+      line: Moving like the wind!
+    - matchingTraits: 64
+      line: Good call, headed there now...
+  - dialogueContext: 8
+    traitBasedLines:
+    - matchingTraits: 793
+      line: Taking the killing shot...
+    - matchingTraits: 341
+      line: "Aaand, here they go\u2026"
+    - matchingTraits: 514
+      line: Aww yeah, take it to the grave!
+    - matchingTraits: 514
+      line: How do you like me now??
+    - matchingTraits: 514
+      line: "I\u2019m turning you to scrap, you piece of junk!"
+    - matchingTraits: 4
+      line: "Don\u2019t mind me, just taking out the garbage..."
+    - matchingTraits: 4
+      line: Get em outta here!
+    - matchingTraits: 4
+      line: What do you think, have I got em?
+    - matchingTraits: 64
+      line: Goodbye!
+    - matchingTraits: 68
+      line: Goodnight, sweet dreams!
+    - matchingTraits: 36
+      line: And here one goes down for the count!
+    - matchingTraits: 32
+      line: And they all come tumbling down...
+    - matchingTraits: 32
+      line: "It\u2019s about to be a knockout!"
+    - matchingTraits: 32
+      line: "I\u2019ve got a premonition, and it\u2019s not looking good for you..."
+    - matchingTraits: 32
+      line: Oh how the once mighty fall...
+    - matchingTraits: 104
+      line: Let my shot ring true...
+    - matchingTraits: 8
+      line: Good riddance!
+    - matchingTraits: 128
+      line: "Here goes nothing\u2026"
+    - matchingTraits: 512
+      line: "It\u2019s payback time!"
+    - matchingTraits: 17
+      line: This should take it out...
+    - matchingTraits: 128
+      line: This just might do it...
+  - dialogueContext: 7
+    traitBasedLines:
+    - matchingTraits: 953
+      line: Just gotta hold out a little longer...
+    - matchingTraits: -1
+      line: The end is near for this one...
+    - matchingTraits: 991
+      line: "This one\u2019s nearly down..."
+    - matchingTraits: 1007
+      line: This one is on its last legs...
+    - matchingTraits: 514
+      line: "Kick \u2018em while they\u2019re down!"
+    - matchingTraits: 4
+      line: Oh sure, pick on the little guy...
+    - matchingTraits: 36
+      line: The end is nigh, friend!
+    - matchingTraits: 64
+      line: "We almost got \u2018em!"
+    - matchingTraits: 96
+      line: "We\u2019ve got them on the ropes!"
+    - matchingTraits: 520
+      line: "We attack them while they\u2019re weak..."
+  - dialogueContext: 2
+    traitBasedLines:
+    - matchingTraits: 337
+      line: I got you in my sights..
+    - matchingTraits: 477
+      line: "I\u2019m taking the shot..."
+    - matchingTraits: 990
+      line: Opening fire!
+    - matchingTraits: 493
+      line: Laying down fire...
+    - matchingTraits: 25
+      line: Commencing attack...
+    - matchingTraits: 25
+      line: Striking target...
+    - matchingTraits: 24
+      line: Taking the offensive...
+    - matchingTraits: 8
+      line: Weapons free!
+    - matchingTraits: 2
+      line: "C\u2019mon, get some!"
+    - matchingTraits: 512
+      line: Does this sting for you?
+    - matchingTraits: 514
+      line: Brace yourself, this is gonna hurt...
+    - matchingTraits: 514
+      line: Does this hurt, huh?
+    - matchingTraits: 514
+      line: Eat this!
+    - matchingTraits: 512
+      line: "Why don\u2019t you tell me how this feels??"
+    - matchingTraits: 544
+      line: Get a load of this!
+    - matchingTraits: 32
+      line: Try this on for size!
+    - matchingTraits: 4
+      line: "Blast \u2018em!"
+    - matchingTraits: 36
+      line: This might sting for you a bit...
+    - matchingTraits: 36
+      line: "It\u2019s about to get toasty!"
+    - matchingTraits: 32
+      line: "Let\u2019s take them down a notch..."
+    - matchingTraits: 40
+      line: Time to lay down the law...
+    - matchingTraits: 512
+      line: How about a taste of your own medicine??
+    - matchingTraits: 512
+      line: Tell me how it feels!!
+    - matchingTraits: 128
+      line: Here goes nothing...
+    - matchingTraits: 128
+      line: I'm sure this won't piss it off...
+  - dialogueContext: 9
+    traitBasedLines:
+    - matchingTraits: 293
+      line: "I\u2019ll just chill here then..."
+    - matchingTraits: 934
+      line: Just biding my time...
+    - matchingTraits: 775
+      line: Soon...
+    - matchingTraits: 829
+      line: "I\u2019ll sit tight..."
+    - matchingTraits: 130
+      line: I guess I can sit tight...
+    - matchingTraits: 514
+      line: "C\u2019mon, lemme at \u2018em!"
+    - matchingTraits: 4
+      line: "That\u2019s alright, I\u2019m paid by the hour..."
+    - matchingTraits: 65
+      line: They do say patience is a virtue...
+    - matchingTraits: 24
+      line: Awaiting further instructions...
+    - matchingTraits: 24
+      line: On standby...
+    - matchingTraits: 96
+      line: Just waiting on my time to shine...
+    - matchingTraits: 64
+      line: "I\u2019ll get \u2018em next time..."
+    - matchingTraits: 64
+      line: My chance is coming...
+    - matchingTraits: 72
+      line: Endurance is one of my strong suits...
+    - matchingTraits: 642
+      line: "Don\u2019t let me miss out on the action!"
+    - matchingTraits: 128
+      line: What could go wrong in the meantime?
+  - dialogueContext: 12
+    traitBasedLines:
+    - matchingTraits: 438
+      line: Nooooooo!!
+    - matchingTraits: 511
+      line: Pilot down! Pilot down!
+    - matchingTraits: 25
+      line: 'Reporting pilot down! I repeat: pilot down!'
+    - matchingTraits: 514
+      line: "Arrgh, I\u2019ve had enough!"
+    - matchingTraits: 650
+      line: God damnit!
+    - matchingTraits: 522
+      line: You bastards!
+    - matchingTraits: 512
+      line: You stinkin bots are gonna pay!
+    - matchingTraits: 4
+      line: "What! I\u2026 Really??"
+    - matchingTraits: 64
+      line: No! Just hang in there, help is on the way!
+    - matchingTraits: 64
+      line: Gah!! Your sacrifice will not be in vain!
+    - matchingTraits: 128
+      line: Oh no, this is not looking good...
+    - matchingTraits: 512
+      line: You take out one of us, you gotta deal with me!
+    - matchingTraits: 168
+      line: Those who live by the sword die by the sword...
