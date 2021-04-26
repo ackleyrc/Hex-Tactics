@@ -158,6 +158,10 @@ public class HexGrid
         return reachable;
     }
 
+    /// <summary>
+    /// Obtains a path from the start hex to the target hex, excluding hexes that do not match the provided criteria.
+    /// All hexes are assumed to have an equal movement cost, so this function implements a basic breadth first search algorithm.
+    /// </summary>
     public List<Cube> GetShortestPath(Cube start, Cube target, CubeFilterCriteria criteria)
     {
         Dictionary<Cube, Cube> previous = new Dictionary<Cube, Cube>();
@@ -281,7 +285,7 @@ public class HexGrid
     }
 
     /// <summary>
-    /// Obtain a map all cube hex coordinates and the weight distance to the nearest destination of interest that can bre reached from the origin hex tile.
+    /// Obtain a map all cube hex coordinates and the weighted distance to the nearest destination of interest that can be reached from the origin hex tile.
     /// The distance map is restricted to a minimum weighted distance range away from the origin. The map may contain hex coordinate keys beyond this range
     /// if any of the provided destinations exceed the minimum weighted distance range.
     /// NOTE: The origin is always considered valid regardless of the criteria filter.

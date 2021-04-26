@@ -38,8 +38,6 @@ public class MechAIManager : MonoBehaviour
 
     public void ConductUnitTurn(MechController controlledMech)
     {
-        Debug.Log($"MechAIManager::ConductUnitTurn( {controlledMech.MechName} )");
-
         if (currentDifficulty == Difficulty.EASY)
         {
             StartCoroutine(ConductUnitTurn_Version0(controlledMech));
